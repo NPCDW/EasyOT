@@ -9,21 +9,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    ElButton: typeof import('element-plus/es')['ElButton']
-    ElIcon: typeof import('element-plus/es')['ElIcon']
-    ElImage: typeof import('element-plus/es')['ElImage']
-    ElImageViewer: typeof import('element-plus/es')['ElImageViewer']
-    ElInput: typeof import('element-plus/es')['ElInput']
-    ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
-    ElRadio: typeof import('element-plus/es')['ElRadio']
-    ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
-    ElUpload: typeof import('element-plus/es')['ElUpload']
     HelloWord: typeof import('./src/components/HelloWord.vue')['default']
-    IEpBack: typeof import('~icons/ep/back')['default']
-    IEpDelete: typeof import('~icons/ep/delete')['default']
-    IEpPlus: typeof import('~icons/ep/plus')['default']
-    IEpRight: typeof import('~icons/ep/right')['default']
-    IEpZoomIn: typeof import('~icons/ep/zoom-in')['default']
-    Img2Pdf: typeof import('./src/components/Img2Pdf.vue')['default']
   }
 }
