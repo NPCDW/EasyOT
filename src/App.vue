@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import HelloWord from './components/HelloWord.vue'
 </script>
 
 <template>
-  <HelloWord />
+  <router-view></router-view>
 </template>
 
 <style scoped>

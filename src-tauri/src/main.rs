@@ -33,6 +33,7 @@ fn main() {
             SystemTrayEvent::MenuItemClick { id, .. } => {
                 match id.as_str() {
                     "quit" => {
+                        let _ = app.tray_handle().destroy();
                         app.emit_all("unregister-all-event", ()).unwrap();
                         std::process::exit(0);
                     }
