@@ -7,12 +7,7 @@ mod get_words;
 
 use tauri::{SystemTray, Manager};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent};
-
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
+use get_words::get_words::get_words;
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "退出");
@@ -46,7 +41,7 @@ fn main() {
             },
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![get_words])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
         .run(|app_handle, event| match event {

@@ -1,1 +1,1 @@
-pub mod get_words_windows;
+pub mod get_words;
