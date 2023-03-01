@@ -1,3 +1,5 @@
+use image::{ImageBuffer, Rgba};
+
 #[tauri::command]
 pub async fn screenshot(handle: tauri::AppHandle) {
   let _ = tauri::WindowBuilder::new(&handle, "screenshot", tauri::WindowUrl::App("/".into()))
@@ -8,4 +10,9 @@ pub async fn screenshot(handle: tauri::AppHandle) {
     .resizable(false)
     // .skip_taskbar(true)
     .build().unwrap();
+  
+    let buf = win_screenshot::prelude::capture_display().unwrap();
+    let img: ImageBuffer<Rgba<u8>, Vec<u8>> =
+        ImageBuffer::from_raw(buf.width, buf.height, buf.pixels).unwrap();
+    img.save("screenshot.jpg").unwrap();
 }

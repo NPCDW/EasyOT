@@ -40,11 +40,12 @@ const greetMsgEl = ref<HTMLParagraphElement | null>(null);
 
 async function greet() {
   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-  greetMsgEl.value!.textContent = await invoke("screenshot", { name: inputValue });
+  // greetMsgEl.value!.textContent = await invoke("screenshot", { name: inputValue });
+  await invoke("screenshot", { name: inputValue });
 }
 </script>
 
-<style>
+<style scoped>
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -147,9 +148,6 @@ button {
     background-color: #0f0f0f98;
   }
 }
-</style>
-
-<style scoped>
 .logo.vanilla:hover {
   filter: drop-shadow(0 0 2em #ffe21c);
 }

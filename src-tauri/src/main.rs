@@ -6,7 +6,7 @@
 mod get_words;
 mod screenshot;
 
-use tauri::{SystemTray, Manager};
+use tauri::{SystemTray, Manager, GlobalShortcutManager};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent};
 use get_words::get_words::get_words;
 use screenshot::screenshot::screenshot;
@@ -31,7 +31,7 @@ fn main() {
                 match id.as_str() {
                     "quit" => {
                         let _ = app.tray_handle().destroy();
-                        app.emit_all("unregister-all-event", ()).unwrap();
+                        let _ = app.global_shortcut_manager().unregister_all();
                         std::process::exit(0);
                     }
                     "hide" => {
