@@ -4,10 +4,12 @@
 )]
 
 mod get_words;
+mod screenshot;
 
 use tauri::{SystemTray, Manager};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent};
 use get_words::get_words::get_words;
+use screenshot::screenshot::screenshot;
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "退出");
@@ -41,7 +43,7 @@ fn main() {
             },
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![get_words])
+        .invoke_handler(tauri::generate_handler![get_words, screenshot])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
         .run(|app_handle, event| match event {

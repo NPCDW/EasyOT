@@ -22,33 +22,26 @@
 
     <div class="row">
       <div>
-        <input id="greet-input" placeholder="Enter a name..." />
-        <button id="greet-button" type="button">Greet</button>
+        <input v-model="inputValue" placeholder="Enter a name..." />
+        <button type="button" @click="greet">Greet</button>
       </div>
     </div>
 
-    <p id="greet-msg"></p>
+    <p ref="greetMsgEl"></p>
   </div>
 </template>
 
-<script setup> // lang="ts"
-const { invoke } = window.__TAURI__.tauri;
+<script setup lang="ts">
+import { ref } from 'vue'
+import { invoke } from '@tauri-apps/api/tauri'
 
-let greetInputEl;
-let greetMsgEl;
+const inputValue = ref("");
+const greetMsgEl = ref<HTMLParagraphElement | null>(null);
 
 async function greet() {
   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-  greetMsgEl.textContent = await invoke("greet", { name: greetInputEl.value });
+  greetMsgEl.value!.textContent = await invoke("screenshot", { name: inputValue });
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-  greetInputEl = document.querySelector("#greet-input");
-  greetMsgEl = document.querySelector("#greet-msg");
-  document
-      .querySelector("#greet-button")
-      .addEventListener("click", () => greet());
-});
 </script>
 
 <style>

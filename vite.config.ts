@@ -9,6 +9,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 // https://vitejs.dev/config/
 export default ({mode}) => {
     const env = loadEnv(mode, process.cwd());
+    console.log(mode, env)
     return defineConfig({
         plugins: [
             vue(),
@@ -46,11 +47,11 @@ export default ({mode}) => {
         envPrefix: ['VITE_', 'TAURI_'],
         build: {
             // Tauri uses Chromium on Windows and WebKit on macOS and Linux
-            target: env.TAURI_PLATFORM == 'windows' ? 'chrome105' : 'safari13',
+            target: 'chrome110',
             // don't minify for debug builds
-            minify: !env.TAURI_DEBUG ? 'esbuild' : false,
+            minify: 'esbuild',
             // 为调试构建生成源代码映射 (sourcemap)
-            sourcemap: !!env.TAURI_DEBUG,
+            sourcemap: false,
         },
     })
 }
