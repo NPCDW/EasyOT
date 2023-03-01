@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" :style="{'background-image': bgImage}">
     <h1>Welcome to Tauri!</h1>
 
     <div class="row">
@@ -37,11 +37,25 @@ import { invoke } from '@tauri-apps/api/tauri'
 
 const inputValue = ref("");
 const greetMsgEl = ref<HTMLParagraphElement | null>(null);
+const bgImage = ref("")
 
 async function greet() {
   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
   // greetMsgEl.value!.textContent = await invoke("screenshot", { name: inputValue });
-  await invoke("screenshot", { name: inputValue });
+  let res = await invoke("screenshot", { name: inputValue });
+  console.log(res)
+  bgImage.value = "data:image/png;base64," + arrayBufferToBase64(res as ArrayBuffer);
+  console.log(bgImage.value)
+}
+
+function arrayBufferToBase64(buffer: ArrayBuffer) {
+      var binary = '';
+      var bytes = new Uint8Array(buffer);
+      var len = bytes.byteLength;
+      for (var i = 0; i < len; i++) {
+          binary += String.fromCharCode(bytes[i]);
+      }
+      return window.btoa(binary);
 }
 </script>
 
