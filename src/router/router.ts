@@ -1,9 +1,19 @@
 import * as VueRouter from 'vue-router'
 import HelloWord from '../components/HelloWord.vue'
+import Window from '../components/Window.vue'
 
 const routes = [
-    { path: '/', redirect: '/hello' },
-    { path: '/hello', component: HelloWord },
+    { path: '/', redirect: '/window/hello' },
+    {
+        path: '/window',
+        component: Window,
+        children: [
+            {
+                path: 'hello',
+                component: HelloWord,
+            },
+        ],
+    },
 ]
 
 const router = VueRouter.createRouter({

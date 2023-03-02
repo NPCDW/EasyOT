@@ -24,8 +24,20 @@ fn main() {
         .system_tray(tray)
         .on_system_tray_event(|app, event| match event {
             SystemTrayEvent::LeftClick { .. } => {
-                let window = app.get_window("main").unwrap();
-                window.show().unwrap();
+                if let Some(window) = app.get_window("main") {
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                } else {
+                    let window = tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("/".into()))
+                        .decorations(false)
+                        .resizable(true)
+                        .title("EasyOT")
+                        .inner_size(800f64, 600f64)
+                        .transparent(true)
+                        .build().unwrap();
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                }
             },
             SystemTrayEvent::MenuItemClick { id, .. } => {
                 match id.as_str() {
@@ -48,6 +60,7 @@ fn main() {
         .expect("error while running tauri application")
         .run(|app_handle, event| match event {
             tauri::RunEvent::WindowEvent { label: windows_label, event: windows_event, .. } => {
+                // println!("windows label: {}, windows event: {:?}", windows_label, windows_event);
                 if windows_label.as_str() == "main" {
                     match windows_event {
                         tauri::WindowEvent::CloseRequested {api, ..} => {

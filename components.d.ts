@@ -12,5 +12,7 @@ declare module '@vue/runtime-core' {
     HelloWord: typeof import('./src/components/HelloWord.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TitleBar: typeof import('./src/components/TitleBar.vue')['default']
+    Window: typeof import('./src/components/Window.vue')['default']
   }
 }

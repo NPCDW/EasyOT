@@ -5,5 +5,8 @@
   <router-view></router-view>
 </template>
 
-<style scoped>
+<style>
+body {
+  background: #121212;
+}
 </style>

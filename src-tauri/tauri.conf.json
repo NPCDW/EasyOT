@@ -19,6 +19,17 @@
       },
       "globalShortcut": {
         "all": true
+      },
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
       }
     },
     "bundle": {
@@ -67,6 +78,7 @@
         "resizable": true,
         "title": "EasyOT",
         "width": 800,
+        "decorations": false,
         "visible": false
       }
     ],
