@@ -78,6 +78,7 @@
         "resizable": true,
         "title": "EasyOT",
         "width": 800,
+        "center": true,
         "decorations": false,
         "visible": false
       }

@@ -33,6 +33,7 @@ fn main() {
                         .resizable(true)
                         .title("EasyOT")
                         .inner_size(800f64, 600f64)
+                        .center()
                         .transparent(true)
                         .build().unwrap();
                     window.show().unwrap();
