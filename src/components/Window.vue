@@ -4,7 +4,7 @@
     <div class="flex-none">
       <NavMenu />
     </div>
-    <div class="overflow-y-auto" style="width: 100%">
+    <div class="flex-auto overflow-y-auto">
       <router-view></router-view>
     </div>
   </div>
