@@ -1,5 +1,5 @@
 import * as VueRouter from 'vue-router'
-import HelloWord from '../components/HelloWord.vue'
+import HelloWord from '../pages/HelloWord.vue'
 import Window from '../components/Window.vue'
 
 const routes = [

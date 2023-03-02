@@ -5,3 +5,9 @@
 body {
     background: #121212;
 }
+
+:root {
+    --title-bar-height: 40px;
+    --nav-menu-width: 63px;
+    --dark-background-color: #121212
+}

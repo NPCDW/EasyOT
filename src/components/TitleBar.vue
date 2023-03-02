@@ -28,8 +28,8 @@ function close() {
 
 <style scoped>
 .titlebar {
-  height: 40px;
-  background: #121212;
+  height: var(--title-bar-height);
+  background: var(--dark-background-color);
   user-select: none;
   display: flex;
   justify-content: flex-end;
@@ -42,8 +42,8 @@ function close() {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: var(--title-bar-height);
+  height: var(--title-bar-height);
 }
 .titlebar-button:hover {
   background: #5bbec3;

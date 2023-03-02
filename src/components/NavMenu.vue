@@ -24,8 +24,7 @@
 
 <style scoped>
 .el-menu {
-  margin-top: 40px;
-  //width: 200px;
-  height: 100vh;
+  width: var(--nav-menu-width);
+  height: calc(100vh - var(--title-bar-height));
 }
 </style>
