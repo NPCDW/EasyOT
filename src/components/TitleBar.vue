@@ -1,19 +1,13 @@
 <template>
   <div data-tauri-drag-region class="titlebar">
     <div class="titlebar-button" @click="minimize">
-      <img
-          src="https://api.iconify.design/mdi:window-minimize.svg"
-          alt="minimize"
-      />
+      <el-icon><i-ep-Minus /></el-icon>
     </div>
     <div class="titlebar-button" @click="toggleMaximize">
-      <img
-          src="https://api.iconify.design/mdi:window-maximize.svg"
-          alt="maximize"
-      />
+      <el-icon><i-ep-CopyDocument /></el-icon>
     </div>
     <div class="titlebar-button titlebar-close-button" @click="close">
-      <img src="https://api.iconify.design/mdi:close.svg" alt="close" />
+      <el-icon><i-ep-Close /></el-icon>
     </div>
   </div>
 </template>
@@ -34,7 +28,7 @@ function close() {
 
 <style scoped>
 .titlebar {
-  height: 30px;
+  height: 40px;
   background: #121212;
   user-select: none;
   display: flex;
@@ -48,8 +42,8 @@ function close() {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
 }
 .titlebar-button:hover {
   background: #5bbec3;
