@@ -34,6 +34,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
+import { readText } from '@tauri-apps/api/clipboard';
 
 const inputValue = ref("");
 const greetMsgEl = ref<HTMLParagraphElement | null>(null);
@@ -41,9 +42,18 @@ const background = ref("#121212")
 
 async function greet() {
   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-  // greetMsgEl.value!.textContent = await invoke("screenshot", { name: inputValue });
-  let res = await invoke("screenshot", { name: inputValue });
-  background.value = "url(data:image/png;base64," + arrayBufferToBase64(res as ArrayBuffer) + ")";
+  await invoke("get_words", { name: inputValue });
+  await sleep(400)
+  greetMsgEl.value!.textContent = await readText();
+
+  // let res = await invoke("screenshot", { name: inputValue });
+  // background.value = "url(data:image/png;base64," + arrayBufferToBase64(res as ArrayBuffer) + ")";
+
+
+}
+
+async function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function arrayBufferToBase64(buffer: ArrayBuffer) {

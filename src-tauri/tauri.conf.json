@@ -30,6 +30,11 @@
         "unmaximize": true,
         "unminimize": true,
         "startDragging": true
+      },
+      "clipboard": {
+        "all": false,
+        "writeText": false,
+        "readText": true
       }
     },
     "bundle": {

@@ -4,9 +4,9 @@
     <div class="flex-none">
       <NavMenu />
     </div>
-    <div class="flex-auto overflow-y-auto">
+    <el-scrollbar class="flex-auto">
       <router-view></router-view>
-    </div>
+    </el-scrollbar>
   </div>
 </template>
 
