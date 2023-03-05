@@ -3,19 +3,20 @@
     <!--  图片展示块  -->
     <div>
       <el-upload
-          class="upload-demo"
-          drag
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-          multiple
+          class="border-dashed border-2 border-sky-500 rounded-md"
+          style="height: 188px;width: 100%;"
+          action="#"
+          :show-file-list="false"
+          accept="image/*"
+          :auto-upload="false"
+          v-model:file-list="file_list"
+          :on-change="file_change"
       >
-        <el-icon class="el-icon--upload"><i-ep-UploadFilled /></el-icon>
-        <div class="el-upload__text">
-          Drop file here or <em>click to upload</em>
-        </div>
-        <template #tip>
-          <div class="el-upload__tip">
-            jpg/png files with a size less than 500kb
-          </div>
+        <template v-if="file_list && file_list.length > 0">
+          <el-image style="width: 100%; height: 100%" :src="file_list[0].url" fit="contain" />
+        </template>
+        <template v-else>
+          <el-icon class="el-icon--upload"><i-ep-UploadFilled /></el-icon>
         </template>
       </el-upload>
     </div>
@@ -53,7 +54,7 @@
     <div>
       <el-input
           v-model="textarea"
-          :rows="2"
+          :rows="8"
           type="textarea"
           placeholder="Please input"
       />
@@ -92,7 +93,7 @@
     <div>
       <el-input
           v-model="textarea"
-          :rows="2"
+          :rows="8"
           type="textarea"
           placeholder="Please input"
       />
@@ -103,8 +104,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
+import {UploadUserFile, UploadProps, UploadFile, UploadFiles} from "element-plus";
+
+const file_list = ref<UploadUserFile[]>([]);
 
 const value = ref('')
+const textarea = ref('')
+const value1 = ref('')
 const options = [
   {
     value: 'Option1',
@@ -127,6 +133,24 @@ const options = [
     label: 'Option5',
   },
 ]
+
+const file_change: UploadProps['onChange'] = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
+  createFileUrl(uploadFile)
+  if (uploadFiles.length > 1) {
+    uploadFiles.shift()
+  }
+  console.log(uploadFile, uploadFiles, file_list)
+}
+
+function createFileUrl(file: UploadFile) : void {
+  if (!file.url) {
+    if (window.URL !== undefined) {
+      file.url = window.URL.createObjectURL(file.raw as Blob);
+    } else if (window.webkitURL !== undefined) {
+      file.url = window.webkitURL.createObjectURL(file.raw as Blob);
+    }
+  }
+}
 </script>
 
 <style scoped>

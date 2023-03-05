@@ -1,5 +1,4 @@
 import * as globalShortcut from '@tauri-apps/api/globalShortcut';
-import { listen } from '@tauri-apps/api/event'
 // import { get_words } from './get-words'
 import { screenshot } from './screenshot'
 
@@ -14,13 +13,4 @@ export async function registerDefault(): Promise<void> {
     } else {
         console.log('Shortcut key has been registered, registration failed');
     }
-
-    await listenUnregisterAll()
-}
-
-export async function listenUnregisterAll(): Promise<void> {
-    await listen('unregister-all-event', async (event) => {
-        await globalShortcut.unregisterAll();
-        console.log('Shortcut key unregisterAll succeeded');
-    })
 }
