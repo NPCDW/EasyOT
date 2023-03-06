@@ -20,6 +20,12 @@
       "globalShortcut": {
         "all": true
       },
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": true
+      },
       "window": {
         "all": false,
         "close": true,
