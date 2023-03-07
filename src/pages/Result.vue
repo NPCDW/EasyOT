@@ -158,7 +158,7 @@ const ocr_text = ref<string | null>(null);
 const route = useRoute();
 
 watch(() => route.query.rand, () => {
-  if (route.query.type === 'word_selection') {
+  if (route.query.target === 'word_selection') {
     setTimeout(async () => {
       ocr_text.value = await readText();
     }, 300)

@@ -30,13 +30,13 @@ fn main() {
 
     tauri::Builder::default()
         .system_tray(tray)
-        .on_system_tray_event(|app, event| match event {
+        .on_system_tray_event(|app_handle, event| match event {
             SystemTrayEvent::LeftClick { .. } => {
-                if let Some(window) = app.get_window("main") {
+                if let Some(window) = app_handle.get_window("main") {
                     window.show().unwrap();
                     window.set_focus().unwrap();
                 } else {
-                    let window = tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("/".into()))
+                    let window = tauri::WindowBuilder::new(app_handle, "main", tauri::WindowUrl::App("/".into()))
                         .decorations(false)
                         .resizable(true)
                         .title("EasyOT")
@@ -51,12 +51,12 @@ fn main() {
             SystemTrayEvent::MenuItemClick { id, .. } => {
                 match id.as_str() {
                     "quit" => {
-                        let _ = app.tray_handle().destroy();
-                        let _ = app.global_shortcut_manager().unregister_all();
+                        let _ = app_handle.tray_handle().destroy();
+                        let _ = app_handle.global_shortcut_manager().unregister_all();
                         std::process::exit(0);
                     }
                     "hide" => {
-                        let window = app.get_window("main").unwrap();
+                        let window = app_handle.get_window("main").unwrap();
                         window.hide().unwrap();
                     }
                     _ => {}
@@ -66,15 +66,15 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config])
         .setup(|app| {
-            let app = app.app_handle();
-            let _ = app.global_shortcut_manager().register("CommandOrControl+F4", move || {
+            let app_handle = app.app_handle();
+            let _ = app_handle.global_shortcut_manager().register("CommandOrControl+F4", move || {
                 get_words();
-                if let Some(window) = app.get_window("main") {
-                    let _ = window.emit("router-change-event", format!("/window/result?type=word_selection&rand={:?}", rand::thread_rng().gen::<f64>()));
+                if let Some(window) = app_handle.get_window("main") {
+                    let _ = window.emit("router-change-event", format!("/window/result?target=word_selection&rand={:?}", rand::thread_rng().gen::<f64>()));
                     window.show().unwrap();
                     window.set_focus().unwrap();
                 } else {
-                    let window = tauri::WindowBuilder::new(&app, "main", tauri::WindowUrl::App(format!("/window/result?type=word_selection&rand={:?}", rand::thread_rng().gen::<f64>()).into()))
+                    let window = tauri::WindowBuilder::new(&app_handle, "main", tauri::WindowUrl::App(format!("/window/result?target=word_selection&rand={:?}", rand::thread_rng().gen::<f64>()).into()))
                         .decorations(false)
                         .resizable(true)
                         .title("EasyOT")
@@ -85,7 +85,25 @@ fn main() {
                     window.show().unwrap();
                     window.set_focus().unwrap();
                 }
-                app.emit_all("WordSelectionTranslate-event", ()).unwrap();
+            });
+            let app_handle = app.app_handle();
+            let _ = app_handle.global_shortcut_manager().register("CommandOrControl+PrintScreen", move || {
+                if let Some(window) = app_handle.get_window("screenshot") {
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                } else {
+                    let _ = tauri::WindowBuilder::new(&app_handle, "screenshot", tauri::WindowUrl::App("/screenshot?target=ocr".into()))
+                        .always_on_top(true)
+                        .decorations(false)
+                        .position(0f64, 0f64)
+                        .inner_size(600f64, 600f64)
+                        .resizable(false)
+                        // .skip_taskbar(true)
+                        .transparent(true)
+                        .build().unwrap();
+                    // window.show().unwrap();
+                    // window.set_focus().unwrap();
+                }
             });
             Ok(())
         })

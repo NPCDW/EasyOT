@@ -12,8 +12,8 @@ pub fn get_words() {
     enigo.key_up(Key::Shift);
 
     enigo.key_down(Key::Control);
-    // enigo.key_down(Key::Raw(0x2d));
-    // enigo.key_up(Key::Raw(0x2d));
-    enigo.key_click(Key::Layout('c'));
+    enigo.key_down(Key::Raw(0x2d));
+    enigo.key_up(Key::Raw(0x2d));
+    // enigo.key_click(Key::Layout('c'));
     enigo.key_up(Key::Control);
 }
