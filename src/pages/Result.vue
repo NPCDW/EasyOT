@@ -53,7 +53,7 @@
     <!--  OCR文本块  -->
     <div>
       <el-input
-          v-model="textarea"
+          v-model="ocr_text"
           :rows="8"
           type="textarea"
           placeholder="Please input"
@@ -102,9 +102,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import {UploadUserFile, UploadProps, UploadFile, UploadFiles} from "element-plus";
+import { get_words } from "../util/get-words";
+import { readText } from '@tauri-apps/api/clipboard';
+import { listen } from '@tauri-apps/api/event';
 
 const file_list = ref<UploadUserFile[]>([]);
 
@@ -151,6 +154,25 @@ function createFileUrl(file: UploadFile) : void {
     }
   }
 }
+
+const ocr_text = ref<string | null>(null);
+async function listenWordSelectionTranslate(): Promise<void> {
+  await listen('WordSelectionTranslate-event', async (event) => {
+    await get_words();
+    await sleep(400)
+    ocr_text.value = await readText();
+    console.log('WordSelectionTranslate-event triggered');
+  })
+}
+
+async function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+onBeforeMount(async () => {
+  await listenWordSelectionTranslate()
+  console.log('listen WordSelectionTranslate-event');
+})
 </script>
 
 <style scoped>

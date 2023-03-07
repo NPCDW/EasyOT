@@ -5,8 +5,15 @@ use enigo::{Enigo, Key, KeyboardControllable, MouseControllable};
 pub fn get_words() {
     let mut enigo = Enigo::new();
     println!("mouse location: {:?}", enigo.mouse_location());
+    
+    enigo.key_up(Key::Control);
+    enigo.key_up(Key::Alt);
+    enigo.key_up(Key::Meta);
+    enigo.key_up(Key::Shift);
+
     enigo.key_down(Key::Control);
-    enigo.key_down(Key::Raw(0x2d));
-    enigo.key_up(Key::Raw(0x2d));
+    // enigo.key_down(Key::Raw(0x2d));
+    // enigo.key_up(Key::Raw(0x2d));
+    enigo.key_click(Key::Layout('c'));
     enigo.key_up(Key::Control);
 }

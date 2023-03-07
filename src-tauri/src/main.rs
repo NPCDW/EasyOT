@@ -64,9 +64,29 @@ fn main() {
             _ => {}
         })
         .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config])
-        // .on_page_load(|window, _| {
-        //     window.app_handle().emit_all("config-change-event", (*config::config::CONFIG).clone()).unwrap();
-        // })
+        .setup(|app| {
+            let app = app.app_handle();
+            let _ = app.global_shortcut_manager().register("CommandOrControl+F4", move || {
+                if let Some(window) = app.get_window("main") {
+                    let _ = window.emit("router-change-event", "/window/result");
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                } else {
+                    let window = tauri::WindowBuilder::new(&app, "main", tauri::WindowUrl::App("/window/result".into()))
+                        .decorations(false)
+                        .resizable(true)
+                        .title("EasyOT")
+                        .inner_size(800f64, 600f64)
+                        .center()
+                        .transparent(true)
+                        .build().unwrap();
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                }
+                app.emit_all("WordSelectionTranslate-event", ()).unwrap();
+            });
+            Ok(())
+        })
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
         .run(|app_handle, event| match event {

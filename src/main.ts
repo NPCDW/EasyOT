@@ -4,7 +4,6 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import './style.css'
 import App from './App.vue'
 import { useConfig } from './store/config'
-import { registerDefault } from './util/global-shortcut'
 import router from './router/router'
 import { createPinia } from 'pinia'
 
@@ -14,7 +13,5 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 app.mount('#app')
-
-await registerDefault();
 
 await useConfig().refresh_config()

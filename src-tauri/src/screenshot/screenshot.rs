@@ -2,7 +2,7 @@ use screenshots::Screen;
 
 #[tauri::command]
 pub async fn screenshot(handle: tauri::AppHandle) -> Vec<u8> {
-  let _ = tauri::WindowBuilder::new(&handle, "screenshot", tauri::WindowUrl::App("/".into()))
+  let _ = tauri::WindowBuilder::new(&handle, "screenshot", tauri::WindowUrl::App("/screenshot".into()))
     .always_on_top(true)
     .decorations(false)
     .position(0f64, 0f64)
