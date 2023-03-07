@@ -33,5 +33,6 @@ console.log(active.value)
 .el-menu {
   width: var(--nav-menu-width);
   height: calc(100vh - var(--title-bar-height));
+  background-color: var(--dark-background-color);
 }
 </style>
