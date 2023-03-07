@@ -42,9 +42,9 @@ const background = ref("#121212")
 
 async function greet() {
   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-  // await invoke("get_words", { name: inputValue });
-  // await sleep(400)
-  // greetMsgEl.value!.textContent = await readText();
+  await invoke("get_words", { name: inputValue });
+  await sleep(400)
+  greetMsgEl.value!.textContent = await readText();
 
   let res = await invoke("screenshot", { name: inputValue });
   background.value = "url(data:image/png;base64," + arrayBufferToBase64(res as ArrayBuffer) + ")";

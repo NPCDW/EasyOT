@@ -102,12 +102,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount } from 'vue'
-import { invoke } from '@tauri-apps/api/tauri'
+import { ref, watch } from 'vue'
 import {UploadUserFile, UploadProps, UploadFile, UploadFiles} from "element-plus";
-import { get_words } from "../util/get-words";
 import { readText } from '@tauri-apps/api/clipboard';
-import { listen } from '@tauri-apps/api/event';
+import { useRoute } from "vue-router";
 
 const file_list = ref<UploadUserFile[]>([]);
 
@@ -156,23 +154,17 @@ function createFileUrl(file: UploadFile) : void {
 }
 
 const ocr_text = ref<string | null>(null);
-async function listenWordSelectionTranslate(): Promise<void> {
-  await listen('WordSelectionTranslate-event', async (event) => {
-    await get_words();
-    await sleep(400)
-    ocr_text.value = await readText();
-    console.log('WordSelectionTranslate-event triggered');
-  })
-}
 
-async function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+const route = useRoute();
 
-onBeforeMount(async () => {
-  await listenWordSelectionTranslate()
-  console.log('listen WordSelectionTranslate-event');
-})
+watch(() => route.query.rand, () => {
+  if (route.query.type === 'word_selection') {
+    setTimeout(async () => {
+      ocr_text.value = await readText();
+    }, 300)
+  }
+}, { immediate: true })
+
 </script>
 
 <style scoped>
