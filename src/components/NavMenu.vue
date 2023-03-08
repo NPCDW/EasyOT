@@ -21,12 +21,15 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, watchEffect} from "vue";
 import { useRoute } from 'vue-router'
 
 const active = ref("");
-active.value = useRoute().path;
-console.log(active.value)
+const route = useRoute();
+watchEffect(() => {
+  active.value = route.path;
+  console.log(active.value)
+})
 </script>
 
 <style scoped>
