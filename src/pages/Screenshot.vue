@@ -1,11 +1,9 @@
 <template>
-    <div :style="{'background-image': `${background}`, width: '100%', height: '100vh'}" @keyup.esc="exit" @mouseup.right="exit">
-
-    </div>
+  <canvas ref="canvas" tabindex="0" autofocus :style="{'background-image': `${background}`, width: '100%', height: '100vh'}" @keyup.esc="exit" @mouseup.right="exit"></canvas>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { appWindow } from "@tauri-apps/api/window";
 
@@ -16,7 +14,24 @@ invoke("screenshot").then(res => {
   appWindow.show()
   appWindow.setFocus()
 })
-// const res = await invoke("screenshot");
+
+const canvas = ref<HTMLCanvasElement | undefined>(undefined);
+
+onMounted(() => {
+  const ctx = canvas.value?.getContext("2d")!
+  console.log("canvas: ", canvas.value, ctx)
+
+  ctx.beginPath();
+  ctx.rect(0,0, canvas.value!.width, canvas.value!.height);
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.clearRect(50, 10, 150, 50)
+  ctx.closePath();
+  ctx.fill();
+})
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   let binary = '';
@@ -29,9 +44,11 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 function exit() {
+  console.log("exit")
   appWindow.close();
 }
 </script>
 
 <style scoped>
+canvas:focus-visible { outline: unset; }
 </style>
