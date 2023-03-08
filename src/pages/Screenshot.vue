@@ -5,11 +5,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { appWindow } from "@tauri-apps/api/window";
 
-const background = ref("")
+const background = ref("transparent")
 
 invoke("screenshot").then(res => {
   background.value = "url(data:image/png;base64," + arrayBufferToBase64(res as ArrayBuffer) + ")";
