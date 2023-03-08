@@ -1,37 +1,113 @@
 <template>
-  <canvas ref="canvas" tabindex="0" autofocus :style="{'background-image': `${background}`, width: '100%', height: '100vh'}" @keyup.esc="exit" @mouseup.right="exit"></canvas>
+  <div :style="{'background-image': `url(${background})`}">
+    <canvas
+        ref="canvas"
+        tabindex="0"
+        autofocus
+        style="width: 100%; height: 100vh"
+        :width="canvas_width"
+        :height="canvas_height"
+        @keyup.esc="exit"
+        @mouseup.right="exit"
+        @mousedown.left="mousedown($event)"
+        @mousemove="mousemove($event)"
+        @mouseup.left="mouseup($event)"
+    ></canvas>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {ref, onMounted} from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { appWindow } from "@tauri-apps/api/window";
 
 const background = ref("transparent")
+const buffer = ref<ArrayBuffer | undefined>();
+const canvas_width = window.innerWidth;
+const canvas_height = window.innerHeight;
 
 invoke("screenshot").then(res => {
-  background.value = "url(data:image/png;base64," + arrayBufferToBase64(res as ArrayBuffer) + ")";
+  buffer.value = res as ArrayBuffer;
+  background.value = "data:image/png;base64," + arrayBufferToBase64(res as ArrayBuffer);
   appWindow.show()
   appWindow.setFocus()
 })
 
 const canvas = ref<HTMLCanvasElement | undefined>(undefined);
+const ctx = ref<CanvasRenderingContext2D | null>(null);
 
 onMounted(() => {
-  const ctx = canvas.value?.getContext("2d")!
-  console.log("canvas: ", canvas.value, ctx)
+  ctx.value = canvas.value?.getContext("2d")!
 
-  ctx.beginPath();
-  ctx.rect(0,0, canvas.value!.width, canvas.value!.height);
-  ctx.fillStyle = 'rgba(0,0,0,0.4)';
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.clearRect(50, 10, 150, 50)
-  ctx.closePath();
-  ctx.fill();
+  ctx.value.beginPath();
+  ctx.value.rect(0,0, canvas.value!.width, canvas.value!.height);
+  ctx.value.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.value.fill();
+  ctx.value.closePath();
 })
+
+const start = ref(false)
+const startPoint = ref({ x: 0, y: 0 });
+
+function mousedown(event: MouseEvent) {
+  start.value = true;
+  startPoint.value = { x: event.pageX, y: event.pageY }
+  console.log("MouseEvent Down: ", event, canvas.value!.width, canvas.value!.height)
+}
+
+function mousemove(event: MouseEvent) {
+  if (!start.value) {
+    return
+  }
+
+  let x = Math.min(event.pageX, startPoint.value.x);
+  let y = Math.min(event.pageY, startPoint.value.y);
+  let width = Math.abs(event.pageX - startPoint.value.x)
+  let height = Math.abs(event.pageY - startPoint.value.y)
+
+  ctx.value!.beginPath();
+  ctx.value!.clearRect(0,0, canvas.value!.width, canvas.value!.height);
+  ctx.value!.fill();
+  ctx.value!.closePath();
+
+  ctx.value!.beginPath();
+  ctx.value!.rect(0,0, canvas.value!.width, canvas.value!.height);
+  ctx.value!.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.value!.fill();
+  ctx.value!.closePath();
+
+  ctx.value!.beginPath();
+  ctx.value!.clearRect(x, y, width, height)
+  ctx.value!.fill();
+  ctx.value!.closePath();
+}
+
+function mouseup(event: MouseEvent) {
+  start.value = false;
+  console.log("MouseEvent Up: ", event, ctx)
+
+  let x = Math.min(event.pageX, startPoint.value.x);
+  let y = Math.min(event.pageY, startPoint.value.y);
+  let width = Math.abs(event.pageX - startPoint.value.x)
+  let height = Math.abs(event.pageY - startPoint.value.y)
+
+  // let img = new Image();
+  // img.src = background.value;
+  // img.onload = () => {
+  //   ctx.value!.drawImage(img, x, y, width, height);
+  //   let imageData = canvas.value!.toDataURL('image/png');
+  //   console.log(imageData);
+  // };
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')
+  let data = ctx.value!.getImageData(x, y, width, height)
+  canvas.width = width
+  canvas.height = height
+  context!.putImageData(data, 0, 0)
+  let imageData = canvas.toDataURL('image/png', 1)
+
+  console.log(imageData);
+}
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   let binary = '';

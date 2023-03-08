@@ -1,5 +1,5 @@
 use screenshots::Screen;
-use std::{fs};
+// use std::{fs};
 
 #[tauri::command]
 pub async fn screenshot() -> Vec<u8> {
@@ -9,7 +9,7 @@ pub async fn screenshot() -> Vec<u8> {
     // println!("capturer {screen:?}");
     let image = screen.capture().unwrap();
     buffer = image.buffer().to_owned();
-    fs::write(format!("target/{}-2.png", screen.display_info.id), &buffer).unwrap();
+    // fs::write(format!("target/{}-2.png", screen.display_info.id), &buffer).unwrap();
   }
   buffer
 }

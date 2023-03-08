@@ -98,6 +98,7 @@ fn main() {
                         .position(0f64, 0f64)
                         .inner_size(600f64, 600f64)
                         .resizable(false)
+                        .visible(false)
                         // .skip_taskbar(true)
                         .transparent(true)
                         .build().unwrap();
