@@ -91,22 +91,17 @@ function mouseup(event: MouseEvent) {
   let width = Math.abs(event.pageX - startPoint.value.x)
   let height = Math.abs(event.pageY - startPoint.value.y)
 
-  // let img = new Image();
-  // img.src = background.value;
-  // img.onload = () => {
-  //   ctx.value!.drawImage(img, x, y, width, height);
-  //   let imageData = canvas.value!.toDataURL('image/png');
-  //   console.log(imageData);
-  // };
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
-  let data = ctx.value!.getImageData(x, y, width, height)
   canvas.width = width
   canvas.height = height
-  context!.putImageData(data, 0, 0)
-  let imageData = canvas.toDataURL('image/png', 1)
-
-  console.log(imageData);
+  let img = new Image();
+  img.src = background.value;
+  img.onload = () => {
+    context!.drawImage(img, x, y, width, height, 0, 0, width, height);
+    let imageData = canvas!.toDataURL('image/png');
+    console.log(imageData);
+  };
 }
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
