@@ -91,6 +91,8 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  background: var(--dark-background-color);
+  height: calc(100vh - var(--title-bar-height));
 }
 
 .logo {
