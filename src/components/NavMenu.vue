@@ -7,15 +7,12 @@
   >
       <el-menu-item index="/window/result">
         <el-icon><i-ep-Menu /></el-icon>
-        <template #title>功能</template>
       </el-menu-item>
       <el-menu-item index="/window/setting">
         <el-icon><i-ep-setting /></el-icon>
-        <template #title>设置</template>
       </el-menu-item>
       <el-menu-item index="/window/info">
         <el-icon><i-ep-InfoFilled /></el-icon>
-        <template #title>关于</template>
       </el-menu-item>
   </el-menu>
 </template>

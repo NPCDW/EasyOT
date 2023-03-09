@@ -1,5 +1,5 @@
 import * as VueRouter from 'vue-router'
-import HelloWord from '../pages/HelloWord.vue'
+import About from '../pages/About.vue'
 import Setting from '../pages/Setting.vue'
 import Result from '../pages/Result.vue'
 import Screenshot from '../pages/Screenshot.vue'
@@ -21,7 +21,7 @@ const routes = [
             },
             {
                 path: 'info',
-                component: HelloWord,
+                component: About,
             },
         ],
     },

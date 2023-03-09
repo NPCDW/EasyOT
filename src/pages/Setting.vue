@@ -211,20 +211,6 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="关于">
-        <el-descriptions
-            title="EasyOT"
-            :column="2"
-            direction="horizontal"
-        >
-          <el-descriptions-item label="版本"><el-link href="https://element-plus.org" target="_blank">0.0.0</el-link></el-descriptions-item>
-          <el-descriptions-item label="开源许可"><el-link href="https://element-plus.org" target="_blank">MIT License</el-link></el-descriptions-item>
-          <el-descriptions-item label="版权所有"><el-link href="https://element-plus.org" target="_blank">© 2022 NPCDW</el-link></el-descriptions-item>
-          <el-descriptions-item label="源码"><el-link href="https://element-plus.org" target="_blank">https://github.com/NPCDW/WpfTool</el-link></el-descriptions-item>
-          <el-descriptions-item label="反馈"><el-link href="https://element-plus.org" target="_blank">chenyongli0520@gmail.com</el-link></el-descriptions-item>
-          <el-descriptions-item label="友情链接"><el-link href="https://element-plus.org" target="_blank">https://www.0520.site</el-link></el-descriptions-item>
-        </el-descriptions>
-      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -233,8 +219,5 @@
 .container {
   background: var(--dark-background-color);
   height: calc(100vh - var(--title-bar-height));
-}
-.el-tabs {
-  border-right: none;
 }
 </style>
