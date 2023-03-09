@@ -1,18 +1,19 @@
 import * as VueRouter from 'vue-router'
 import HelloWord from '../pages/HelloWord.vue'
+import Setting from '../pages/Setting.vue'
 import Result from '../pages/Result.vue'
 import Screenshot from '../pages/Screenshot.vue'
 import Window from '../components/Window.vue'
 
 const routes = [
-    { path: '/', redirect: '/window/info' },
+    { path: '/', redirect: '/window/setting' },
     {
         path: '/window',
         component: Window,
         children: [
             {
                 path: 'setting',
-                component: HelloWord,
+                component: Setting,
             },
             {
                 path: 'result',
