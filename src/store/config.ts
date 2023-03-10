@@ -5,19 +5,21 @@ import {ref, computed} from "vue";
 export const useConfig = defineStore('config', () => {
     const config = ref<Config>()
 
-    async function refresh_config() {
-        config.value = await invoke("get_config");
-        console.log("refresh_config ", config)
+    function get_config() {
+        return config.value
     }
 
-    const value = computed(async () => {
-        if (!config.value) {
-            await refresh_config()
-        }
-        return config.value
-    })
+    async function refresh_config() {
+        config.value = await invoke("get_config");
+        console.log("refresh_config ", config.value)
+    }
 
-    return { refresh_config, value }
+    async function save_config() {
+        await invoke("save_config", {...config.value});
+        console.log("save_config ", config.value)
+    }
+
+    return { refresh_config, save_config, get_config }
 })
 
 interface CommonConfig {

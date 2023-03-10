@@ -156,22 +156,26 @@ lazy_static! {
         })
     };
 
+    #[derive(Debug)]
+    pub static ref CONFIG_FILE_PATH: PathBuf = {
+        CONFIG_DIR.join(r"EasyOT/setting.yml")
+    };
+
     #[derive(Debug, Clone)]
     pub static ref CONFIG: Config = {
         let config;
-        let config_path = CONFIG_DIR.join(r"EasyOT/setting.yml");
-        if !config_path.exists() {
-            file_util::create_dir(config_path.parent().unwrap());
+        if !CONFIG_FILE_PATH.exists() {
+            file_util::create_dir(CONFIG_FILE_PATH.parent().unwrap());
             config = Config::default();
             let yaml = serde_yaml::to_string(&config).unwrap_or_else(|e| {
                 panic!("Serialize config fail, {:?}", e)
             });
-            file_util::write_file(config_path.as_path(), &yaml);
+            file_util::write_file(CONFIG_FILE_PATH.as_path(), &yaml);
         } else {
-            let yaml = file_util::read_file(&config_path).unwrap();
+            let yaml = file_util::read_file(&CONFIG_FILE_PATH).unwrap();
             // 序列化时，如果结构体比 yaml 数据多字段，需要添加在相应字段添加 #[serde(default)]，如果 yaml 数据相比于结构体多字段，会被忽略
             config = serde_yaml::from_str(&yaml).unwrap_or_else(|e| {
-                panic!("配置文件 {} 转 yaml 格式失败：{:?}", &config_path.display(), e);
+                panic!("配置文件 {} 转 yaml 格式失败：{:?}", &CONFIG_FILE_PATH.display(), e);
             })
         }
         config
@@ -181,4 +185,12 @@ lazy_static! {
 #[tauri::command]
 pub fn get_config() -> Config {
     (*CONFIG).clone()
+}
+
+#[tauri::command]
+pub fn save_config(config: Config) {
+    let yaml = serde_yaml::to_string(&config).unwrap_or_else(|e| {
+        panic!("Serialize config fail, {:?}", e)
+    });
+    file_util::write_file(CONFIG_FILE_PATH.as_path(), &yaml)
 }

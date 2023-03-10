@@ -4,9 +4,7 @@
     <div class="flex-none">
       <NavMenu />
     </div>
-    <el-scrollbar class="flex-auto">
-      <router-view></router-view>
-    </el-scrollbar>
+    <router-view class="flex-auto"></router-view>
   </div>
 </template>
 

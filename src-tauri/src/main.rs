@@ -17,6 +17,7 @@ use rand::Rng;
 use get_words::get_words::get_words;
 use screenshot::screenshot::screenshot;
 use config::config::get_config;
+use config::config::save_config;
 
 fn main() {
     // println!("{:?}", *config::config::CONFIG);
@@ -64,7 +65,7 @@ fn main() {
             },
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config])
+        .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config, save_config])
         .setup(|app| {
             let app_handle = app.app_handle();
             let _ = app_handle.global_shortcut_manager().register("CommandOrControl+F4", move || {
@@ -99,7 +100,7 @@ fn main() {
                         .inner_size(600f64, 600f64)
                         .resizable(false)
                         .visible(false)
-                        // .skip_taskbar(true)
+                        .skip_taskbar(true)
                         .transparent(true)
                         .build().unwrap();
                     // window.show().unwrap();

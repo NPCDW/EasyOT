@@ -12,6 +12,7 @@ const pinia = createPinia()
 
 app.use(pinia)
 app.use(router)
-app.mount('#app')
 
 await useConfig().refresh_config()
+
+app.mount('#app')

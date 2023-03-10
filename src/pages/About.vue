@@ -13,7 +13,7 @@ function copyText(text: string) {
 </script>
 
 <template>
-  <div class="container">
+  <el-scrollbar class="page">
     <el-descriptions
         title="EasyOT"
         :column="1"
@@ -27,11 +27,11 @@ function copyText(text: string) {
         <el-descriptions-item label="反馈"><el-link href="#" @click="copyText('chenyongli0520@gmail.com')">chenyongli0520@gmail.com</el-link></el-descriptions-item>
         <el-descriptions-item label="友情链接"><el-link href="https://www.0520.site" target="_blank">https://www.0520.site</el-link></el-descriptions-item>
     </el-descriptions>
-  </div>
+  </el-scrollbar>
 </template>
 
 <style scoped>
-.container {
+.page {
   background: var(--dark-background-color);
   height: calc(100vh - var(--title-bar-height));
 }

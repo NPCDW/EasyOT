@@ -1,106 +1,56 @@
 <template>
-  <div class="container">
-    <el-card>
-      <!--  图片展示块  -->
-      <div>
-        <el-upload
-            drag
-            list-type="picture"
-            action="#"
-            :show-file-list="false"
-            accept="image/*"
-            :auto-upload="false"
-            v-model:file-list="file_list"
-            :on-change="file_change"
-        >
-          <template v-if="file_list && file_list.length > 0" #default>
-            <el-image style="width: 100%; height: 180px;" :src="file_list[0].url" fit="contain" />
-          </template>
-          <template v-else #default>
-            <el-icon class="el-icon--upload"><i-ep-UploadFilled /></el-icon>
-          </template>
-        </el-upload>
-      </div>
-      <!--  OCR 按钮块  -->
-      <div>
-        <el-select v-model="value" class="m-2" placeholder="Select" size="large">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-          />
-        </el-select>
-        <el-select v-model="value" class="m-2" placeholder="Select" size="large">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-          />
-        </el-select>
-        <el-select v-model="value" class="m-2" placeholder="Select" size="large">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-          />
-        </el-select>
-        <el-switch v-model="value1" />
-        <span>设为默认</span>
-        <el-button type="primary">Primary</el-button>
-      </div>
-      <!--  OCR文本块  -->
-      <div>
-        <el-input
-            v-model="ocr_text"
-            :rows="8"
-            type="textarea"
-            placeholder="Please input"
-        />
-      </div>
-      <!--  翻译按钮块  -->
-      <div>
-        <el-select v-model="value" class="m-2" placeholder="Select" size="large">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-          />
-        </el-select>
-        <el-select v-model="value" class="m-2" placeholder="Select" size="large">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-          />
-        </el-select>
-        <el-select v-model="value" class="m-2" placeholder="Select" size="large">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-          />
-        </el-select>
-        <el-switch v-model="value1" />
-        <span>设为默认</span>
-        <el-button type="primary">Primary</el-button>
-      </div>
-      <!--  翻译文本块  -->
-      <div>
-        <el-input
-            v-model="textarea"
-            :rows="8"
-            type="textarea"
-            placeholder="Please input"
-        />
-      </div>
-    </el-card>
-  </div>
+  <el-scrollbar class="page">
+    <!--  图片展示块  -->
+    <div>
+      <el-upload drag list-type="picture" action="#" :show-file-list="false" accept="image/*" :auto-upload="false"
+        v-model:file-list="file_list" :on-change="file_change">
+        <template v-if="file_list && file_list.length > 0" #default>
+          <el-image style="width: 100%; height: 180px;" :src="file_list[0].url" fit="contain" />
+        </template>
+        <template v-else #default>
+          <el-icon class="el-icon--upload"><i-ep-UploadFilled /></el-icon>
+        </template>
+      </el-upload>
+    </div>
+    <!--  OCR 按钮块  -->
+    <div>
+      <el-select v-model="value" class="m-2" placeholder="Select">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+      <el-select v-model="value" class="m-2" placeholder="Select">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+      <el-select v-model="value" class="m-2" placeholder="Select">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+      <el-switch v-model="value1" />
+      <span>设为默认</span>
+      <el-button type="primary">Primary</el-button>
+    </div>
+    <!--  OCR文本块  -->
+    <div>
+      <el-input v-model="ocr_text" :rows="8" type="textarea" placeholder="Please input" />
+    </div>
+    <!--  翻译按钮块  -->
+    <div>
+      <el-select v-model="value" class="m-2" placeholder="Select">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+      <el-select v-model="value" class="m-2" placeholder="Select">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+      <el-select v-model="value" class="m-2" placeholder="Select">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+      <el-switch v-model="value1" />
+      <span>设为默认</span>
+      <el-button type="primary">Primary</el-button>
+    </div>
+    <!--  翻译文本块  -->
+    <div>
+      <el-input v-model="textarea" :rows="8" type="textarea" placeholder="Please input" />
+    </div>
+  </el-scrollbar>
 </template>
 
 <script setup lang="ts">
@@ -170,8 +120,9 @@ watch(() => route.query.rand, () => {
 </script>
 
 <style scoped>
-.container {
+.page {
   background: var(--dark-background-color);
   height: calc(100vh - var(--title-bar-height));
+  padding: 10px 40px 20px 20px;
 }
 </style>
