@@ -23,8 +23,7 @@
       <el-select v-model="value" class="m-2" placeholder="Select">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-switch v-model="value1" />
-      <span>设为默认</span>
+      <el-switch v-model="value1" inline-prompt active-text="已是默认" inactive-text="设为默认" />
       <el-button type="primary">Primary</el-button>
     </div>
     <!--  OCR文本块  -->
@@ -42,8 +41,7 @@
       <el-select v-model="value" class="m-2" placeholder="Select">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-switch v-model="value1" />
-      <span>设为默认</span>
+      <el-switch v-model="value1" inline-prompt active-text="已是默认" inactive-text="设为默认" />
       <el-button type="primary">Primary</el-button>
     </div>
     <!--  翻译文本块  -->
