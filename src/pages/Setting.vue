@@ -76,7 +76,7 @@ const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text
 
 <template>
   <el-scrollbar class="page">
-    <el-tabs tab-position="left" style="height: 100%" class="el-tabs">
+    <el-tabs tab-position="left" style="height: 100%">
       <el-tab-pane label="常规">
         <el-form label-width="120px" style="padding-right: 40px;">
           <el-form-item label="开机启动">
