@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { defineStore } from 'pinia'
-import {ref, computed} from "vue";
+import {ref} from "vue";
 
 export const useConfig = defineStore('config', () => {
     const config = ref<Config>()
@@ -45,7 +45,7 @@ interface SpaceOcrOcrConfig {
 
 interface OcrConfig {
     default_ocr_provide: string,
-    default_ocr_type: string,
+    default_ocr_mode: string,
     default_ocr_language: string,
     baidu_cloud: BaiduCloudOcrConfig,
     tencent_cloud: TencentCloudOcrConfig,

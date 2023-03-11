@@ -32,7 +32,7 @@ pub struct SpaceOcrOcrConfig {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct OcrConfig {
     pub default_ocr_provide: String,
-    pub default_ocr_type: String,
+    pub default_ocr_mode: String,
     pub default_ocr_language: String,
     pub baidu_cloud: BaiduCloudOcrConfig,
     pub tencent_cloud: TencentCloudOcrConfig,
@@ -91,7 +91,7 @@ impl Default for Config {
             },
             ocr: OcrConfig {
                 default_ocr_provide: "BaiduCloud".to_string(),
-                default_ocr_type: "general_basic".to_string(),
+                default_ocr_mode: "general_basic".to_string(),
                 default_ocr_language: "auto".to_string(),
                 baidu_cloud: BaiduCloudOcrConfig {
                     access_token: "".to_string(),

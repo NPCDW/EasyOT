@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { ElNotification } from 'element-plus';
 import {useConfig} from '../store/config'
-
-interface SelectOption {
-    label: string,
-    value: string
-}
+import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
+import {ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys} from '../store/ocrOptions'
 
 const config = useConfig().get_config()
 
@@ -22,49 +20,42 @@ const languageOptions = ref([
   },
 ])
 const wordSelectionInterval = ref(config?.common.word_selection_interval)
+
 const defaultOcrProvide = ref(config?.ocr.default_ocr_provide)
-const defaultOcrProvideOptions = ref([
-  {
-    label: "百度云",
-    value: "BaiduCloud"
-  },
-  {
-    label: "腾讯云",
-    value: "TencentCloud"
-  },
-  {
-    label: "SpaceOCR",
-    value: "SpaceOCR"
-  },
-])
-const defaultOcrType = ref(config?.ocr.default_ocr_type)
-const defaultOcrTypeOptions = ref<[SelectOption]>()
+const defaultOcrMode = ref(config?.ocr.default_ocr_mode)
+const ocrModeOptions = ref<SelectOptions[]>()
 const defaultOcrLanguage = ref(config?.ocr.default_ocr_language)
-const defaultOcrLanguageOptions = ref<[SelectOption]>()
+const ocrLanguageOptions = ref<SelectOptions[]>()
+watch(defaultOcrProvide, (newValue, oldValue) => {
+  ocrModeOptions.value = getOcrModeOptions(newValue as OcrLanguageKeys)
+  ocrLanguageOptions.value = getOcrLanguageOptions(newValue as OcrLanguageKeys)
+  if (oldValue) {
+    defaultOcrMode.value = ocrModeOptions.value[0].value
+    defaultOcrLanguage.value = ocrLanguageOptions.value[0].value
+  }
+}, {immediate: true})
+
 const tencentCloud_ocr_secretId = ref(config?.ocr.tencent_cloud.secret_id)
 const tencentCloud_ocr_secretKey = ref(config?.ocr.tencent_cloud.secret_key)
 const baiduCloud_ocr_appKey = ref(config?.ocr.baidu_cloud.client_id)
 const baiduCloud_ocr_secretKey = ref(config?.ocr.baidu_cloud.client_secret)
 const spaceOcr_ocr_apiKey = ref(config?.ocr.space_ocr.api_key)
-const defaultMachineTranslate = ref(config?.translate.default_translate_provide)
-const defaultMachineTranslateOptions = ref([
-  {
-    label: "百度翻译开放平台",
-    value: "BaiduAI"
-  },
-  {
-    label: "腾讯云",
-    value: "TencentCloud"
-  },
-  {
-    label: "谷歌翻译",
-    value: "GoogleTranslate"
-  },
-])
-const sourceLanguage = ref(config?.translate.default_translate_source_language)
-const sourceLanguageOptions = ref<[SelectOption]>()
-const targetLanguage = ref(config?.translate.default_translate_target_language)
-const targetLanguageOptions = ref<[SelectOption]>()
+
+const defaultTranslateProvide = ref(config?.translate.default_translate_provide)
+const defaultSourceLanguage = ref(config?.translate.default_translate_source_language)
+const sourceLanguageOptions = ref<SelectOptions[]>()
+const defaultTargetLanguage = ref(config?.translate.default_translate_target_language)
+const targetLanguageOptions = ref<SelectOptions[]>()
+watch(defaultTranslateProvide, (newValue, oldValue) => {
+  sourceLanguageOptions.value = getTranslateLanguageOptions(newValue as TranslateLanguageKeys)
+  targetLanguageOptions.value = [...sourceLanguageOptions.value]
+  targetLanguageOptions.value.shift()
+  if (oldValue) {
+    defaultSourceLanguage.value = sourceLanguageOptions.value[0].value
+    defaultTargetLanguage.value = targetLanguageOptions.value[0].value
+  }
+}, {immediate: true})
+
 const tencentCloud_translate_secretId = ref(config?.translate.tencent_cloud.secret_id)
 const tencentCloud_translate_secretKey = ref(config?.translate.tencent_cloud.secret_key)
 const baiduAI_translate_app_id = ref(config?.translate.baidu_ai.app_id)
@@ -72,6 +63,20 @@ const baiduAI_translate_app_secret = ref(config?.translate.baidu_ai.app_secret)
 const ocrHotKey = ref(config?.hot_keys.ocr.text)
 const wordSelectionTranslateHotKey = ref(config?.hot_keys.word_selection_translate.text)
 const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text)
+
+function save() {
+    ElNotification({
+      title: '成功',
+      message: '所有配置保存成功',
+      type: 'success',
+      duration: 2000,
+      offset: 40,
+    })
+}
+
+function cancel() {
+  window.location.reload()
+}
 </script>
 
 <template>
@@ -88,7 +93,7 @@ const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text
             </el-select>
           </el-form-item>
           <el-form-item label="取词间隔">
-            <el-slider v-model="wordSelectionInterval" show-input />
+            <el-input-number v-model="wordSelectionInterval" :min="200" :max="1000" :step="100" />
           </el-form-item>
           <el-form-item label="配置目录">
             <el-button type="primary">打开</el-button>
@@ -101,19 +106,19 @@ const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text
             <el-divider content-position="left">默认文本识别</el-divider>
             <el-form-item label="云服务商">
               <el-select v-model="defaultOcrProvide" placeholder="Select">
-                <el-option v-for="item in defaultOcrProvideOptions" :key="item.value" :label="item.label"
+                <el-option v-for="item in ocrProvideOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
             <el-form-item label="模式">
-              <el-select v-model="defaultOcrType" placeholder="Select">
-                <el-option v-for="item in defaultOcrTypeOptions" :key="item.value" :label="item.label"
+              <el-select v-model="defaultOcrMode" placeholder="Select">
+                <el-option v-for="item in ocrModeOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
             <el-form-item label="语言">
               <el-select v-model="defaultOcrLanguage" placeholder="Select">
-                <el-option v-for="item in defaultOcrLanguageOptions" :key="item.value" :label="item.label"
+                <el-option v-for="item in ocrLanguageOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
@@ -126,7 +131,7 @@ const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span>领取免费OCR额度</span>
+              <span><el-link href="https://cloud.tencent.com/document/product/866/35945" target="_blank">领取每月3000次的免费OCR额度</el-link></span>
             </el-form-item>
             <el-divider content-position="left">百度云</el-divider>
             <el-form-item label="AppKey">
@@ -137,14 +142,14 @@ const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span>领取免费OCR额度</span>
+              <span><el-link href="https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h" target="_blank">领取每月3000次的免费OCR额度</el-link></span>
             </el-form-item>
             <el-divider content-position="left">SpaceOCR</el-divider>
             <el-form-item label="ApiKey">
               <el-input v-model="spaceOcr_ocr_apiKey" type="password" placeholder="Please input password" show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span>领取免费OCR额度</span>
+              <span><el-link href="https://ocr.space/OCRAPI" target="_blank">领取每天500次的免费OCR额度</el-link></span>
             </el-form-item>
           </el-form>
         </el-scrollbar>
@@ -154,19 +159,19 @@ const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text
           <el-form label-width="120px" style="padding-right: 40px;">
             <el-divider content-position="left">默认机器翻译</el-divider>
             <el-form-item label="云服务商">
-              <el-select v-model="defaultMachineTranslate" placeholder="Select">
-                <el-option v-for="item in defaultMachineTranslateOptions" :key="item.value" :label="item.label"
+              <el-select v-model="defaultTranslateProvide" placeholder="Select">
+                <el-option v-for="item in translateProvideOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
             <el-form-item label="源语言">
-              <el-select v-model="sourceLanguage" placeholder="Select">
+              <el-select v-model="defaultSourceLanguage" placeholder="Select">
                 <el-option v-for="item in sourceLanguageOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
             <el-form-item label="目标语言">
-              <el-select v-model="targetLanguage" placeholder="Select">
+              <el-select v-model="defaultTargetLanguage" placeholder="Select">
                 <el-option v-for="item in targetLanguageOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
@@ -180,7 +185,7 @@ const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span>领取免费翻译额度</span>
+              <span><el-link href="https://cloud.tencent.com/document/product/551/35017" target="_blank">领取每月500万字符免费翻译额度</el-link></span>
             </el-form-item>
             <el-divider content-position="left">百度翻译开放平台</el-divider>
             <el-form-item label="AppID">
@@ -191,7 +196,11 @@ const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span>领取免费翻译额度</span>
+              <span><el-link href="https://fanyi-api.baidu.com/product/111" target="_blank">领取每月100万字符免费翻译额度</el-link></span>
+            </el-form-item>
+            <el-divider content-position="left">谷歌翻译</el-divider>
+            <el-form-item label="→">
+              <span>无需领取，免费且不限量</span>
             </el-form-item>
           </el-form>
         </el-scrollbar>
@@ -211,7 +220,10 @@ const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text
       </el-tab-pane>
     </el-tabs>
     <div style="position: absolute; bottom: 20px; left: 20px;">
-      <el-button type="primary">保存</el-button>
+      <el-space direction="vertical">
+        <el-button type="primary" @click="save">保存</el-button>
+        <el-button @click="cancel">取消</el-button>
+      </el-space>
     </div>
   </el-scrollbar>
 </template>
