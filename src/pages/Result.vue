@@ -52,7 +52,7 @@
       </div>
       <!--  翻译文本块  -->
       <div>
-        <el-input v-model="textarea" :rows="8" type="textarea" placeholder="Please input" />
+        <el-input v-model="translate_text" :rows="8" type="textarea" placeholder="Please input" />
       </div>
     </el-space>
   </el-scrollbar>
@@ -67,6 +67,7 @@ import { useRoute } from "vue-router";
 import {useConfig} from '../store/config'
 import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
 import {ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys} from '../store/ocrOptions'
+import googleApi from '../api/googleApi'
 
 const config = useConfig().get_config()
 
@@ -147,6 +148,7 @@ function createFileUrl(file: UploadFile) : void {
 }
 
 const ocr_text = ref<string | null>(null);
+const translate_text = ref<string | null>(null);
 
 const route = useRoute();
 
@@ -154,6 +156,9 @@ watch(() => route.query.rand, async () => {
   if (route.query.target === 'word_selection') {
     setTimeout(async () => {
       ocr_text.value = await readText();
+      if (ocr_text.value) {
+        translate_text.value = await googleApi.translate(ocr_text.value, defaultSourceLanguage.value!, defaultTargetLanguage.value!);
+      }
     }, 300)
   } else if (route.query.target === 'ocr') {
     await once('wait-ocr-image-data-event', (event) => {

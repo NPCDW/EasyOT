@@ -3,6 +3,7 @@ use tauri::{AppHandle, Manager};
 #[tauri::command(async)]
 pub fn show_main_window(app_handle: AppHandle, url: &str) {
     if let Some(window) = app_handle.get_window("main") {
+        std::thread::sleep(core::time::Duration::from_millis(100));
         let _ = window.emit("router-change-event", url);
         window.show().unwrap_or_else(|e| {
             println!("{:?}", e)

@@ -33,6 +33,11 @@
         "all": false,
         "writeText": false,
         "readText": true
+      },
+      "http": {
+        "all": true,
+        "request": true,
+        "scope": ["https://**", "http://**"]
       }
     },
     "bundle": {
