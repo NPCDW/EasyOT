@@ -19,7 +19,8 @@
 <script setup lang="ts">
 import {ref, onMounted} from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
-import { appWindow } from "@tauri-apps/api/window";
+import { emit, once } from '@tauri-apps/api/event'
+import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
 
 const background = ref("transparent")
 const buffer = ref<ArrayBuffer | undefined>();
@@ -35,6 +36,8 @@ invoke("screenshot").then(res => {
 
 const canvas = ref<HTMLCanvasElement | undefined>(undefined);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
+
+const random = (min:any, max:any) => Math.floor(Math.random() * (max - min + 1) + min)
 
 onMounted(() => {
   ctx.value = canvas.value?.getContext("2d")!
@@ -97,10 +100,13 @@ function mouseup(event: MouseEvent) {
   canvas.height = height
   let img = new Image();
   img.src = background.value;
-  img.onload = () => {
+  img.onload = async () => {
     context!.drawImage(img, x, y, width, height, 0, 0, width, height);
     let imageData = canvas!.toDataURL('image/png');
-    console.log(imageData);
+    await invoke('show_main_window', { url: '/window/result?target=ocr&rand=' + random(1, 10000000) });
+    await once('result-page-mounted-event', async (event) => {
+      await emit('wait-ocr-image-data-event', { imageData })
+    })
   };
 }
 

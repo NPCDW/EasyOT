@@ -4,7 +4,7 @@
       <!--  图片展示块  -->
       <div>
         <el-upload drag list-type="picture" action="#" :show-file-list="false" accept="image/*" :auto-upload="false"
-          v-model:file-list="file_list" :on-change="file_change">
+          v-model:file-list="file_list" :on-change="file_change" ref="upload">
           <template v-if="file_list && file_list.length > 0" #default>
             <el-image style="width: 100%; height: 180px;" :src="file_list[0].url" fit="contain" />
           </template>
@@ -60,8 +60,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import {UploadUserFile, UploadProps, UploadFile, UploadFiles} from "element-plus";
+import type {UploadInstance, UploadUserFile, UploadProps, UploadFile, UploadRawFile, UploadFiles} from "element-plus";
 import { readText } from '@tauri-apps/api/clipboard';
+import { emit, once } from '@tauri-apps/api/event'
 import { useRoute } from "vue-router";
 import {useConfig} from '../store/config'
 import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
@@ -98,6 +99,7 @@ watch(defaultTranslateProvide, (newValue, oldValue) => {
   }
 }, {immediate: true})
 
+const upload = ref<UploadInstance>()
 const file_list = ref<UploadUserFile[]>([]);
 
 const value = ref('')
@@ -132,7 +134,6 @@ const file_change: UploadProps['onChange'] = (uploadFile: UploadFile, uploadFile
   if (uploadFiles.length > 1) {
     uploadFiles.shift()
   }
-  console.log(uploadFile, uploadFiles, file_list)
 }
 
 function createFileUrl(file: UploadFile) : void {
@@ -149,11 +150,17 @@ const ocr_text = ref<string | null>(null);
 
 const route = useRoute();
 
-watch(() => route.query.rand, () => {
+watch(() => route.query.rand, async () => {
   if (route.query.target === 'word_selection') {
     setTimeout(async () => {
       ocr_text.value = await readText();
     }, 300)
+  } else if (route.query.target === 'ocr') {
+    await once('wait-ocr-image-data-event', (event) => {
+      let imageData = (event.payload as any).imageData as UploadRawFile
+      upload.value!.handleStart(imageData)
+    })
+    await emit('result-page-mounted-event')
   }
 }, { immediate: true })
 

@@ -2,7 +2,7 @@ use screenshots::Screen;
 // use std::{fs};
 
 #[tauri::command]
-pub async fn screenshot() -> Vec<u8> {
+pub fn screenshot() -> Vec<u8> {
   let screens = Screen::all().unwrap();
   let mut buffer = vec![];
   for screen in screens {
