@@ -5,7 +5,7 @@ import { useConfig, type Config } from '../store/config'
 const OCR_BASE_PATH = "https://aip.baidubce.com/"
 
 async function getAccessToken(): Promise<string> {
-    const config = useConfig().get_config();
+    let config = useConfig().get_config();
     const access_token = config?.ocr.baidu_cloud.access_token;
     if (access_token) {
         let expire = access_token.substring(0, access_token.lastIndexOf('.'))
@@ -29,9 +29,8 @@ async function getAccessToken(): Promise<string> {
         return "请求失败：" + JSON.stringify(response);
     }
     const data = response.data as { access_token: string }
-    let config_copy = _.cloneDeep(config)!
-    config_copy.ocr.baidu_cloud.access_token = data.access_token
-    useConfig().save_config(config_copy);
+    config!.ocr.baidu_cloud.access_token = data.access_token
+    await useConfig().save_config(config!);
     return data.access_token
 }
 

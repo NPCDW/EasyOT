@@ -4,8 +4,9 @@ import { ElNotification } from 'element-plus';
 import {useConfig} from '../store/config'
 import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
 import {ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys} from '../store/ocrOptions'
+import _ from 'lodash';
 
-const config = useConfig().get_config()
+let config = useConfig().get_config()
 
 const autoStart = ref(false)
 const language = ref(config?.common.language)
@@ -64,7 +65,28 @@ const ocrHotKey = ref(config?.hot_keys.ocr.text)
 const wordSelectionTranslateHotKey = ref(config?.hot_keys.word_selection_translate.text)
 const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text)
 
-function save() {
+async function save() {
+    config!.common.language = language.value!
+    config!.common.word_selection_interval = wordSelectionInterval.value!
+
+    config!.ocr.default_ocr_provide = defaultOcrProvide.value!
+    config!.ocr.default_ocr_mode = defaultOcrMode.value!
+    config!.ocr.default_ocr_language = defaultOcrLanguage.value!
+    config!.ocr.baidu_cloud.client_id = baiduCloud_ocr_appKey.value!
+    config!.ocr.baidu_cloud.client_secret = baiduCloud_ocr_secretKey.value!
+    config!.ocr.tencent_cloud.secret_id = tencentCloud_ocr_secretId.value!
+    config!.ocr.tencent_cloud.secret_key = tencentCloud_ocr_secretKey.value!
+    config!.ocr.space_ocr.api_key = spaceOcr_ocr_apiKey.value!
+
+    config!.translate.default_translate_provide = defaultTranslateProvide.value!
+    config!.translate.default_translate_source_language = defaultSourceLanguage.value!
+    config!.translate.default_translate_target_language = defaultTargetLanguage.value!
+    config!.translate.baidu_ai.app_id = baiduAI_translate_app_id.value!
+    config!.translate.baidu_ai.app_secret = baiduAI_translate_app_secret.value!
+    config!.translate.tencent_cloud.secret_id = tencentCloud_translate_secretId.value!
+    config!.translate.tencent_cloud.secret_key = tencentCloud_translate_secretKey.value!
+
+    await useConfig().save_config(config!);
     ElNotification({
       title: '成功',
       message: '所有配置保存成功',

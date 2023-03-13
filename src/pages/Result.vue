@@ -11,14 +11,14 @@
           <el-select v-model="defaultOcrProvide" placeholder="Select">
             <el-option v-for="item in ocrProvideOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-select v-model="defaultOcrMode" placeholder="Select">
+          <el-select v-model="defaultOcrMode" placeholder="Select" @change="defaultOcrOptionChange">
             <el-option v-for="item in ocrModeOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-select v-model="defaultOcrLanguage" placeholder="Select">
+          <el-select v-model="defaultOcrLanguage" placeholder="Select" @change="defaultOcrOptionChange">
             <el-option v-for="item in ocrLanguageOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-checkbox v-model="ocrDefaultSwitch" :disabled="ocrDefaultSwitch">{{ ocrDefaultSwitch ? '已是默认' : '设为默认' }}</el-checkbox>
-          <el-button type="primary">识别</el-button>
+          <el-checkbox v-model="ocrDefaultSwitch" @change="ocrDefaultSwitch_checked" :disabled="ocrDefaultSwitch">{{ ocrDefaultSwitch ? '已是默认' : '设为默认' }}</el-checkbox>
+          <el-button type="primary" @click="ocr_click">识别</el-button>
         </el-space>
       </div>
       <!--  OCR文本块  -->
@@ -32,14 +32,14 @@
             <el-option v-for="item in translateProvideOptions" :key="item.value" :label="item.label"
               :value="item.value" />
           </el-select>
-          <el-select v-model="defaultSourceLanguage" placeholder="Select">
+          <el-select v-model="defaultSourceLanguage" placeholder="Select" @change="defaultTranslateOptionChange">
             <el-option v-for="item in sourceLanguageOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-select v-model="defaultTargetLanguage" placeholder="Select">
+          <el-select v-model="defaultTargetLanguage" placeholder="Select" @change="defaultTranslateOptionChange">
             <el-option v-for="item in targetLanguageOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-checkbox v-model="translateDefaultSwitch" :disabled="translateDefaultSwitch">{{ translateDefaultSwitch ? '已是默认' : '设为默认' }}</el-checkbox>
-          <el-button type="primary">翻译</el-button>
+          <el-checkbox v-model="translateDefaultSwitch" @change="translateDefaultSwitch_checked" :disabled="translateDefaultSwitch">{{ translateDefaultSwitch ? '已是默认' : '设为默认' }}</el-checkbox>
+          <el-button type="primary" @click="translate_click">翻译</el-button>
         </el-space>
       </div>
       <!--  翻译文本块  -->
@@ -60,8 +60,9 @@ import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLang
 import {ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys} from '../store/ocrOptions'
 import {translate} from '../service/translate'
 import {ocr} from '../service/ocr'
+import _ from 'lodash';
 
-const config = useConfig().get_config()
+let config = useConfig().get_config()
 
 const defaultOcrProvide = ref<OcrLanguageKeys>(config?.ocr.default_ocr_provide as OcrLanguageKeys)
 const defaultOcrMode = ref(config?.ocr.default_ocr_mode)
@@ -74,6 +75,7 @@ watch(defaultOcrProvide, (newValue, oldValue) => {
   if (oldValue) {
     defaultOcrMode.value = ocrModeOptions.value[0].value
     defaultOcrLanguage.value = ocrLanguageOptions.value[0].value
+    defaultOcrOptionChange()
   }
 }, {immediate: true})
 
@@ -89,16 +91,67 @@ watch(defaultTranslateProvide, (newValue, oldValue) => {
   if (oldValue) {
     defaultSourceLanguage.value = sourceLanguageOptions.value[0].value
     defaultTargetLanguage.value = targetLanguageOptions.value[0].value
+    defaultTranslateOptionChange()
   }
 }, {immediate: true})
 
-const ocrDefaultSwitch = ref(false)
-const translateDefaultSwitch = ref(false)
+const ocrDefaultSwitch = ref(true)
+const translateDefaultSwitch = ref(true)
 
 const ocr_text = ref<string | null>(null);
 const translate_text = ref<string | null>(null);
 
 const imageData = ref("data:image/png;base64,");
+
+async function ocr_click() {
+  if (imageData.value) {
+    ocr_text.value = await ocr(defaultOcrProvide.value, defaultOcrMode.value!, defaultOcrLanguage.value!, imageData.value);
+  }
+}
+
+async function translate_click() {
+  if (ocr_text.value) {
+    translate_text.value = await translate(defaultTranslateProvide.value, defaultSourceLanguage.value!, defaultTargetLanguage.value!, ocr_text.value);
+  }
+}
+
+function defaultOcrOptionChange() {
+  if (
+    config!.ocr.default_ocr_provide === defaultOcrProvide.value &&
+    config!.ocr.default_ocr_mode === defaultOcrMode.value &&
+    config!.ocr.default_ocr_language === defaultOcrLanguage.value
+  ) {
+    ocrDefaultSwitch.value = true
+  } else {
+    ocrDefaultSwitch.value = false
+  }
+}
+
+function defaultTranslateOptionChange() {
+  if (
+    config!.translate.default_translate_provide === defaultTranslateProvide.value &&
+    config!.translate.default_translate_source_language === defaultSourceLanguage.value &&
+    config!.translate.default_translate_target_language === defaultTargetLanguage.value
+  ) {
+    translateDefaultSwitch.value = true
+  } else {
+    translateDefaultSwitch.value = false
+  }
+}
+
+function ocrDefaultSwitch_checked(value: string | number | boolean): void {
+  config!.ocr.default_ocr_provide = defaultOcrProvide.value
+  config!.ocr.default_ocr_mode = defaultOcrMode.value!
+  config!.ocr.default_ocr_language = defaultOcrLanguage.value!
+  useConfig().save_config(config!);
+}
+
+function translateDefaultSwitch_checked(value: string | number | boolean): void {
+    config!.translate.default_translate_provide = defaultTranslateProvide.value
+    config!.translate.default_translate_source_language = defaultSourceLanguage.value!
+    config!.translate.default_translate_target_language = defaultTargetLanguage.value!
+    useConfig().save_config(config!);
+}
 
 const route = useRoute();
 
@@ -106,14 +159,12 @@ watch(() => route.query.rand, async () => {
   if (route.query.target === 'word_selection') {
     setTimeout(async () => {
       ocr_text.value = await readText();
-      if (ocr_text.value) {
-        translate_text.value = await translate(defaultTranslateProvide.value, defaultSourceLanguage.value!, defaultTargetLanguage.value!, ocr_text.value);
-      }
+      translate_click()
     }, 300)
   } else if (route.query.target === 'ocr') {
     await once('wait-ocr-image-data-event', async (event) => {
       imageData.value = (event.payload as {imageData: string}).imageData
-      ocr_text.value = await ocr(defaultOcrProvide.value, defaultOcrMode.value!, defaultOcrLanguage.value!, imageData.value);
+      ocr_click()
     })
     await emit('result-page-mounted-event')
   }
