@@ -88,6 +88,7 @@ function mousemove(event: MouseEvent) {
 function mouseup(event: MouseEvent) {
   start.value = false;
   console.log("MouseEvent Up: ", event, ctx)
+  appWindow.hide()
 
   let x = Math.min(event.pageX, startPoint.value.x);
   let y = Math.min(event.pageY, startPoint.value.y);
@@ -106,6 +107,7 @@ function mouseup(event: MouseEvent) {
     await invoke('show_main_window', { url: '/window/result?target=ocr&rand=' + random(1, 10000000) });
     await once('result-page-mounted-event', async (event) => {
       await emit('wait-ocr-image-data-event', { imageData })
+      appWindow.close()
     })
   };
 }

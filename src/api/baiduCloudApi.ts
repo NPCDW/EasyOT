@@ -1,9 +1,23 @@
 import { getClient, Body } from '@tauri-apps/api/http';
-import { useConfig } from '../store/config'
+import _ from 'lodash';
+import { useConfig, type Config } from '../store/config'
 
 const OCR_BASE_PATH = "https://aip.baidubce.com/"
 
-async function getAccessToken(client_id: string, client_secret: string): Promise<string> {
+async function getAccessToken(): Promise<string> {
+    const config = useConfig().get_config();
+    const access_token = config?.ocr.baidu_cloud.access_token;
+    if (access_token) {
+        let expire = access_token.substring(0, access_token.lastIndexOf('.'))
+        expire = expire.substring(expire.lastIndexOf('.') + 1)
+        let currentTime = Date.parse(new Date().toString()) / 1000
+        if (parseInt(expire) - currentTime > 24 * 60 * 60) {
+            return access_token
+        }
+    }
+    const client_id = config?.ocr.baidu_cloud.client_id!
+    const client_secret = config?.ocr.baidu_cloud.client_secret!
+
     const client = await getClient();
     const response = await client.post(OCR_BASE_PATH + 'oauth/2.0/token', Body.form({
         grant_type: 'client_credentials',
@@ -14,12 +28,15 @@ async function getAccessToken(client_id: string, client_secret: string): Promise
     if (!response.ok) {
         return "请求失败：" + JSON.stringify(response);
     }
-    return (response.data as { access_token: string }).access_token
+    const data = response.data as { access_token: string }
+    let config_copy = _.cloneDeep(config)!
+    config_copy.ocr.baidu_cloud.access_token = data.access_token
+    useConfig().save_config(config_copy);
+    return data.access_token
 }
 
 async function ocr(type: string, image: string) {
-    let config = useConfig().get_config();
-    let access_token = await getAccessToken(config?.ocr.baidu_cloud.client_id!, config?.ocr.baidu_cloud.client_secret!);
+    let access_token = await getAccessToken();
 
     const client = await getClient();
     const response = await client.post(OCR_BASE_PATH + 'rest/2.0/ocr/v1/' + type, Body.form({

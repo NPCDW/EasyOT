@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/tauri'
+import _ from 'lodash';
 import { defineStore } from 'pinia'
 import {ref} from "vue";
 
@@ -14,8 +15,9 @@ export const useConfig = defineStore('config', () => {
         console.log("refresh_config ", config.value)
     }
 
-    async function save_config() {
-        await invoke("save_config", {...config.value});
+    async function save_config(tmp: Config) {
+        config.value = _.cloneDeep(tmp);
+        await invoke("save_config", { config: config.value });
         console.log("save_config ", config.value)
     }
 
@@ -29,7 +31,6 @@ interface CommonConfig {
 
 interface BaiduCloudOcrConfig {
     access_token: string,
-    access_token_expires_time: string,
     client_id: string,
     client_secret: string,
 }
@@ -82,7 +83,7 @@ interface HotKeysConfig {
     screenshot_translate: HotKeysDetail,
 }
 
-interface Config {
+export interface Config {
     common: CommonConfig,
     ocr: OcrConfig,
     translate: TranslateConfig,

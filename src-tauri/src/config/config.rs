@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use std::sync::Mutex;
 
 use serde::{Serialize, Deserialize};
 
@@ -13,7 +14,6 @@ pub struct CommonConfig {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BaiduCloudOcrConfig {
     pub access_token: String,
-    pub access_token_expires_time: String,
     pub client_id: String,
     pub client_secret: String,
 }
@@ -95,7 +95,6 @@ impl Default for Config {
                 default_ocr_language: "auto".to_string(),
                 baidu_cloud: BaiduCloudOcrConfig {
                     access_token: "".to_string(),
-                    access_token_expires_time: "2000/1/1 0:00:00".to_string(),
                     client_id: "".to_string(),
                     client_secret: "".to_string(),
                 },
@@ -162,7 +161,7 @@ lazy_static! {
     };
 
     #[derive(Debug, Clone)]
-    pub static ref CONFIG: Config = {
+    pub static ref CONFIG: Mutex<Config> = {
         let config;
         if !CONFIG_FILE_PATH.exists() {
             file_util::create_dir(CONFIG_FILE_PATH.parent().unwrap());
@@ -178,17 +177,18 @@ lazy_static! {
                 panic!("配置文件 {} 转 yaml 格式失败：{:?}", &CONFIG_FILE_PATH.display(), e);
             })
         }
-        config
+        Mutex::new(config)
     };
 }
 
 #[tauri::command]
 pub fn get_config() -> Config {
-    (*CONFIG).clone()
+    (*CONFIG).lock().unwrap().clone()
 }
 
 #[tauri::command]
 pub fn save_config(config: Config) {
+    *CONFIG.lock().unwrap() = config.clone();
     let yaml = serde_yaml::to_string(&config).unwrap_or_else(|e| {
         panic!("Serialize config fail, {:?}", e)
     });
