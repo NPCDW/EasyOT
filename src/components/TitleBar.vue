@@ -43,6 +43,7 @@ function close() {
   top: 0;
   left: 0;
   right: 0;
+  cursor: move;
 }
 .titlebar-info {
   display: inline-flex;
@@ -57,6 +58,7 @@ function close() {
   align-items: center;
   width: var(--title-bar-height);
   height: var(--title-bar-height);
+  cursor: default;
 }
 .titlebar-button:hover {
   background: #5bbec3;

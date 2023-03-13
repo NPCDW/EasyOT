@@ -1,5 +1,5 @@
 <template>
-  <div :style="{'background-image': `url(${background})`}">
+  <div :style="{'background-image': `url(${background})`, cursor: 'crosshair'}">
     <canvas
         ref="canvas"
         tabindex="0"
@@ -20,7 +20,7 @@
 import {ref, onMounted} from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { emit, once } from '@tauri-apps/api/event'
-import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
+import { appWindow } from "@tauri-apps/api/window";
 
 const background = ref("transparent")
 const buffer = ref<ArrayBuffer | undefined>();
