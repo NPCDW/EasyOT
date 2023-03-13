@@ -1,6 +1,6 @@
 import { getClient } from '@tauri-apps/api/http';
 
-const TRANSLATE_URL = "https://translate.googleapis.com/translate_a/single";
+const TRANSLATE_BASE_PATH = "https://translate.googleapis.com/translate_a/single";
 
 async function translate(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
     let param = "?client=gtx&dt=t"
@@ -8,7 +8,7 @@ async function translate(text: string, sourceLanguage: string, targetLanguage: s
             + "&tl=" + targetLanguage
             + "&q=" + encodeURIComponent(text);
     const client = await getClient();
-    const response = await client.get(TRANSLATE_URL + param);
+    const response = await client.get(TRANSLATE_BASE_PATH + param);
     console.log("google translate", response)
     if (!response.ok) {
         return "请求失败：" + JSON.stringify(response);
