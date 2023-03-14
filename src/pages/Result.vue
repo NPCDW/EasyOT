@@ -1,6 +1,6 @@
 <template>
   <el-scrollbar class="page">
-    <el-space direction="vertical" :fill="true">
+    <el-space direction="vertical" :fill="true" class="page_space">
       <!--  图片展示块  -->
       <div>
         <el-image style="height: 180px;" :src="imageData" fit="scale-down" />
@@ -23,7 +23,7 @@
       </div>
       <!--  OCR文本块  -->
       <div>
-        <el-input v-model="ocr_text" :rows="8" type="textarea" placeholder="Please input" />
+        <el-input v-model="ocr_text" :rows="8" type="textarea" placeholder="文本识别" />
       </div>
       <!--  翻译按钮块  -->
       <div>
@@ -44,7 +44,7 @@
       </div>
       <!--  翻译文本块  -->
       <div>
-        <el-input v-model="translate_text" :rows="8" type="textarea" placeholder="Please input" />
+        <el-input v-model="translate_text" :rows="8" type="textarea" placeholder="机器翻译" />
       </div>
     </el-space>
   </el-scrollbar>
@@ -105,12 +105,14 @@ const imageData = ref("data:image/png;base64,");
 
 async function ocr_click() {
   if (imageData.value) {
+    ocr_text.value = "识别中，请稍后......"
     ocr_text.value = await ocr(defaultOcrProvide.value, defaultOcrMode.value!, defaultOcrLanguage.value!, imageData.value);
   }
 }
 
 async function translate_click() {
   if (ocr_text.value) {
+    translate_text.value = "翻译中，请稍后......"
     translate_text.value = await translate(defaultTranslateProvide.value, defaultSourceLanguage.value!, defaultTargetLanguage.value!, ocr_text.value);
   }
 }
@@ -176,6 +178,8 @@ watch(() => route.query.rand, async () => {
 .page {
   background: var(--dark-background-color);
   height: calc(100vh - var(--title-bar-height));
+}
+.page_space {
   padding: 10px 40px 20px 20px;
 }
 </style>
