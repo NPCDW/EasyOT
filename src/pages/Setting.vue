@@ -86,6 +86,10 @@ async function save() {
     config!.translate.tencent_cloud.secret_id = tencentCloud_translate_secretId.value!
     config!.translate.tencent_cloud.secret_key = tencentCloud_translate_secretKey.value!
 
+    config!.hot_keys.ocr.text = ocrHotKey.value!
+    config!.hot_keys.word_selection_translate.text = wordSelectionTranslateHotKey.value!
+    config!.hot_keys.screenshot_translate.text = screenshotTranslateHotKey.value!
+
     await useConfig().save_config(config!);
     ElNotification({
       title: '成功',
@@ -103,8 +107,9 @@ function cancel() {
 function hotkey_keydown(event: KeyboardEvent) {
   event.preventDefault()
   // console.log(event)
+  const input = event.target as HTMLInputElement
   if (event.key === 'Backspace' || event.key === 'Delete') {
-    (event.target as HTMLInputElement).value = ""
+    input.value = ""
     return
   }
   let display = ""
@@ -125,9 +130,9 @@ function hotkey_keydown(event: KeyboardEvent) {
       || event.keyCode >= 48 && event.keyCode <= 57    // 0-9
       || event.keyCode >= 96 && event.keyCode <= 105    // 数字键盘 0-9
   ) {
-    display += event.key
+    display += event.key.toUpperCase()
   }
-  (event.target as HTMLInputElement).value = display
+  input.value = display
 }
 </script>
 
@@ -263,10 +268,10 @@ function hotkey_keydown(event: KeyboardEvent) {
             <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
           <el-form-item label="划词翻译">
-            <el-input v-model="wordSelectionTranslateHotKey" placeholder="未设置快捷键" />
+            <el-input v-model="wordSelectionTranslateHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
           <el-form-item label="截图翻译">
-            <el-input v-model="screenshotTranslateHotKey" placeholder="未设置快捷键" />
+            <el-input v-model="screenshotTranslateHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
         </el-form>
       </el-tab-pane>
