@@ -18,10 +18,15 @@ serde_yaml = "0.9"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.2", features = ["clipboard-read-text", "fs-all", "global-shortcut-all", "http-all", "path-all", "shell-open", "system-tray", "window-all"] }
 enigo = {path = "libs/enigo"}
-screenshots = "0.5.2"
 winreg = "0.11"
 lazy_static = "1.4.0"
 rand = "0.8.5"
+
+[target.'cfg(windows)'.dependencies]
+screenshot_win_dxgi = {path = "libs/screenshot-win-dxgi"}
+
+[target.'cfg(unix)'.dependencies]
+screenshots = "0.5.3"
 
 [features]
 # by default Tauri runs in production mode

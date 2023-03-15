@@ -23,15 +23,14 @@ import { emit, once } from '@tauri-apps/api/event'
 import { appWindow } from "@tauri-apps/api/window";
 
 const background = ref("transparent")
-const buffer = ref<ArrayBuffer | undefined>();
 const canvas_width = window.innerWidth;
 const canvas_height = window.innerHeight;
 
-invoke("screenshot").then(res => {
-  buffer.value = res as ArrayBuffer;
-  background.value = "data:image/png;base64," + arrayBufferToBase64(res as ArrayBuffer);
+invoke("screenshot").then(async res => {
   appWindow.show()
   appWindow.setFocus()
+  
+  background.value = "data:image/png;base64," + arrayBufferToBase64(res as Uint8Array);
 })
 
 const canvas = ref<HTMLCanvasElement | undefined>(undefined);
