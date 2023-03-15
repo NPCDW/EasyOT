@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, Ref } from 'vue';
 import { ElNotification } from 'element-plus';
 import {useConfig} from '../store/config'
 import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
@@ -98,6 +98,36 @@ async function save() {
 
 function cancel() {
   window.location.reload()
+}
+
+function hotkey_keydown(event: KeyboardEvent) {
+  event.preventDefault()
+  // console.log(event)
+  if (event.key === 'Backspace' || event.key === 'Delete') {
+    (event.target as HTMLInputElement).value = ""
+    return
+  }
+  let display = ""
+  if (event.ctrlKey) {
+    display += "Control+"
+  }
+  if (event.shiftKey) {
+    display += "Shift+"
+  }
+  if (event.metaKey) {
+    display += "Meta+"
+  }
+  if (event.altKey) {
+    display += "Alt+"
+  }
+  if (event.keyCode >= 112 && event.keyCode <= 123   // F1-F12
+      || event.keyCode >= 65 && event.keyCode <= 90    // a-z
+      || event.keyCode >= 48 && event.keyCode <= 57    // 0-9
+      || event.keyCode >= 96 && event.keyCode <= 105    // 数字键盘 0-9
+  ) {
+    display += event.key
+  }
+  (event.target as HTMLInputElement).value = display
 }
 </script>
 
@@ -230,13 +260,13 @@ function cancel() {
       <el-tab-pane label="全局热键">
         <el-form label-width="120px" style="padding-right: 40px;">
           <el-form-item label="文本识别">
-            <el-input v-model="ocrHotKey" placeholder="Please input" />
+            <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
           <el-form-item label="划词翻译">
-            <el-input v-model="wordSelectionTranslateHotKey" placeholder="Please input" />
+            <el-input v-model="wordSelectionTranslateHotKey" placeholder="未设置快捷键" />
           </el-form-item>
           <el-form-item label="截图翻译">
-            <el-input v-model="screenshotTranslateHotKey" placeholder="Please input" />
+            <el-input v-model="screenshotTranslateHotKey" placeholder="未设置快捷键" />
           </el-form-item>
         </el-form>
       </el-tab-pane>
