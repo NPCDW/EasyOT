@@ -106,7 +106,7 @@ function cancel() {
 
 function hotkey_keydown(event: KeyboardEvent) {
   event.preventDefault()
-  // console.log(event)
+  console.log(event)
   const input = event.target as HTMLInputElement
   if (event.key === 'Backspace' || event.key === 'Delete') {
     input.value = ""

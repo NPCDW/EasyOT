@@ -55,31 +55,36 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config, save_config, show_main_window])
         .setup(|app| {
-            let app_handle = app.app_handle();
-            let _ = app_handle.global_shortcut_manager().register("CommandOrControl+F4", move || {
-                get_words();
-                show_main_window(app_handle.app_handle(), format!("/window/result?target=word_selection&rand={:?}", rand::thread_rng().gen::<f64>()).as_str());
-            });
-            let app_handle = app.app_handle();
-            let _ = app_handle.global_shortcut_manager().register("CommandOrControl+PrintScreen", move || {
-                if let Some(window) = app_handle.get_window("screenshot") {
-                    window.show().unwrap();
-                    window.set_focus().unwrap();
-                } else {
-                    let _ = tauri::WindowBuilder::new(&app_handle, "screenshot", tauri::WindowUrl::App("/screenshot?target=ocr".into()))
-                        .always_on_top(true)
-                        .decorations(false)
-                        .position(0f64, 0f64)
-                        .inner_size(600f64, 600f64)
-                        .resizable(false)
-                        .visible(false)
-                        .skip_taskbar(true)
-                        .transparent(true)
-                        .build().unwrap();
-                    // window.show().unwrap();
-                    // window.set_focus().unwrap();
-                }
-            });
+            let config = get_config();
+            if config.hot_keys.ocr.text != "" {
+                let app_handle = app.app_handle();
+                let _ = app_handle.global_shortcut_manager().register(config.hot_keys.ocr.text.as_str(), move || {
+                    get_words();
+                    show_main_window(app_handle.app_handle(), format!("/window/result?target=word_selection&rand={:?}", rand::thread_rng().gen::<f64>()).as_str());
+                });
+            }
+            if config.hot_keys.word_selection_translate.text != "" {
+                let app_handle = app.app_handle();
+                let _ = app_handle.global_shortcut_manager().register(config.hot_keys.word_selection_translate.text.as_str(), move || {
+                    if let Some(window) = app_handle.get_window("screenshot") {
+                        window.show().unwrap();
+                        window.set_focus().unwrap();
+                    } else {
+                        let _ = tauri::WindowBuilder::new(&app_handle, "screenshot", tauri::WindowUrl::App("/screenshot?target=ocr".into()))
+                            .always_on_top(true)
+                            .decorations(false)
+                            .position(0f64, 0f64)
+                            .inner_size(600f64, 600f64)
+                            .resizable(false)
+                            .visible(false)
+                            .skip_taskbar(true)
+                            .transparent(true)
+                            .build().unwrap();
+                        // window.show().unwrap();
+                        // window.set_focus().unwrap();
+                    }
+                });
+            }
             Ok(())
         })
         .build(tauri::generate_context!())

@@ -1,5 +1,5 @@
 use std::path::PathBuf;
-use std::sync::Mutex;
+use std::sync::RwLock;
 
 use serde::{Serialize, Deserialize};
 
@@ -161,7 +161,7 @@ lazy_static! {
     };
 
     #[derive(Debug, Clone)]
-    pub static ref CONFIG: Mutex<Config> = {
+    pub static ref CONFIG: RwLock<Config> = {
         let config;
         if !CONFIG_FILE_PATH.exists() {
             file_util::create_dir(CONFIG_FILE_PATH.parent().unwrap());
@@ -177,18 +177,18 @@ lazy_static! {
                 panic!("配置文件 {} 转 yaml 格式失败：{:?}", &CONFIG_FILE_PATH.display(), e);
             })
         }
-        Mutex::new(config)
+        RwLock::new(config)
     };
 }
 
 #[tauri::command]
 pub fn get_config() -> Config {
-    (*CONFIG).lock().unwrap().clone()
+    (*CONFIG).read().unwrap().to_owned()
 }
 
 #[tauri::command]
 pub fn save_config(config: Config) {
-    *CONFIG.lock().unwrap() = config.clone();
+    *CONFIG.write().unwrap() = config.clone();
     let yaml = serde_yaml::to_string(&config).unwrap_or_else(|e| {
         panic!("Serialize config fail, {:?}", e)
     });
