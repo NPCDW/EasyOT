@@ -71,16 +71,10 @@ interface TranslateConfig {
     tencent_cloud: TencentCloudTranslateConfig,
 }
 
-interface HotKeysDetail {
-    modifiers: number,
-    key: number,
-    text: string,
-}
-
 interface HotKeysConfig {
-    ocr: HotKeysDetail,
-    word_selection_translate: HotKeysDetail,
-    screenshot_translate: HotKeysDetail,
+    ocr: string,
+    word_selection_translate: string,
+    screenshot_translate: string,
 }
 
 export interface Config {

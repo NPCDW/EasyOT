@@ -61,17 +61,10 @@ pub struct TranslateConfig {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct HotKeysDetail {
-    pub modifiers: u8,
-    pub key: u32,
-    pub text: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct HotKeysConfig {
-    pub ocr: HotKeysDetail,
-    pub word_selection_translate: HotKeysDetail,
-    pub screenshot_translate: HotKeysDetail,
+    pub ocr: String,
+    pub word_selection_translate: String,
+    pub screenshot_translate: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -120,21 +113,9 @@ impl Default for Config {
                 },
             },
             hot_keys: HotKeysConfig {
-                ocr: HotKeysDetail {
-                    modifiers: 0,
-                    key: 115,
-                    text: "F4".to_string(),
-                },
-                word_selection_translate: HotKeysDetail {
-                    modifiers: 0,
-                    key: 113,
-                    text: "F2".to_string(),
-                },
-                screenshot_translate: HotKeysDetail {
-                    modifiers: 2,
-                    key: 113,
-                    text: "Ctrl+F2".to_string(),
-                },
+                ocr: "F4".to_string(),
+                word_selection_translate: "F2".to_string(),
+                screenshot_translate: "Ctrl+F2".to_string(),
             },
         }
     }

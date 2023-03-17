@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, Ref } from 'vue';
+import { Search } from '@element-plus/icons-vue'
+import { ref, watch } from 'vue';
 import { ElNotification } from 'element-plus';
 import {useConfig} from '../store/config'
 import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
@@ -61,9 +62,9 @@ const tencentCloud_translate_secretId = ref(config?.translate.tencent_cloud.secr
 const tencentCloud_translate_secretKey = ref(config?.translate.tencent_cloud.secret_key)
 const baiduAI_translate_app_id = ref(config?.translate.baidu_ai.app_id)
 const baiduAI_translate_app_secret = ref(config?.translate.baidu_ai.app_secret)
-const ocrHotKey = ref(config?.hot_keys.ocr.text)
-const wordSelectionTranslateHotKey = ref(config?.hot_keys.word_selection_translate.text)
-const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate.text)
+const ocrHotKey = ref(config?.hot_keys.ocr)
+const wordSelectionTranslateHotKey = ref(config?.hot_keys.word_selection_translate)
+const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate)
 
 async function save() {
     config!.common.language = language.value!
@@ -86,9 +87,9 @@ async function save() {
     config!.translate.tencent_cloud.secret_id = tencentCloud_translate_secretId.value!
     config!.translate.tencent_cloud.secret_key = tencentCloud_translate_secretKey.value!
 
-    config!.hot_keys.ocr.text = ocrHotKey.value!
-    config!.hot_keys.word_selection_translate.text = wordSelectionTranslateHotKey.value!
-    config!.hot_keys.screenshot_translate.text = screenshotTranslateHotKey.value!
+    config!.hot_keys.ocr = ocrHotKey.value!
+    config!.hot_keys.word_selection_translate = wordSelectionTranslateHotKey.value!
+    config!.hot_keys.screenshot_translate = screenshotTranslateHotKey.value!
 
     await useConfig().save_config(config!);
     ElNotification({
@@ -110,29 +111,36 @@ function hotkey_keydown(event: KeyboardEvent) {
   const input = event.target as HTMLInputElement
   if (event.key === 'Backspace' || event.key === 'Delete') {
     input.value = ""
+    input.dispatchEvent(new Event('input'))
     return
   }
-  let display = ""
+  input.value = ""
   if (event.ctrlKey) {
-    display += "Control+"
+    input.value += "Control+"
   }
   if (event.shiftKey) {
-    display += "Shift+"
+    input.value += "Shift+"
   }
   if (event.metaKey) {
-    display += "Meta+"
+    input.value += "Super+"
   }
   if (event.altKey) {
-    display += "Alt+"
+    input.value += "Alt+"
   }
-  if (event.keyCode >= 112 && event.keyCode <= 123   // F1-F12
-      || event.keyCode >= 65 && event.keyCode <= 90    // a-z
+  // F1-F12
+  if (event.keyCode >= 112 && event.keyCode <= 123) {
+    input.value += event.key.toUpperCase()
+    input.dispatchEvent(new Event('input'))
+  }
+  if (event.keyCode >= 65 && event.keyCode <= 90    // a-z
       || event.keyCode >= 48 && event.keyCode <= 57    // 0-9
       || event.keyCode >= 96 && event.keyCode <= 105    // 数字键盘 0-9
   ) {
-    display += event.key.toUpperCase()
+    input.value += event.key.toUpperCase()
+    if (event.ctrlKey || event.shiftKey || event.metaKey || event.altKey) {
+      input.dispatchEvent(new Event('input'))
+    }
   }
-  input.value = display
 }
 </script>
 
@@ -265,7 +273,7 @@ function hotkey_keydown(event: KeyboardEvent) {
       <el-tab-pane label="全局热键">
         <el-form label-width="120px" style="padding-right: 40px;">
           <el-form-item label="文本识别">
-            <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
+            <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" :suffix-icon="Search" />
           </el-form-item>
           <el-form-item label="划词翻译">
             <el-input v-model="wordSelectionTranslateHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
