@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Search } from '@element-plus/icons-vue'
 import { ref, watch } from 'vue';
 import { ElNotification } from 'element-plus';
 import {useConfig} from '../store/config'
@@ -271,14 +270,14 @@ function hotkey_keydown(event: KeyboardEvent) {
         </el-scrollbar>
       </el-tab-pane>
       <el-tab-pane label="全局热键">
-        <el-form label-width="120px" style="padding-right: 40px;">
-          <el-form-item label="文本识别">
-            <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" :suffix-icon="Search" />
+        <el-form label-width="120px" style="padding-right: 40px;" status-icon :rules="hotkeyRules">
+          <el-form-item label="文本识别" prop="ocrHotKey">
+            <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
-          <el-form-item label="划词翻译">
+          <el-form-item label="划词翻译" prop="wordSelectionTranslateHotKey">
             <el-input v-model="wordSelectionTranslateHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
-          <el-form-item label="截图翻译">
+          <el-form-item label="截图翻译" prop="screenshotTranslateHotKey">
             <el-input v-model="screenshotTranslateHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
         </el-form>

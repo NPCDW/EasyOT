@@ -158,6 +158,9 @@ lazy_static! {
                 panic!("配置文件 {} 转 yaml 格式失败：{:?}", &CONFIG_FILE_PATH.display(), e);
             })
         }
+        let mut runtime_config = crate::config::runtime_config::get_runtime_config();
+        runtime_config.config_path = CONFIG_FILE_PATH.to_str().unwrap().to_string();
+        crate::config::runtime_config::save_runtime_config(runtime_config);
         RwLock::new(config)
     };
 }

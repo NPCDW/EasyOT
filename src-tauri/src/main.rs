@@ -12,13 +12,14 @@ mod config;
 mod util;
 mod window;
 
-use tauri::{SystemTray, Manager, GlobalShortcutManager};
+use tauri::{SystemTray, Manager};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent};
-use rand::Rng;
 use get_words::get_words::get_words;
 use screenshot::screenshot::screenshot;
 use config::config::get_config;
+use config::runtime_config::get_runtime_config;
 use config::config::save_config;
+use util::global_shortcut_util;
 use window::window::show_main_window;
 
 fn main() {
@@ -41,7 +42,7 @@ fn main() {
                 match id.as_str() {
                     "quit" => {
                         let _ = app_handle.tray_handle().destroy();
-                        let _ = app_handle.global_shortcut_manager().unregister_all();
+                        global_shortcut_util::unregister_all(app_handle);
                         std::process::exit(0);
                     }
                     "hide" => {
@@ -53,37 +54,16 @@ fn main() {
             },
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config, save_config, show_main_window])
+        .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config, save_config, show_main_window, get_runtime_config])
         .setup(|app| {
             let config = get_config();
-            if config.hot_keys.ocr != "" {
-                let app_handle = app.app_handle();
-                let _ = app_handle.global_shortcut_manager().register(config.hot_keys.ocr.as_str(), move || {
-                    get_words();
-                    show_main_window(app_handle.app_handle(), format!("/window/result?target=word_selection&rand={:?}", rand::thread_rng().gen::<f64>()).as_str());
-                });
-            }
             if config.hot_keys.word_selection_translate != "" {
                 let app_handle = app.app_handle();
-                let _ = app_handle.global_shortcut_manager().register(config.hot_keys.word_selection_translate.as_str(), move || {
-                    if let Some(window) = app_handle.get_window("screenshot") {
-                        window.show().unwrap();
-                        window.set_focus().unwrap();
-                    } else {
-                        let _ = tauri::WindowBuilder::new(&app_handle, "screenshot", tauri::WindowUrl::App("/screenshot?target=ocr".into()))
-                            .always_on_top(true)
-                            .decorations(false)
-                            .position(0f64, 0f64)
-                            .inner_size(600f64, 600f64)
-                            .resizable(false)
-                            .visible(false)
-                            .skip_taskbar(true)
-                            .transparent(true)
-                            .build().unwrap();
-                        // window.show().unwrap();
-                        // window.set_focus().unwrap();
-                    }
-                });
+                let _is_ok = global_shortcut_util::register_for_word_selection_translate(app_handle, config.hot_keys.word_selection_translate.as_str());
+            }
+            if config.hot_keys.ocr != "" {
+                let app_handle = app.app_handle();
+                let _is_ok = global_shortcut_util::register_for_ocr(app_handle, config.hot_keys.ocr.as_str());
             }
             Ok(())
         })
