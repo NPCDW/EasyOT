@@ -7,6 +7,7 @@ import {useRuntimeConfig} from '../store/runtimeConfig'
 import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
 import {ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys} from '../store/ocrOptions'
 import _ from 'lodash';
+import { invoke } from '@tauri-apps/api/tauri'
 import { platform } from '@tauri-apps/api/os';
 import { Command } from '@tauri-apps/api/shell'
 
@@ -91,10 +92,6 @@ async function save() {
     config!.translate.tencent_cloud.secret_id = tencentCloud_translate_secretId.value!
     config!.translate.tencent_cloud.secret_key = tencentCloud_translate_secretKey.value!
 
-    config!.hot_keys.ocr = ocrHotKey.value!
-    config!.hot_keys.word_selection_translate = wordSelectionTranslateHotKey.value!
-    config!.hot_keys.screenshot_translate = screenshotTranslateHotKey.value!
-
     await useConfig().save_config(config!);
     ElNotification({
       title: '成功',
@@ -109,12 +106,15 @@ function cancel() {
   window.location.reload()
 }
 
+const hotkey_isok = ref(false)
+
 function hotkey_keydown(event: KeyboardEvent) {
   event.preventDefault()
-  console.log(event)
+  // console.log(event)
   const input = event.target as HTMLInputElement
   if (event.key === 'Backspace' || event.key === 'Delete') {
     input.value = ""
+    hotkey_isok.value = true
     input.dispatchEvent(new Event('input'))
     return
   }
@@ -134,7 +134,9 @@ function hotkey_keydown(event: KeyboardEvent) {
   // F1-F12
   if (event.keyCode >= 112 && event.keyCode <= 123) {
     input.value += event.key.toUpperCase()
+    hotkey_isok.value = true
     input.dispatchEvent(new Event('input'))
+    return
   }
   if (event.keyCode >= 65 && event.keyCode <= 90    // a-z
       || event.keyCode >= 48 && event.keyCode <= 57    // 0-9
@@ -142,10 +144,48 @@ function hotkey_keydown(event: KeyboardEvent) {
   ) {
     input.value += event.key.toUpperCase()
     if (event.ctrlKey || event.shiftKey || event.metaKey || event.altKey) {
+      hotkey_isok.value = true
       input.dispatchEvent(new Event('input'))
+      return
+    }
+  }
+  hotkey_isok.value = false
+  input.dispatchEvent(new Event('input'))
+}
+
+const validateOcrHotKey = async (rule: any, value: any, callback: any) => {
+  if (!hotkey_isok.value) {
+    callback(new Error('全局快捷键不合法'))
+  } else {
+    let res = await invoke("reregister_for_ocr", { key: ocrHotKey.value })
+    if (!res) {
+      callback(new Error('全局快捷键已被占用'))
+    } else {
+      config!.hot_keys.ocr = ocrHotKey.value!
+      callback()
     }
   }
 }
+
+const validateWordSelectionTranslateHotKey = async (rule: any, value: any, callback: any) => {
+  if (!hotkey_isok.value) {
+    callback(new Error('全局快捷键不合法'))
+  } else {
+    let res = await invoke("reregister_for_word_selection_translate", { key: wordSelectionTranslateHotKey.value })
+    if (!res) {
+      callback(new Error('全局快捷键已被占用'))
+    } else {
+      config!.hot_keys.word_selection_translate = wordSelectionTranslateHotKey.value!
+      callback()
+    }
+  }
+}
+
+const hotkeyRules = reactive<FormRules>({
+  ocrHotKey: [{ asyncValidator: validateOcrHotKey, trigger: 'change' }],
+  wordSelectionTranslateHotKey: [{ asyncValidator: validateWordSelectionTranslateHotKey, trigger: 'change' }],
+  // screenshotTranslateHotKey: [{ asyncValidator: validateOcrHotKey, trigger: 'change' }],
+})
 
 async function openConfigDir() {
   const platformName = await platform();
@@ -164,23 +204,6 @@ async function openConfigDir() {
   }
 }
 
-// const hotkeyRules = reactive<FormRules>({
-//   ocrHotKey: [{ validator: validatePass, trigger: 'change' }],
-//   wordSelectionTranslateHotKey: [{ validator: validatePass2, trigger: 'change' }],
-//   screenshotTranslateHotKey: [{ validator: checkAge, trigger: 'change' }],
-// })
-
-// const validatePass = (rule: any, value: any, callback: any) => {
-//   if (value === '') {
-//     callback(new Error('Please input the password'))
-//   } else {
-//     if (ruleForm.checkPass !== '') {
-//       if (!ruleFormRef.value) return
-//       ruleFormRef.value.validateField('checkPass', () => null)
-//     }
-//     callback()
-//   }
-// }
 </script>
 
 <template>
@@ -310,14 +333,14 @@ async function openConfigDir() {
         </el-scrollbar>
       </el-tab-pane>
       <el-tab-pane label="全局热键">
-        <el-form label-width="120px" style="padding-right: 40px;" status-icon> <!-- / :rules="hotkeyRules" -->
-          <el-form-item label="文本识别" prop="ocrHotKey">
+        <el-form label-width="120px" style="padding-right: 40px;" status-icon :rules="hotkeyRules">
+          <el-form-item label="文本识别" prop="ocrHotKey" :validate-status="runtimeConfig?.hotkey_conflict.ocr ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.ocr ? '全局快捷键已被占用' : ''">
             <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
-          <el-form-item label="划词翻译" prop="wordSelectionTranslateHotKey">
+          <el-form-item label="划词翻译" prop="wordSelectionTranslateHotKey" :validate-status="runtimeConfig?.hotkey_conflict.word_selection_translate ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.word_selection_translate ? '全局快捷键已被占用' : ''">
             <el-input v-model="wordSelectionTranslateHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
-          <el-form-item label="截图翻译" prop="screenshotTranslateHotKey">
+          <el-form-item label="截图翻译" prop="screenshotTranslateHotKey" :validate-status="runtimeConfig?.hotkey_conflict.screenshot_translate ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.screenshot_translate ? '全局快捷键已被占用' : ''">
             <el-input v-model="screenshotTranslateHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
         </el-form>

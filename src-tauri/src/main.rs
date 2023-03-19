@@ -21,6 +21,7 @@ use config::runtime_config::get_runtime_config;
 use config::config::save_config;
 use util::global_shortcut_util;
 use window::window::show_main_window;
+use util::global_shortcut_util::{reregister_for_ocr, reregister_for_word_selection_translate};
 
 fn main() {
     // println!("{:?}", *config::config::CONFIG);
@@ -54,7 +55,7 @@ fn main() {
             },
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config, save_config, show_main_window, get_runtime_config])
+        .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config, save_config, show_main_window, get_runtime_config, reregister_for_ocr, reregister_for_word_selection_translate])
         .setup(|app| {
             let config = get_config();
             if config.hot_keys.word_selection_translate != "" {
