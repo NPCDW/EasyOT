@@ -13,9 +13,30 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "os": {
+        "all": true
+      },
       "shell": {
         "all": false,
-        "open": true
+        "execute": true,
+        "open": true,
+        "scope": [
+          {
+            "name": "open-dir-select-file-win",
+            "cmd": "Explorer.exe",
+            "args": [{ "validator": "/select,\\S+" }]
+          },
+          {
+            "name": "open-dir-mac",
+            "cmd": "open",
+            "args": [{ "validator": "\\S+" }]
+          },
+          {
+            "name": "open-dir-linux",
+            "cmd": "nautilus",
+            "args": [{ "validator": "\\S+" }]
+          }
+        ]
       },
       "globalShortcut": {
         "all": true

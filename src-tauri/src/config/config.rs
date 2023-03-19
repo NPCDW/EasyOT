@@ -138,7 +138,7 @@ lazy_static! {
 
     #[derive(Debug)]
     pub static ref CONFIG_FILE_PATH: PathBuf = {
-        CONFIG_DIR.join(r"EasyOT/setting.yml")
+        CONFIG_DIR.join("EasyOT").join("setting.yml")
     };
 
     #[derive(Debug, Clone)]

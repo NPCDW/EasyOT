@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, reactive } from 'vue';
 import { ElNotification } from 'element-plus';
+import type { FormRules } from 'element-plus'
 import {useConfig} from '../store/config'
+import {useRuntimeConfig} from '../store/runtimeConfig'
 import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
 import {ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys} from '../store/ocrOptions'
 import _ from 'lodash';
+import { platform } from '@tauri-apps/api/os';
+import { Command } from '@tauri-apps/api/shell'
 
 let config = useConfig().get_config()
+let runtimeConfig = useRuntimeConfig().getRuntimeConfig()
 
 const autoStart = ref(false)
 const language = ref(config?.common.language)
@@ -141,6 +146,41 @@ function hotkey_keydown(event: KeyboardEvent) {
     }
   }
 }
+
+async function openConfigDir() {
+  const platformName = await platform();
+  const configPath = runtimeConfig?.config_path!
+  if (platformName === 'win32') {
+    let command = new Command('open-dir-select-file-win', ['/select,' + configPath])
+    command.execute();
+  } else if (platformName === 'linux') {
+    const configDir = configPath.substring(0, configPath.lastIndexOf('/'))
+    let command = new Command('open-dir-linux', [configDir])
+    command.execute();
+  } else if (platformName === 'darwin') {
+    const configDir = configPath.substring(0, configPath.lastIndexOf('/'))
+    let command = new Command('open-dir-mac', [configDir])
+    command.execute();
+  }
+}
+
+// const hotkeyRules = reactive<FormRules>({
+//   ocrHotKey: [{ validator: validatePass, trigger: 'change' }],
+//   wordSelectionTranslateHotKey: [{ validator: validatePass2, trigger: 'change' }],
+//   screenshotTranslateHotKey: [{ validator: checkAge, trigger: 'change' }],
+// })
+
+// const validatePass = (rule: any, value: any, callback: any) => {
+//   if (value === '') {
+//     callback(new Error('Please input the password'))
+//   } else {
+//     if (ruleForm.checkPass !== '') {
+//       if (!ruleFormRef.value) return
+//       ruleFormRef.value.validateField('checkPass', () => null)
+//     }
+//     callback()
+//   }
+// }
 </script>
 
 <template>
@@ -160,7 +200,7 @@ function hotkey_keydown(event: KeyboardEvent) {
             <el-input-number v-model="wordSelectionInterval" :min="200" :max="1000" :step="100" />
           </el-form-item>
           <el-form-item label="配置目录">
-            <el-button type="primary">打开</el-button>
+            <el-button type="primary" @click="openConfigDir">打开</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -270,7 +310,7 @@ function hotkey_keydown(event: KeyboardEvent) {
         </el-scrollbar>
       </el-tab-pane>
       <el-tab-pane label="全局热键">
-        <el-form label-width="120px" style="padding-right: 40px;" status-icon :rules="hotkeyRules">
+        <el-form label-width="120px" style="padding-right: 40px;" status-icon> <!-- / :rules="hotkeyRules" -->
           <el-form-item label="文本识别" prop="ocrHotKey">
             <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
           </el-form-item>
