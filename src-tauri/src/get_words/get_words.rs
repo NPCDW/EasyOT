@@ -1,10 +1,9 @@
-use enigo::{Enigo, Key, KeyboardControllable, MouseControllable};
+use enigo::{Enigo, Key, KeyboardControllable};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 pub fn get_words() {
     let mut enigo = Enigo::new();
-    println!("mouse location: {:?}", enigo.mouse_location());
     
     enigo.key_up(Key::Control);
     enigo.key_up(Key::Alt);
