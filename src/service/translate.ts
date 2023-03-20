@@ -6,7 +6,7 @@ import type {TranslateLanguageKeys} from '../store/translateOptions'
 export async function translate(translateProvide: TranslateLanguageKeys, sourceLanguage: string, targetLanguage: string, text: string): Promise<string> {
     switch (translateProvide) {
         case "BaiduAI": 
-            return baiduAIApi.translate(text, sourceLanguage, targetLanguage);
+            return await baiduAIApi.translate(text, sourceLanguage, targetLanguage);
         case "TencentCloud": 
             return await tencentCloudApi.translate(text, sourceLanguage, targetLanguage);
         case "GoogleTranslate": 

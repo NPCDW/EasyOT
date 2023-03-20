@@ -11,7 +11,6 @@ async function translate(text: string, sourceLanguage: string, targetLanguage: s
     const salt = random(1, 10000000) + ""
     const appid = config?.translate.baidu_ai.app_id!
     const signStr = appid + text + salt + config?.translate.baidu_ai.app_secret
-    console.log("baidu translate", signStr)
     const sign = CryptoJS.enc.Hex.stringify(CryptoJS.enc.Hex.parse(CryptoJS.MD5(signStr).toString()));
     
     const client = await getClient();

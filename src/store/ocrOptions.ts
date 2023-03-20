@@ -71,10 +71,10 @@ const ocrMode: OcrModeType = {
         "GeneralHandwritingOCR": "手写体",
     },
     "SpaceOCR": {
-        "Engine1": "引擎一",
-        "Engine2": "引擎二",
-        "Engine3": "引擎三",
-        "Engine5": "引擎五",
+        "1": "引擎一",
+        "2": "引擎二",
+        "3": "引擎三",
+        "5": "引擎五",
     },
 }
 

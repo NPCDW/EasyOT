@@ -104,8 +104,8 @@ function sign(param: SignParam) {
         + canonicalHeaders + "\n"
         + signedHeaders + "\n"
         + hashedRequestPayload
-    console.log(payloadStr)
-    console.log(canonicalRequest)
+    // console.log(payloadStr)
+    // console.log(canonicalRequest)
     // ************* 步骤 2：拼接待签名字符串 *************
     const algorithm = "TC3-HMAC-SHA256"
     const hashedCanonicalRequest = getHash(canonicalRequest);
@@ -114,19 +114,19 @@ function sign(param: SignParam) {
         timestamp + "\n" +
         credentialScope + "\n" +
         hashedCanonicalRequest
-    console.log(stringToSign)
+    // console.log(stringToSign)
     // ************* 步骤 3：计算签名 *************
     const kDate = sha256(date, 'TC3' + SECRET_KEY)
     const kService = sha256(service, kDate)
     const kSigning = sha256('tc3_request', kService)
     const signature = sha256(stringToSign, kSigning, 'hex')
-    console.log(signature)
+    // console.log(signature)
     // ************* 步骤 4：拼接 Authorization *************
     const authorization = algorithm + " " +
         "Credential=" + SECRET_ID + "/" + credentialScope + ", " +
         "SignedHeaders=" + signedHeaders + ", " +
         "Signature=" + signature
-    console.log(authorization)
+    // console.log(authorization)
     // const curlcmd = 'curl -X POST ' + "https://" + endpoint
     //     + ' -H "Authorization: ' + authorization + '"'
     //     + ' -H "Content-Type: application/json; charset=utf-8"'
