@@ -11,6 +11,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
     "@tauri-apps/api": "^1.2.0",
+    "crypto-js": "^4.1.1",
     "element-plus": "^2.2.32",
     "pinia": "^2.0.33",
     "vue": "^3.2.45",
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "@iconify-json/ep": "^1.1.9",
+    "@types/crypto-js": "^4.1.1",
     "@types/node": "^18.14.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "autoprefixer": "^10.4.13",

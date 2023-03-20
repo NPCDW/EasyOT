@@ -1,6 +1,6 @@
 import { getClient, Body } from '@tauri-apps/api/http';
 import _ from 'lodash';
-import { useConfig, type Config } from '../store/config'
+import { useConfig } from '../store/config'
 
 const OCR_BASE_PATH = "https://aip.baidubce.com/"
 
