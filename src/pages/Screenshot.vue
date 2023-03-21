@@ -1,5 +1,5 @@
 <template>
-  <div :style="{'background-image': `url(${background})`, cursor: 'crosshair', width: image_width, height: image_height}">
+  <div class="screen" :style="{'background-image': `url(${background})`}">
     <canvas
         ref="canvas"
         tabindex="0"
@@ -23,18 +23,12 @@ import { emit, once } from '@tauri-apps/api/event'
 import { appWindow, PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
 
 const background = ref("transparent")
-const image_width = ref(window.innerWidth);
-const image_height = ref(window.innerHeight);
-const canvas_width = ref(window.innerWidth);
-const canvas_height = ref(window.innerHeight);
+const canvas_width = window.innerWidth;
+const canvas_height = window.innerHeight;
 
 invoke("screenshot").then(async res => {
   const data = res as [Uint8Array, number, number, number, number, number]
-  console.log(data, canvas_width.value, canvas_height.value)
-  image_width.value = data[3] / data[5]
-  image_height.value = data[4] / data[5]
-  canvas_width.value = data[3] / data[5]
-  canvas_height.value = data[4] / data[5]
+  console.log(data, canvas_width, canvas_height)
   appWindow.setPosition(new PhysicalPosition(data[1], data[2]))
   appWindow.setSize(new PhysicalSize(data[3], data[4]))
   appWindow.show()
@@ -139,4 +133,8 @@ function exit() {
 
 <style scoped>
 canvas:focus-visible { outline: unset; }
+.screen {
+  background-size: cover;
+  cursor: crosshair;
+}
 </style>
