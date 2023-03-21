@@ -2,11 +2,11 @@
   <el-scrollbar class="page">
     <el-space direction="vertical" :fill="true" class="page_space">
       <!--  图片展示块  -->
-      <div>
+      <div style="border: 1px dashed #4c4d4f; border-radius: 5px;">
         <el-image style="height: 180px;" :src="imageData" fit="scale-down" />
       </div>
       <!--  OCR 按钮块  -->
-      <div>
+      <div style="text-align: center;">
         <el-space direction="horizontal">
           <el-select v-model="defaultOcrProvide" placeholder="Select">
             <el-option v-for="item in ocrProvideOptions" :key="item.value" :label="item.label" :value="item.value" />
@@ -26,7 +26,7 @@
         <el-input v-model="ocr_text" :rows="8" type="textarea" placeholder="文本识别" />
       </div>
       <!--  翻译按钮块  -->
-      <div>
+      <div style="text-align: center;">
         <el-space direction="horizontal">
           <el-select v-model="defaultTranslateProvide" placeholder="Select">
             <el-option v-for="item in translateProvideOptions" :key="item.value" :label="item.label"
@@ -181,5 +181,6 @@ watch(() => route.query.rand, async () => {
 }
 .page_space {
   padding: 10px 40px 20px 20px;
+  width: 100%;
 }
 </style>

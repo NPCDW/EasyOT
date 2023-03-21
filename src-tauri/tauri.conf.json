@@ -100,18 +100,7 @@
     "updater": {
       "active": false
     },
-    "windows": [
-      {
-        "fullscreen": false,
-        "height": 600,
-        "resizable": true,
-        "title": "EasyOT",
-        "width": 800,
-        "center": true,
-        "decorations": false,
-        "visible": false
-      }
-    ],
+    "windows": [],
     "systemTray": {
       "iconPath": "icons/icon.png",
       "iconAsTemplate": true
