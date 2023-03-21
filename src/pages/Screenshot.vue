@@ -1,5 +1,5 @@
 <template>
-  <div class="screen" :style="{'background-image': `url(${background})`}">
+  <div class="screen" :style="{'background-image': `url(${background})`, width: `${image_width}px`, height: `${image_height}px`}">
     <canvas
         ref="canvas"
         tabindex="0"
@@ -23,24 +23,27 @@ import { emit, once } from '@tauri-apps/api/event'
 import { appWindow, PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
 
 const background = ref("transparent")
-const canvas_width = window.innerWidth;
-const canvas_height = window.innerHeight;
-
-invoke("screenshot").then(async res => {
-  const data = res as [Uint8Array, number, number, number, number, number]
-  console.log(data, canvas_width, canvas_height)
-  appWindow.setPosition(new PhysicalPosition(data[1], data[2]))
-  appWindow.setSize(new PhysicalSize(data[3], data[4]))
-  appWindow.show()
-  appWindow.setFocus()
-  
-  background.value = "data:image/png;base64," + arrayBufferToBase64(data[0]);
-})
+const canvas_width = ref(screen.width);
+const canvas_height = ref(screen.height);
+const image_width = ref(screen.width);
+const image_height = ref(screen.height);
 
 const canvas = ref<HTMLCanvasElement | undefined>(undefined);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
 
 const random = (min:any, max:any) => Math.floor(Math.random() * (max - min + 1) + min)
+
+invoke("screenshot").then(res => {
+    const [buffer, x, y, width, height, scale] = res as [Uint8Array, number, number, number, number, number]
+    console.log(x, y, width, height, scale, canvas_width.value, canvas_height.value, window.screenX, window.screenY)
+    // appWindow.setPosition(new PhysicalPosition(x, y))
+    // appWindow.setSize(new PhysicalSize(width, height))
+    appWindow.show()
+    appWindow.setFocus()
+    console.log(x, y, width, height, scale, canvas_width.value, canvas_height.value, window.screenX, window.screenY)
+    
+    background.value = "data:image/png;base64," + arrayBufferToBase64(buffer);
+})
 
 onMounted(() => {
   ctx.value = canvas.value?.getContext("2d")!
@@ -126,7 +129,6 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 function exit() {
-  console.log("exit")
   appWindow.close();
 }
 </script>
