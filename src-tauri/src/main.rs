@@ -12,8 +12,9 @@ mod config;
 mod util;
 mod window;
 
-use tauri::{SystemTray, Manager};
+use tauri::{SystemTray, Manager, PhysicalSize};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent};
+use util::debounce::debounce;
 use get_words::get_words::get_words;
 use screenshot::screenshot::screenshot;
 use config::config::get_config;
@@ -32,6 +33,8 @@ fn main() {
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(quit);
     let tray = SystemTray::new().with_menu(tray_menu);
+
+    let mut tx = create_debounce();
 
     tauri::Builder::default()
         .system_tray(tray)
@@ -70,10 +73,28 @@ fn main() {
         })
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
-        .run(|_app_handle, event| match event {
+        .run(move |_app_handle, event| match event {
             tauri::RunEvent::ExitRequested { api, .. } => {
                 api.prevent_exit();
             }
+            tauri::RunEvent::WindowEvent { label: _, event, .. } => {
+                match event {
+                    tauri::WindowEvent::Resized(size) => {
+                        let res = tx.send(size);
+                        if res.is_err() {
+                            tx = create_debounce();
+                            tx.send(size).unwrap();
+                        }
+                    }
+                    _ => {}
+                }
+            }
             _ => {}
         });
+}
+
+fn create_debounce() -> std::sync::mpsc::Sender<PhysicalSize<u32>> {
+    debounce(|size| {
+        println!("debounce: {:?}", size);
+    }, std::time::Duration::from_millis(1000))
 }
