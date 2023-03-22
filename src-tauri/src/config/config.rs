@@ -73,6 +73,7 @@ pub struct WindowConfig {
     pub y: i32,
     pub width: u32,
     pub height: u32,
+    pub maximized: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -132,6 +133,7 @@ impl Default for Config {
                     y: 300,
                     width: 800,
                     height: 600,
+                    maximized: false,
                 }),
             ])
         }

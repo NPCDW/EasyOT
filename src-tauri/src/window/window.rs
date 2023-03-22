@@ -9,6 +9,7 @@ pub fn show_main_window(app_handle: AppHandle, url: &str) {
     if let Some(window) = app_handle.get_window("main") {
         std::thread::sleep(core::time::Duration::from_millis(100));
         let _ = window.emit("router-change-event", url);
+        window.unminimize().unwrap();
         window.show().unwrap_or_else(|e| {
             println!("{:?}", e)
         });
@@ -23,6 +24,7 @@ pub fn show_main_window(app_handle: AppHandle, url: &str) {
             .title("EasyOT")
             .position(main.x.into(), main.y.into())
             .inner_size(main.width.into(), main.height.into())
+            .maximized(main.maximized)
             .transparent(true)
             .build().unwrap_or_else(|e| {
                 panic!("{:?}", e)

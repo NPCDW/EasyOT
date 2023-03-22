@@ -22,7 +22,7 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { emit, once } from '@tauri-apps/api/event'
 import { appWindow } from "@tauri-apps/api/window";
 
-const background = ref("transparent")
+const background = ref("data:image/png;base64,")
 const canvas_width = ref(screen.width);
 const canvas_height = ref(screen.height);
 const image_width = ref(screen.width);

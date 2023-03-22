@@ -5,7 +5,7 @@ use std::time::Duration;
 
 #[allow(dead_code)]
 pub fn debounce<T: Send + Debug + 'static>(
-    f: impl Fn(&T) + Send + 'static,
+    f: impl Fn(T) + Send + 'static,
     debounce_time: Duration,
 ) -> Sender<T> {
     let (tx, rx) = channel::<T>();
@@ -18,7 +18,7 @@ pub fn debounce<T: Send + Debug + 'static>(
                 }
                 Err(_) => {
                     if last_value.is_some() {
-                        f(last_value.as_ref().unwrap());
+                        f(last_value.unwrap());
                     }
                     break;
                 }

@@ -12,7 +12,7 @@ mod config;
 mod util;
 mod window;
 
-use tauri::{SystemTray, Manager, PhysicalSize, PhysicalPosition};
+use tauri::{SystemTray, Manager, PhysicalSize, PhysicalPosition, AppHandle};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent};
 use util::debounce::debounce;
 use get_words::get_words::get_words;
@@ -74,7 +74,7 @@ fn main() {
         })
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
-        .run(move |_app_handle, event| match event {
+        .run(move |app_handle, event| match event {
             tauri::RunEvent::ExitRequested { api, .. } => {
                 api.prevent_exit();
             }
@@ -82,10 +82,10 @@ fn main() {
                 if label == "main" {
                     match event {
                         tauri::WindowEvent::Resized(size) => {
-                            let res = resized_debounce.send(size);
+                            let res = resized_debounce.send((app_handle.app_handle(), size));
                             if res.is_err() {
                                 resized_debounce = create_resized_debounce();
-                                resized_debounce.send(size).unwrap();
+                                resized_debounce.send((app_handle.app_handle(), size)).unwrap();
                             }
                         }
                         tauri::WindowEvent::Moved(pos) => {
@@ -103,24 +103,33 @@ fn main() {
         });
 }
 
-fn create_resized_debounce() -> std::sync::mpsc::Sender<PhysicalSize<u32>> {
-    debounce(|size: &PhysicalSize<u32>| {
+fn create_resized_debounce() -> std::sync::mpsc::Sender<(AppHandle, PhysicalSize<u32>)> {
+    debounce(|(app_handle, size): (AppHandle, PhysicalSize<u32>)| {
         println!("resized debounce: {:?}", size);
         let mut config = get_config();
         let mut main = config.window.get_mut("main").unwrap();
-        main.width = size.width;
-        main.height = size.height;
-        save_config(config);
+        if (main.width != size.width || main.height != size.height) && size.height > 100 {
+            if app_handle.get_window("main").unwrap().is_maximized().unwrap() {
+                main.maximized = true
+            } else {
+                main.maximized = false;
+                main.width = size.width;
+                main.height = size.height;
+            }
+            save_config(config);
+        }
     }, std::time::Duration::from_millis(1000))
 }
 
 fn create_moved_debounce() -> std::sync::mpsc::Sender<PhysicalPosition<i32>> {
-    debounce(|size: &PhysicalPosition<i32>| {
-        println!("moved debounce: {:?}", size);
+    debounce(|pos: PhysicalPosition<i32>| {
+        println!("moved debounce: {:?}", pos);
         let mut config = get_config();
         let mut main = config.window.get_mut("main").unwrap();
-        main.x = size.x;
-        main.y = size.y;
-        save_config(config);
+        if (main.x != pos.x || main.y != pos.y) && pos.x > -32000 {
+            main.x = pos.x;
+            main.y = pos.y;
+            save_config(config);
+        }
     }, std::time::Duration::from_millis(1000))
 }

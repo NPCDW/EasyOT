@@ -162,7 +162,7 @@ watch(() => route.query.rand, async () => {
     setTimeout(async () => {
       ocr_text.value = await readText();
       translate_click()
-    }, 300)
+    }, config?.common.word_selection_interval)
   } else if (route.query.target === 'ocr') {
     await once('wait-ocr-image-data-event', async (event) => {
       imageData.value = (event.payload as {imageData: string}).imageData
@@ -180,7 +180,7 @@ watch(() => route.query.rand, async () => {
   height: calc(100vh - var(--title-bar-height));
 }
 .page_space {
-  padding: 10px 40px 20px 20px;
+  padding: 10px 40px 20px 0px;
   width: 100%;
 }
 </style>
