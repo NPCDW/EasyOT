@@ -1,4 +1,4 @@
-use tauri::{AppHandle, PhysicalSize, PhysicalPosition};
+use tauri::{AppHandle};
 use tauri::{GlobalShortcutManager, Manager};
 use crate::get_words::get_words::get_words;
 use crate::window::window::show_main_window;
