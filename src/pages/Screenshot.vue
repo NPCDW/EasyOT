@@ -1,5 +1,5 @@
 <template>
-  <div class="screen" :style="{'background-image': `url(${background})`, width: `${image_width}px`, height: `${image_height}px`}">
+  <div class="screen" :style="{'background-image': `url(${background})`}">
     <canvas
         ref="canvas"
         tabindex="0"
@@ -20,25 +20,27 @@
 import {ref, onMounted} from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { emit, once } from '@tauri-apps/api/event'
-import { appWindow } from "@tauri-apps/api/window";
+import { appWindow, PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
 
 const background = ref("data:image/png;base64,")
 const canvas_width = ref(screen.width);
 const canvas_height = ref(screen.height);
-const image_width = ref(screen.width);
-const image_height = ref(screen.height);
 
 const canvas = ref<HTMLCanvasElement | undefined>(undefined);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
 
+const scaleFactor = ref(1)
+
 const random = (min:any, max:any) => Math.floor(Math.random() * (max - min + 1) + min)
 
-invoke("screenshot").then(res => {
+invoke("screenshot").then(async res => {
     const [buffer, x, y, width, height, scale] = res as [Uint8Array, number, number, number, number, number]
-    console.log(x, y, width, height, scale, canvas_width.value, canvas_height.value, window.screenX, window.screenY)
-    appWindow.show()
-    appWindow.setFocus()
+    await appWindow.setPosition(new PhysicalPosition(x, y))
+    await appWindow.setSize(new PhysicalSize(width, height))
+    await appWindow.show()
+    await appWindow.setFocus()
     
+    scaleFactor.value = scale
     background.value = "data:image/png;base64," + arrayBufferToBase64(buffer);
 })
 
@@ -93,10 +95,10 @@ function mouseup(event: MouseEvent) {
   console.log("MouseEvent Up: ", event, ctx)
   appWindow.hide()
 
-  let x = Math.min(event.pageX, startPoint.value.x);
-  let y = Math.min(event.pageY, startPoint.value.y);
-  let width = Math.abs(event.pageX - startPoint.value.x)
-  let height = Math.abs(event.pageY - startPoint.value.y)
+  let x = Math.min(event.pageX, startPoint.value.x) * scaleFactor.value
+  let y = Math.min(event.pageY, startPoint.value.y) * scaleFactor.value
+  let width = Math.abs(event.pageX - startPoint.value.x) * scaleFactor.value
+  let height = Math.abs(event.pageY - startPoint.value.y) * scaleFactor.value
 
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
