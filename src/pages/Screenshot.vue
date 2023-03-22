@@ -20,7 +20,7 @@
 import {ref, onMounted} from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { emit, once } from '@tauri-apps/api/event'
-import { appWindow, PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
+import { appWindow } from "@tauri-apps/api/window";
 
 const background = ref("transparent")
 const canvas_width = ref(screen.width);
@@ -36,11 +36,8 @@ const random = (min:any, max:any) => Math.floor(Math.random() * (max - min + 1) 
 invoke("screenshot").then(res => {
     const [buffer, x, y, width, height, scale] = res as [Uint8Array, number, number, number, number, number]
     console.log(x, y, width, height, scale, canvas_width.value, canvas_height.value, window.screenX, window.screenY)
-    // appWindow.setPosition(new PhysicalPosition(x, y))
-    // appWindow.setSize(new PhysicalSize(width, height))
     appWindow.show()
     appWindow.setFocus()
-    console.log(x, y, width, height, scale, canvas_width.value, canvas_height.value, window.screenX, window.screenY)
     
     background.value = "data:image/png;base64," + arrayBufferToBase64(buffer);
 })

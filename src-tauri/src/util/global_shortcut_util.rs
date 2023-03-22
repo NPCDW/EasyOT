@@ -40,9 +40,6 @@ pub fn reregister_for_word_selection_translate(app_handle: AppHandle, key: &str)
 }
 
 pub fn register_for_ocr(app_handle: AppHandle, key: &str) -> bool {
-    let enigo = Enigo::new();
-    let mouse = enigo.mouse_location();
-
     let mut runtime_config = runtime_config::get_runtime_config();
     let result = app_handle.global_shortcut_manager().register(key, move || {
         if let Some(window) = app_handle.get_window("screenshot") {
@@ -52,37 +49,35 @@ pub fn register_for_ocr(app_handle: AppHandle, key: &str) -> bool {
             let window = tauri::WindowBuilder::new(&app_handle, "screenshot", tauri::WindowUrl::App("/screenshot?target=ocr".into()))
                 .always_on_top(true)
                 .decorations(false)
-                .position(-1920f64, 0f64)
-                .inner_size(1920f64, 1080f64)
+                .position(0f64, 0f64)
+                .inner_size(1f64, 1f64)
                 .resizable(false)
                 .visible(false)
                 .skip_taskbar(true)
                 .transparent(true)
                 .build().unwrap();
             
-  let window = app_handle.get_window("screenshot").unwrap();
-  let monitors = window.available_monitors().unwrap();
+            let enigo = Enigo::new();
+            let mouse = enigo.mouse_location();
+            // let window = app_handle.get_window("screenshot").unwrap();
+            let monitors = window.available_monitors().unwrap();
             
-            let mut index = 1;
             let mut x = 0;
             let mut y = 0;
             let mut width = 0;
             let mut height = 0;
-            let mut scale = 1f64;
-            for (i, monitor) in monitors.iter().enumerate() {
+            for monitor in monitors {
                 if monitor.position().x <= mouse.0 && mouse.0 < monitor.position().x + monitor.size().width as i32 
                     && monitor.position().y <= mouse.1 && mouse.1 < monitor.position().y + monitor.size().height as i32  {
-                    index = i + 1;
                     x = monitor.position().x;
                     y = monitor.position().y;
                     width = monitor.size().width;
                     height = monitor.size().height;
-                    scale = monitor.scale_factor();
                 }
             }
             window.set_position(PhysicalPosition::new(x, y)).unwrap();
             window.set_size(PhysicalSize::new(width, height)).unwrap();
-            println!("{:?}, {:?}, {}, {:?}", window.inner_size(), window.outer_position(), index, mouse);
+            println!("{:?}, {:?}, {:?}", window.inner_size(), window.outer_position(), mouse);
 
             // window.show().unwrap();
             // window.set_focus().unwrap();

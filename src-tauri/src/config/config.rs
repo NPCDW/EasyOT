@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, collections::HashMap};
 use std::sync::RwLock;
 
 use serde::{Serialize, Deserialize};
@@ -68,11 +68,20 @@ pub struct HotKeysConfig {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct WindowConfig {
+    pub x: i32,
+    pub y: i32,
+    pub width: u32,
+    pub height: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
     pub common: CommonConfig,
     pub ocr: OcrConfig,
     pub translate: TranslateConfig,
     pub hot_keys: HotKeysConfig,
+    pub window: HashMap<String, WindowConfig>,
 }
 
 impl Default for Config {
@@ -117,6 +126,14 @@ impl Default for Config {
                 word_selection_translate: "F2".to_string(),
                 screenshot_translate: "Ctrl+F2".to_string(),
             },
+            window: HashMap::from([
+                (String::from("main"), WindowConfig {
+                    x: 300,
+                    y: 300,
+                    width: 800,
+                    height: 600,
+                }),
+            ])
         }
     }
 }

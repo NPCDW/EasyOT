@@ -6,18 +6,18 @@ import Screenshot from '../pages/Screenshot.vue'
 import Window from '../components/Window.vue'
 
 const routes = [
-    { path: '/', redirect: '/window/setting' },
+    { path: '/', redirect: '/window/result' },
     {
         path: '/window',
         component: Window,
         children: [
             {
-                path: 'setting',
-                component: Setting,
-            },
-            {
                 path: 'result',
                 component: Result,
+            },
+            {
+                path: 'setting',
+                component: Setting,
             },
             {
                 path: 'info',
