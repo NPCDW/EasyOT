@@ -118,27 +118,15 @@ async function translate_click() {
 }
 
 function defaultOcrOptionChange() {
-  if (
-    config!.ocr.default_ocr_provide === defaultOcrProvide.value &&
-    config!.ocr.default_ocr_mode === defaultOcrMode.value &&
-    config!.ocr.default_ocr_language === defaultOcrLanguage.value
-  ) {
-    ocrDefaultSwitch.value = true
-  } else {
-    ocrDefaultSwitch.value = false
-  }
+  ocrDefaultSwitch.value = config!.ocr.default_ocr_provide === defaultOcrProvide.value &&
+      config!.ocr.default_ocr_mode === defaultOcrMode.value &&
+      config!.ocr.default_ocr_language === defaultOcrLanguage.value;
 }
 
 function defaultTranslateOptionChange() {
-  if (
-    config!.translate.default_translate_provide === defaultTranslateProvide.value &&
-    config!.translate.default_translate_source_language === defaultSourceLanguage.value &&
-    config!.translate.default_translate_target_language === defaultTargetLanguage.value
-  ) {
-    translateDefaultSwitch.value = true
-  } else {
-    translateDefaultSwitch.value = false
-  }
+  translateDefaultSwitch.value = config!.translate.default_translate_provide === defaultTranslateProvide.value &&
+      config!.translate.default_translate_source_language === defaultSourceLanguage.value &&
+      config!.translate.default_translate_target_language === defaultTargetLanguage.value;
 }
 
 function ocrDefaultSwitch_checked(value: string | number | boolean): void {
@@ -161,12 +149,12 @@ watch(() => route.query.rand, async () => {
   if (route.query.target === 'word_selection') {
     setTimeout(async () => {
       ocr_text.value = await readText();
-      translate_click()
+      await translate_click()
     }, config?.common.word_selection_interval)
   } else if (route.query.target === 'ocr') {
     await once('wait-ocr-image-data-event', async (event) => {
       imageData.value = (event.payload as {imageData: string}).imageData
-      ocr_click()
+      await ocr_click()
     })
     await emit('result-page-mounted-event')
   }

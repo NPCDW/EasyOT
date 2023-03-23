@@ -90,10 +90,10 @@ function mousemove(event: MouseEvent) {
   ctx.value!.closePath();
 }
 
-function mouseup(event: MouseEvent) {
+async function mouseup(event: MouseEvent) {
   start.value = false;
   console.log("MouseEvent Up: ", event, ctx)
-  appWindow.hide()
+  await appWindow.hide()
 
   let x = Math.min(event.pageX, startPoint.value.x) * scaleFactor.value
   let y = Math.min(event.pageY, startPoint.value.y) * scaleFactor.value
@@ -112,7 +112,7 @@ function mouseup(event: MouseEvent) {
     await invoke('show_main_window', { url: '/window/result?target=ocr&rand=' + random(1, 10000000) });
     await once('result-page-mounted-event', async (event) => {
       await emit('wait-ocr-image-data-event', { imageData })
-      appWindow.close()
+      await appWindow.close()
     })
   };
 }
@@ -127,8 +127,8 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
   return window.btoa(binary);
 }
 
-function exit() {
-  appWindow.close();
+async function exit() {
+  await appWindow.close();
 }
 </script>
 
