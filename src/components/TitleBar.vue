@@ -21,14 +21,14 @@
 <script setup lang="ts">
 import { appWindow } from '@tauri-apps/api/window'
 
-function minimize() {
-  appWindow.minimize()
+async function minimize() {
+  await appWindow.minimize()
 }
-function toggleMaximize() {
-  appWindow.toggleMaximize()
+async function toggleMaximize() {
+  await appWindow.toggleMaximize()
 }
-function close() {
-  appWindow.close()
+async function close() {
+  await appWindow.close()
 }
 </script>
 

@@ -14,7 +14,6 @@ import { Command } from '@tauri-apps/api/shell'
 let config = useConfig().get_config()
 let runtimeConfig = useRuntimeConfig().getRuntimeConfig()
 
-const autoStart = ref(false)
 const language = ref(config?.common.language)
 const languageOptions = ref([
   {
@@ -192,18 +191,48 @@ async function openConfigDir() {
   const configPath = runtimeConfig?.config_path!
   if (platformName === 'win32') {
     let command = new Command('open-dir-select-file-win', ['/select,' + configPath])
-    command.execute();
+    await command.execute();
   } else if (platformName === 'linux') {
     const configDir = configPath.substring(0, configPath.lastIndexOf('/'))
     let command = new Command('open-dir-linux', [configDir])
-    command.execute();
+    await command.execute();
   } else if (platformName === 'darwin') {
     const configDir = configPath.substring(0, configPath.lastIndexOf('/'))
     let command = new Command('open-dir-mac', [configDir])
-    command.execute();
+    await command.execute();
   }
 }
 
+const autoStart = ref(false)
+invoke('get_status').then(res => {
+  autoStart.value = res as boolean
+})
+async function autoStartBeforeChange() {
+  let res;
+  if (autoStart.value) {
+    res = await invoke('disable')
+  } else {
+    res = await invoke('enable')
+  }
+  if (res) {
+    ElNotification({
+      title: '成功',
+      message: '设置成功',
+      type: 'success',
+      duration: 2000,
+      offset: 40,
+    })
+  } else {
+    ElNotification({
+      title: '失败',
+      message: '设置失败',
+      type: 'error',
+      duration: 2000,
+      offset: 40,
+    })
+  }
+  return res
+}
 </script>
 
 <template>
@@ -212,7 +241,7 @@ async function openConfigDir() {
       <el-tab-pane label="常规">
         <el-form label-width="120px" style="padding-right: 40px;">
           <el-form-item label="开机启动">
-            <el-switch v-model="autoStart" />
+            <el-switch v-model="autoStart" :before-change="autoStartBeforeChange" />
           </el-form-item>
           <el-form-item label="语言">
             <el-select v-model="language" placeholder="Select">

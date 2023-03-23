@@ -11,6 +11,7 @@ mod screenshot;
 mod config;
 mod util;
 mod window;
+mod service;
 
 use tauri::{SystemTray, Manager, PhysicalSize, PhysicalPosition, AppHandle};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent};
@@ -23,6 +24,7 @@ use config::config::save_config;
 use util::global_shortcut_util;
 use window::window::show_main_window;
 use util::global_shortcut_util::{reregister_for_ocr, reregister_for_word_selection_translate};
+use service::auto_start::{get_status, enable, disable};
 
 fn main() {
     // println!("{:?}", *config::config::CONFIG);
@@ -59,7 +61,15 @@ fn main() {
             },
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![get_words, screenshot, get_config, save_config, show_main_window, get_runtime_config, reregister_for_ocr, reregister_for_word_selection_translate])
+        .invoke_handler(tauri::generate_handler![
+            get_words,
+            screenshot,
+            get_config, save_config,
+            get_runtime_config,
+            show_main_window,
+            reregister_for_ocr, reregister_for_word_selection_translate,
+            get_status, enable, disable
+        ])
         .setup(|app| {
             let config = get_config();
             if config.hot_keys.word_selection_translate != "" {
@@ -105,7 +115,7 @@ fn main() {
 
 fn create_resized_debounce() -> std::sync::mpsc::Sender<(AppHandle, PhysicalSize<u32>)> {
     debounce(|(app_handle, size): (AppHandle, PhysicalSize<u32>)| {
-        println!("resized debounce: {:?}", size);
+        // println!("resized debounce: {:?}", size);
         let mut config = get_config();
         let mut main = config.window.get_mut("main").unwrap();
         if (main.width != size.width || main.height != size.height) && size.height > 100 {
@@ -123,7 +133,7 @@ fn create_resized_debounce() -> std::sync::mpsc::Sender<(AppHandle, PhysicalSize
 
 fn create_moved_debounce() -> std::sync::mpsc::Sender<PhysicalPosition<i32>> {
     debounce(|pos: PhysicalPosition<i32>| {
-        println!("moved debounce: {:?}", pos);
+        // println!("moved debounce: {:?}", pos);
         let mut config = get_config();
         let mut main = config.window.get_mut("main").unwrap();
         if (main.x != pos.x || main.y != pos.y) && pos.x > -32000 {
