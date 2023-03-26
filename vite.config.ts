@@ -5,6 +5,7 @@ import Components from 'unplugin-vue-components/vite'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default ({mode}) => {
@@ -52,6 +53,12 @@ export default ({mode}) => {
             minify: 'esbuild',
             // 为调试构建生成源代码映射 (sourcemap)
             sourcemap: false,
+            rollupOptions: {
+              input: {
+                main: resolve(__dirname, 'index.html'),
+                nested: resolve(__dirname, 'screenshot/index.html'),
+              },
+            },
         },
     })
 }

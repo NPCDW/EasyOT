@@ -49,7 +49,7 @@ pub fn register_for_ocr(app_handle: AppHandle, key: &str) -> bool {
             let enigo = Enigo::new();
             let mouse = enigo.mouse_location();
 
-            let window = tauri::WindowBuilder::new(&app_handle, "screenshot", tauri::WindowUrl::App("/screenshot?target=ocr".into()))
+            let window = tauri::WindowBuilder::new(&app_handle, "screenshot", tauri::WindowUrl::App("/screenshot/?target=ocr".into()))
                 .always_on_top(true)
                 .decorations(false)
                 .position(mouse.0.into(), mouse.1.into())

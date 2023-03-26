@@ -2,7 +2,7 @@ import * as VueRouter from 'vue-router'
 import About from '../pages/About.vue'
 import Setting from '../pages/Setting.vue'
 import Result from '../pages/Result.vue'
-import Screenshot from '../pages/Screenshot.vue'
+// import Screenshot from '../pages/Screenshot.vue'
 import Window from '../components/Window.vue'
 
 const routes = [
@@ -25,7 +25,7 @@ const routes = [
             },
         ],
     },
-    { path: '/screenshot', component: Screenshot },
+    // { path: '/screenshot', component: Screenshot },
 ]
 
 const router = VueRouter.createRouter({
