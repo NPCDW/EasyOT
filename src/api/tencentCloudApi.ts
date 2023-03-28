@@ -1,12 +1,19 @@
 import * as CryptoJS from 'crypto-js';
 import { getClient, Body } from '@tauri-apps/api/http';
 import {useConfig} from '../store/config'
+import i18n from '../i18n'
 
 export default {
     ocr, translate
 }
 
 async function translate(sourceText: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
+    const { t } = i18n.global
+    let config = useConfig().get_config()
+    if (!config?.ocr.tencent_cloud.secret_id || !config?.ocr.tencent_cloud.secret_key) {
+        return t('result.EmptyKeyMessage')
+    }
+    
     let payloadStr = JSON.stringify({
         SourceText: sourceText,
         Source: sourceLanguage,
@@ -19,7 +26,7 @@ async function translate(sourceText: string, sourceLanguage: string, targetLangu
     });
     console.log("tencent translate", response)
     if (!response.ok) {
-        return "请求失败：" + JSON.stringify(response);
+        return t('result.ErrorRequest') + JSON.stringify(response);
     }
     const data = response.data as { Response: {Error: {Code: string, Message: string}, TargetText: string} }
     if (data.Response.Error) {
@@ -29,6 +36,12 @@ async function translate(sourceText: string, sourceLanguage: string, targetLangu
 }
 
 async function ocr(mode: string, imageBase64: string) {
+    const { t } = i18n.global
+    let config = useConfig().get_config()
+    if (!config?.ocr.tencent_cloud.secret_id || !config?.ocr.tencent_cloud.secret_key) {
+        return t('result.EmptyKeyMessage')
+    }
+
     let payloadStr = JSON.stringify({
         ImageBase64: imageBase64,
     })
@@ -38,7 +51,7 @@ async function ocr(mode: string, imageBase64: string) {
     });
     console.log("tencent ocr", response)
     if (!response.ok) {
-        return "请求失败：" + JSON.stringify(response);
+        return t('result.ErrorRequest') + JSON.stringify(response);
     }
     const data = response.data as { Response: {Error: {Code: string, Message: string}, TextDetections: {DetectedText: string}[]} }
     if (data.Response.Error) {
@@ -145,7 +158,7 @@ function sign(param: SignParam) {
         "X-TC-Timestamp": timestamp.toString(),
         "X-TC-Version": version,
         "X-TC-Region": region,
-        "X-TC-Language": "zh-CN",
+        // "X-TC-Language": "zh-CN",
         "X-TC-RequestClient": "EasyOT",
     }
 }

@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-// import { createI18n } from 'vue-i18n'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 import './style.css'
@@ -8,6 +7,8 @@ import { useConfig } from './store/config'
 import { useRuntimeConfig } from './store/runtimeConfig'
 import router from './router/router'
 import { createPinia } from 'pinia'
+import i18n from './i18n'
+import {type LocaleLangType} from './i18n/locale'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -15,12 +16,11 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 
-await useConfig().refresh_config()
+let config = await useConfig().refresh_config()
 await useRuntimeConfig().refreshRuntimeConfig()
 
-// const i18n = createI18n({
-//     // something vue-i18n options here ...
-// })
-// app.use(i18n)
+i18n.global.locale.value = (config?.common.language! as LocaleLangType)
+
+app.use(i18n)
 
 app.mount('#app')

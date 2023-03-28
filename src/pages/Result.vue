@@ -17,13 +17,13 @@
           <el-select v-model="defaultOcrLanguage" placeholder="Select" @change="defaultOcrOptionChange">
             <el-option v-for="item in ocrLanguageOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-checkbox v-model="ocrDefaultSwitch" @change="ocrDefaultSwitch_checked" :disabled="ocrDefaultSwitch">{{ ocrDefaultSwitch ? '已是默认' : '设为默认' }}</el-checkbox>
-          <el-button type="primary" @click="ocr_click">识别</el-button>
+          <el-checkbox v-model="ocrDefaultSwitch" @change="ocrDefaultSwitch_checked" :disabled="ocrDefaultSwitch">{{ ocrDefaultSwitch ? t('result.AlreadyDefault') : t('result.SetAsDefault') }}</el-checkbox>
+          <el-button type="primary" @click="ocr_click">{{ t('result.ocr') }}</el-button>
         </el-space>
       </div>
       <!--  OCR文本块  -->
       <div>
-        <el-input v-model="ocr_text" :rows="8" type="textarea" placeholder="文本识别" />
+        <el-input v-model="ocr_text" :rows="8" type="textarea" :placeholder="t('result.TextRecognition')" />
       </div>
       <!--  翻译按钮块  -->
       <div style="text-align: center;">
@@ -38,13 +38,13 @@
           <el-select v-model="defaultTargetLanguage" placeholder="Select" @change="defaultTranslateOptionChange">
             <el-option v-for="item in targetLanguageOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-checkbox v-model="translateDefaultSwitch" @change="translateDefaultSwitch_checked" :disabled="translateDefaultSwitch">{{ translateDefaultSwitch ? '已是默认' : '设为默认' }}</el-checkbox>
-          <el-button type="primary" @click="translate_click">翻译</el-button>
+          <el-checkbox v-model="translateDefaultSwitch" @change="translateDefaultSwitch_checked" :disabled="translateDefaultSwitch">{{ translateDefaultSwitch ? t('result.AlreadyDefault') : t('result.SetAsDefault') }}</el-checkbox>
+          <el-button type="primary" @click="translate_click">{{ t('result.translate') }}</el-button>
         </el-space>
       </div>
       <!--  翻译文本块  -->
       <div>
-        <el-input v-model="translate_text" :rows="8" type="textarea" placeholder="机器翻译" />
+        <el-input v-model="translate_text" :rows="8" type="textarea" :placeholder="t('result.MachineTranslation')" />
       </div>
     </el-space>
   </el-scrollbar>
@@ -61,8 +61,11 @@ import {ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLan
 import {translate} from '../service/translate'
 import {ocr} from '../service/ocr'
 import _ from 'lodash';
+import {useI18n} from 'vue-i18n'
 
 let config = useConfig().get_config()
+
+const { t } = useI18n({ useScope: 'global' })
 
 const defaultOcrProvide = ref<OcrLanguageKeys>(config?.ocr.default_ocr_provide as OcrLanguageKeys)
 const defaultOcrMode = ref(config?.ocr.default_ocr_mode)
@@ -105,14 +108,14 @@ const imageData = ref("data:image/png;base64,");
 
 async function ocr_click() {
   if (imageData.value) {
-    ocr_text.value = "识别中，请稍后......"
+    ocr_text.value = t('result.ocring')
     ocr_text.value = await ocr(defaultOcrProvide.value, defaultOcrMode.value!, defaultOcrLanguage.value!, imageData.value);
   }
 }
 
 async function translate_click() {
   if (ocr_text.value) {
-    translate_text.value = "翻译中，请稍后......"
+    translate_text.value = t('result.translating')
     translate_text.value = await translate(defaultTranslateProvide.value, defaultSourceLanguage.value!, defaultTargetLanguage.value!, ocr_text.value);
   }
 }

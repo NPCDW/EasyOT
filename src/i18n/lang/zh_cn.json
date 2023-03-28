@@ -1,0 +1,26 @@
+{
+    "about": {
+        "title": "关于",
+        "version": "版本",
+        "license": "开源许可",
+        "allRightsReserved": "版权所有",
+        "sourceCode": "源码",
+        "feedback": "反馈",
+        "links": "友情链接",
+        "copied": "已复制",
+        "CopyEmailMessage": "邮件地址复制成功"
+    },
+    "result": {
+        "title": "文字识别/机器翻译",
+        "translate": "翻译",
+        "TextRecognition": "文本识别",
+        "MachineTranslation": "机器翻译",
+        "SetAsDefault": "设为默认",
+        "AlreadyDefault": "已是默认",
+        "ocr": "识别",
+        "translating": "翻译中，请稍候......",
+        "ocring": "识别中，请稍候......",
+        "EmptyKeyMessage": "请先设置云服务商提供的秘钥信息，可以到设置中点击链接免费领取",
+        "ErrorRequest": "请求失败：\n"
+    }
+}

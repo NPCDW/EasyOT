@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ElNotification } from 'element-plus';
+import {useI18n} from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 function copyText(text: string) {
   navigator.clipboard.writeText(text);
   ElNotification({
-    title: '已复制',
-    message: '邮件地址复制成功',
+    title: t('about.copied'),
+    message: t('about.CopyEmailMessage'),
     type: 'success',
     offset: 40,
   })
@@ -20,12 +23,12 @@ function copyText(text: string) {
         direction="horizontal"
         style="padding: 20px;"
     >
-        <el-descriptions-item label="版本"><el-link href="https://github.com/NPCDW/EasyOT/releases" target="_blank">0.0.0</el-link></el-descriptions-item>
-        <el-descriptions-item label="开源许可"><el-link href="https://en.wikipedia.org/wiki/MIT_License" target="_blank">MIT License</el-link></el-descriptions-item>
-        <el-descriptions-item label="版权所有"><el-link href="https://github.com/NPCDW" target="_blank">© 2022 NPCDW</el-link></el-descriptions-item>
-        <el-descriptions-item label="源码"><el-link href="https://github.com/NPCDW/EasyOT" target="_blank">https://github.com/NPCDW/EasyOT</el-link></el-descriptions-item>
-        <el-descriptions-item label="反馈"><el-link href="#" @click="copyText('chenyongli0520@gmail.com')">chenyongli0520@gmail.com</el-link></el-descriptions-item>
-        <el-descriptions-item label="友情链接"><el-link href="https://www.0520.site" target="_blank">https://www.0520.site</el-link></el-descriptions-item>
+        <el-descriptions-item :label="t('about.version')"><el-link href="https://github.com/NPCDW/EasyOT/releases" target="_blank">0.0.0</el-link></el-descriptions-item>
+        <el-descriptions-item :label="t('about.license')"><el-link href="https://en.wikipedia.org/wiki/MIT_License" target="_blank">MIT License</el-link></el-descriptions-item>
+        <el-descriptions-item :label="t('about.allRightsReserved')"><el-link href="https://github.com/NPCDW" target="_blank">© 2022 NPCDW</el-link></el-descriptions-item>
+        <el-descriptions-item :label="t('about.sourceCode')"><el-link href="https://github.com/NPCDW/EasyOT" target="_blank">https://github.com/NPCDW/EasyOT</el-link></el-descriptions-item>
+        <el-descriptions-item :label="t('about.feedback')"><el-link href="#" @click="copyText('chenyongli0520@gmail.com')">chenyongli0520@gmail.com</el-link></el-descriptions-item>
+        <el-descriptions-item :label="t('about.links')"><el-link href="https://www.0520.site" target="_blank">https://www.0520.site</el-link></el-descriptions-item>
     </el-descriptions>
   </el-scrollbar>
 </template>

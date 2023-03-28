@@ -10,9 +10,12 @@ import _ from 'lodash';
 import { invoke } from '@tauri-apps/api/tauri'
 import { platform } from '@tauri-apps/api/os';
 import { Command } from '@tauri-apps/api/shell'
+import {useI18n} from 'vue-i18n'
 
 let config = useConfig().get_config()
 let runtimeConfig = useRuntimeConfig().getRuntimeConfig()
+
+const { locale } = useI18n({ useScope: 'global' })
 
 const language = ref(config?.common.language)
 const languageOptions = ref([
@@ -25,6 +28,11 @@ const languageOptions = ref([
     value: "zh_CN"
   },
 ])
+function languageChange(val: string) {
+  locale.value = val
+  config!.common.language = val
+}
+
 const wordSelectionInterval = ref(config?.common.word_selection_interval)
 
 const defaultOcrProvide = ref(config?.ocr.default_ocr_provide)
@@ -238,13 +246,13 @@ async function autoStartBeforeChange() {
 <template>
   <el-scrollbar class="page">
     <el-tabs tab-position="left" style="height: 100%">
-      <el-tab-pane label="常规">
+      <el-tab-pane :label="$t('about.title')">
         <el-form label-width="120px" style="padding-right: 40px;">
           <el-form-item label="开机启动">
             <el-switch v-model="autoStart" :before-change="autoStartBeforeChange" />
           </el-form-item>
           <el-form-item label="语言">
-            <el-select v-model="language" placeholder="Select">
+            <el-select v-model="language" placeholder="Select" @change="languageChange">
               <el-option v-for="item in languageOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>

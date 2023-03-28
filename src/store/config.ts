@@ -13,6 +13,7 @@ export const useConfig = defineStore('config', () => {
     async function refresh_config() {
         config.value = await invoke("get_config");
         console.log("refresh_config ", config.value)
+        return config.value
     }
 
     async function save_config(tmp: Config) {
