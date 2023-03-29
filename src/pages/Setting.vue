@@ -286,7 +286,7 @@ async function autoStartBeforeChange() {
                   :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-divider content-position="left">{{ t('setting.TencentCloud') }}</el-divider>
+            <el-divider content-position="left">{{ t('ocrOptions.TencentCloud') }}</el-divider>
             <el-form-item label="SecretID">
               <el-input v-model="tencentCloud_ocr_secretId" placeholder="Please input" />
             </el-form-item>
@@ -297,7 +297,7 @@ async function autoStartBeforeChange() {
             <el-form-item label="→">
               <span><el-link href="https://cloud.tencent.com/document/product/866/35945" target="_blank">{{ t('setting.TencentCloudFreeQuota') }}</el-link></span>
             </el-form-item>
-            <el-divider content-position="left">{{ t('setting.BaiduCloud') }}</el-divider>
+            <el-divider content-position="left">{{ t('ocrOptions.BaiduCloud') }}</el-divider>
             <el-form-item label="AppKey">
               <el-input v-model="baiduCloud_ocr_appKey" placeholder="Please input" />
             </el-form-item>
@@ -306,7 +306,7 @@ async function autoStartBeforeChange() {
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h" target="_blank">{{ t('setting.BaiduCloud') }}</el-link></span>
+              <span><el-link href="https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h" target="_blank">{{ t('setting.BaiduCloudFreeQuota') }}</el-link></span>
             </el-form-item>
             <el-divider content-position="left">SpaceOCR</el-divider>
             <el-form-item label="ApiKey">
@@ -340,7 +340,7 @@ async function autoStartBeforeChange() {
                   :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-divider content-position="left">{{ t('setting.TencentCloud') }}</el-divider>
+            <el-divider content-position="left">{{ t('translateOptions.TencentCloud') }}</el-divider>
             <el-form-item label="SecretID">
               <el-input v-model="tencentCloud_translate_secretId" placeholder="Please input" />
             </el-form-item>
@@ -351,7 +351,7 @@ async function autoStartBeforeChange() {
             <el-form-item label="→">
               <span><el-link href="https://cloud.tencent.com/document/product/551/35017" target="_blank">{{ t('setting.TencentCloudTranslateFreeQuota') }}</el-link></span>
             </el-form-item>
-            <el-divider content-position="left">{{ t('setting.BaiduTranslate') }}</el-divider>
+            <el-divider content-position="left">{{ t('translateOptions.BaiduTranslate') }}</el-divider>
             <el-form-item label="AppID">
               <el-input v-model="baiduAI_translate_app_id" placeholder="Please input" />
             </el-form-item>
@@ -362,7 +362,7 @@ async function autoStartBeforeChange() {
             <el-form-item label="→">
               <span><el-link href="https://fanyi-api.baidu.com/product/111" target="_blank">{{ t('setting.BaiduTranslateFreeQuota') }}</el-link></span>
             </el-form-item>
-            <el-divider content-position="left">{{ t('setting.GoogleTranslate') }}</el-divider>
+            <el-divider content-position="left">{{ t('translateOptions.GoogleTranslate') }}</el-divider>
             <el-form-item label="→">
               <span>{{ t('setting.GoogleTranslateFreeQuota') }}</span>
             </el-form-item>
@@ -385,8 +385,8 @@ async function autoStartBeforeChange() {
     </el-tabs>
     <div style="position: absolute; bottom: 20px; left: 20px;">
       <el-space direction="vertical">
-        <el-button type="primary" @click="save">保存</el-button>
-        <el-button @click="cancel">取消</el-button>
+        <el-button type="primary" @click="save">{{ t('setting.save') }}</el-button>
+        <el-button @click="cancel">{{ t('setting.cancel') }}</el-button>
       </el-space>
     </div>
   </el-scrollbar>
