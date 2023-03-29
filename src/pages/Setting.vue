@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue';
+import { ref, watch, watchEffect, reactive } from 'vue';
 import { ElNotification } from 'element-plus';
 import type { FormRules } from 'element-plus'
 import {useConfig} from '../store/config'
@@ -17,6 +17,8 @@ let runtimeConfig = useRuntimeConfig().getRuntimeConfig()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
+const formItemLabelWidth = ref('200px')
+
 const language = ref(config?.common.language)
 const languageOptions = ref([
   {
@@ -28,6 +30,9 @@ const languageOptions = ref([
     value: "zh_CN"
   },
 ])
+watchEffect(() => {
+  formItemLabelWidth.value = language.value === 'zh_CN' ? '120px' : '200px'
+})
 function languageChange(val: string) {
   locale.value = val
   config!.common.language = val
@@ -247,7 +252,7 @@ async function autoStartBeforeChange() {
   <el-scrollbar class="page">
     <el-tabs tab-position="left" style="height: 100%">
       <el-tab-pane :label="t('setting.comman')">
-        <el-form label-width="120px" style="padding-right: 40px;">
+        <el-form :label-width="formItemLabelWidth" style="padding-right: 40px;">
           <el-form-item :label="t('setting.autoStart')">
             <el-switch v-model="autoStart" :before-change="autoStartBeforeChange" />
           </el-form-item>
@@ -266,7 +271,7 @@ async function autoStartBeforeChange() {
       </el-tab-pane>
       <el-tab-pane :label="t('setting.TextRecognition')">
         <el-scrollbar>
-          <el-form label-width="120px" style="padding-right: 40px;">
+          <el-form :label-width="formItemLabelWidth" style="padding-right: 40px;">
             <el-divider content-position="left">{{ t('setting.DefaultTextRecognition') }}</el-divider>
             <el-form-item :label="t('setting.CloudServiceProvider')">
               <el-select v-model="defaultOcrProvide" placeholder="Select">
@@ -320,7 +325,7 @@ async function autoStartBeforeChange() {
       </el-tab-pane>
       <el-tab-pane :label="t('setting.MachineTranslation')">
         <el-scrollbar>
-          <el-form label-width="120px" style="padding-right: 40px;">
+          <el-form :label-width="formItemLabelWidth" style="padding-right: 40px;">
             <el-divider content-position="left">{{ t('setting.DefaultMachineTranslation') }}</el-divider>
             <el-form-item :label="t('setting.CloudServiceProvider')">
               <el-select v-model="defaultTranslateProvide" placeholder="Select">
@@ -370,7 +375,7 @@ async function autoStartBeforeChange() {
         </el-scrollbar>
       </el-tab-pane>
       <el-tab-pane :label="t('setting.GlobalHotkey')">
-        <el-form label-width="120px" style="padding-right: 40px;" status-icon :rules="hotkeyRules">
+        <el-form :label-width="formItemLabelWidth" style="padding-right: 40px;" status-icon :rules="hotkeyRules">
           <el-form-item :label="t('setting.ocrHotKey')" prop="ocrHotKey" :validate-status="runtimeConfig?.hotkey_conflict.ocr ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.ocr ? t('setting.ShortcutKeysInUsed') : ''">
             <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" :placeholder="t('setting.NoShortcutKeySet')" />
           </el-form-item>

@@ -5,11 +5,11 @@ import i18n from '../i18n'
 
 const TRANSLATE_URL = "https://fanyi-api.baidu.com/api/trans/vip/translate"
 
+const { t } = i18n.global
+
 const random = (min:any,max:any) => Math.floor(Math.random() * (max - min + 1) + min)
 
 async function translate(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
-    const { t } = i18n.global
-    
     let config = useConfig().get_config()
     if (!config?.translate.baidu_ai.app_id || !config?.translate.baidu_ai.app_secret) {
         return t('result.EmptyKeyMessage')

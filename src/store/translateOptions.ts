@@ -40,9 +40,9 @@ export function getTranslateLanguageOptions(translateProvide: TranslateLanguageK
 const { t } = i18n.global
 
 const translateProvide = {
-    BaiduAI: t('translateOptions.TencentCloud'),
+    BaiduAI: t('translateOptions.BaiduTranslate'),
     TencentCloud: t('translateOptions.TencentCloud'),
-    GoogleTranslate: t('translateOptions.TencentCloud'),
+    GoogleTranslate: t('translateOptions.GoogleTranslate'),
 }
 
 const translateLanguage: TranslateLanguageType[] = [

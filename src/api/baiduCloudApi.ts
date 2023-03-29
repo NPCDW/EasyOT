@@ -4,9 +4,9 @@ import i18n from '../i18n'
 
 const OCR_BASE_PATH = "https://aip.baidubce.com/"
 
-async function getAccessToken(): Promise<string> {
-    const { t } = i18n.global
+const { t } = i18n.global
     
+async function getAccessToken(): Promise<string> {
     return new Promise(async (resolve, reject) => {
         let config = useConfig().get_config();
         if (!config?.ocr.baidu_cloud.client_id || !config?.ocr.baidu_cloud.client_secret) {
@@ -42,8 +42,6 @@ async function getAccessToken(): Promise<string> {
 }
 
 async function ocr(type: string, image: string) {
-    const { t } = i18n.global
-    
     const access_token = await getAccessToken()
     
     const client = await getClient();
