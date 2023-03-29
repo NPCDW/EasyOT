@@ -34,7 +34,7 @@ export function getOcrModeOptions(ocrProvide: OcrLanguageKeys) {
     let list: SelectOptions[] = []
     Object.entries(ocrMode[ocrProvide]).forEach(([k, v]) => {
         list.push({
-            label: t(v),
+            label: computed(() => t(v)),
             value: k
         })
     });
@@ -46,7 +46,7 @@ export function getOcrLanguageOptions(ocrProvide: OcrLanguageKeys) {
     for (const item of ocrLanguage) {
         if (item[ocrProvide]) {
             list.push({
-                label: t(item.name),
+                label: computed(() => t(item.name)),
                 value: item[ocrProvide]!
             })
         }

@@ -11,6 +11,7 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { platform } from '@tauri-apps/api/os';
 import { Command } from '@tauri-apps/api/shell'
 import {useI18n} from 'vue-i18n'
+import {langOptions} from '../i18n/locale'
 
 let config = useConfig().get_config()
 let runtimeConfig = useRuntimeConfig().getRuntimeConfig()
@@ -20,16 +21,7 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const formItemLabelWidth = ref('200px')
 
 const language = ref(config?.common.language)
-const languageOptions = ref([
-  {
-    label: "English",
-    value: "en_US"
-  },
-  {
-    label: "简体中文",
-    value: "zh_CN"
-  },
-])
+const languageOptions = ref<SelectOptions[]>(langOptions)
 watchEffect(() => {
   formItemLabelWidth.value = language.value === 'zh_CN' ? '120px' : '200px'
 })

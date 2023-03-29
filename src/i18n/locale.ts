@@ -8,4 +8,15 @@ const lang = {
 
 export type LocaleLangType = keyof typeof lang
 
+export const langOptions = [
+    {
+      label: "English",
+      value: "en_US"
+    },
+    {
+      label: "简体中文",
+      value: "zh_CN"
+    },
+]
+
 export default lang

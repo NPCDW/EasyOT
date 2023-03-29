@@ -1,4 +1,4 @@
-import { computed, watchEffect } from "vue"
+import { computed } from "vue"
 import i18n from '../i18n'
 
 type TranslateLanguageTmp = {
@@ -32,7 +32,7 @@ export function getTranslateLanguageOptions(translateProvide: TranslateLanguageK
     for (const item of translateLanguage) {
         if (item[translateProvide]) {
             list.push({
-                label: t(item.name),
+                label: computed(() => t(item.name)),
                 value: item[translateProvide]!
             })
         }

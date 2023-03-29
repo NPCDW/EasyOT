@@ -6,6 +6,6 @@ declare module '*.vue' {
 }
 
 interface SelectOptions {
-    label: string,
+    label: string | Ref,
     value: string
 }
