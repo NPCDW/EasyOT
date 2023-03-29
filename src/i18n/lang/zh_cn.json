@@ -65,6 +65,7 @@
     "ocrOptions": {
         "TencentCloud": "腾讯云",
         "BaiduCloud": "百度云",
+        "SpaceOCR": "SpaceOCR",
         "GeneralBasicOCR": "通用",
         "GeneralAccurateOCR": "高精度",
         "GeneralHandwritingOCR": "手写体",

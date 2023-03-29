@@ -1,4 +1,4 @@
-import { computed } from "vue"
+import { computed, watchEffect } from "vue"
 import i18n from '../i18n'
 
 type TranslateLanguageTmp = {
@@ -13,14 +13,17 @@ type TranslateLanguageType = TranslateLanguageTmp & TranslateProvideType
 
 export type TranslateLanguageKeys = keyof TranslateProvideType
 
+const { t } = i18n.global
+
 export const translateProvideOptions = computed(() => {
     let list: SelectOptions[] = []
     Object.entries(translateProvide).forEach(([k, v]) => {
         list.push({
-            label: v,
+            label: t(v),
             value: k
         })
     });
+    console.log(list)
     return list
 })
 
@@ -29,7 +32,7 @@ export function getTranslateLanguageOptions(translateProvide: TranslateLanguageK
     for (const item of translateLanguage) {
         if (item[translateProvide]) {
             list.push({
-                label: item.name,
+                label: t(item.name),
                 value: item[translateProvide]!
             })
         }
@@ -37,487 +40,485 @@ export function getTranslateLanguageOptions(translateProvide: TranslateLanguageK
     return list
 }
 
-const { t } = i18n.global
-
 const translateProvide = {
-    BaiduAI: t('translateOptions.BaiduTranslate'),
-    TencentCloud: t('translateOptions.TencentCloud'),
-    GoogleTranslate: t('translateOptions.GoogleTranslate'),
+    BaiduAI: 'translateOptions.BaiduTranslate',
+    TencentCloud: 'translateOptions.TencentCloud',
+    GoogleTranslate: 'translateOptions.GoogleTranslate',
 }
 
 const translateLanguage: TranslateLanguageType[] = [
     {
-        name: t('language.auto'),
+        name: 'language.auto',
         BaiduAI: "auto",
         TencentCloud: "auto",
         GoogleTranslate: "auto",
     },
     {
-        name: t('language.zh'),
+        name: 'language.zh',
         BaiduAI: "zh",
         TencentCloud: "zh",
         GoogleTranslate: "zh-cn",
     },
     {
-        name: t('language.cht'),
+        name: 'language.cht',
         BaiduAI: "cht",
         TencentCloud: "zh-TW",
         GoogleTranslate: "zh-tw",
     },
     {
-        name: t('language.en'),
+        name: 'language.en',
         BaiduAI: "en",
         TencentCloud: "en",
         GoogleTranslate: "en",
     },
     {
-        name: t('language.jp'),
+        name: 'language.jp',
         BaiduAI: "jp",
         TencentCloud: "ja",
         GoogleTranslate: "ja",
     },
     {
-        name: t('language.kor'),
+        name: 'language.kor',
         BaiduAI: "kor",
         TencentCloud: "ko",
         GoogleTranslate: "ko",
     },
     {
-        name: t('language.fra'),
+        name: 'language.fra',
         BaiduAI: "fra",
         TencentCloud: "fr",
         GoogleTranslate: "fr",
     },
     {
-        name: t('language.spa'),
+        name: 'language.spa',
         BaiduAI: "spa",
         TencentCloud: "es",
         GoogleTranslate: "es",
     },
     {
-        name: t('language.th'),
+        name: 'language.th',
         BaiduAI: "th",
         TencentCloud: "th",
         GoogleTranslate: "th",
     },
     {
-        name: t('language.ara'),
+        name: 'language.ara',
         BaiduAI: "ara",
         TencentCloud: "ar",
         GoogleTranslate: "ar",
     },
     {
-        name: t('language.ru'),
+        name: 'language.ru',
         BaiduAI: "ru",
         TencentCloud: "ru",
         GoogleTranslate: "ru",
     },
     {
-        name: t('language.pt'),
+        name: 'language.pt',
         BaiduAI: "pt",
         TencentCloud: "pt",
         GoogleTranslate: "pt",
     },
     {
-        name: t('language.de'),
+        name: 'language.de',
         BaiduAI: "de",
         TencentCloud: "de",
         GoogleTranslate: "de",
     },
     {
-        name: t('language.it'),
+        name: 'language.it',
         BaiduAI: "it",
         TencentCloud: "it",
         GoogleTranslate: "it",
     },
     {
-        name: t('language.vie'),
+        name: 'language.vie',
         BaiduAI: "vie",
         TencentCloud: "vi",
         GoogleTranslate: "vi",
     },
     {
-        name: t('language.el'),
+        name: 'language.el',
         BaiduAI: "el",
         GoogleTranslate: "el",
     },
     {
-        name: t('language.nl'),
+        name: 'language.nl',
         BaiduAI: "nl",
         GoogleTranslate: "nl",
     },
     {
-        name: t('language.pl'),
+        name: 'language.pl',
         BaiduAI: "pl",
         GoogleTranslate: "pl",
     },
     {
-        name: t('language.bul'),
+        name: 'language.bul',
         BaiduAI: "bul",
         GoogleTranslate: "bg",
     },
     {
-        name: t('language.est'),
+        name: 'language.est',
         BaiduAI: "est",
         GoogleTranslate: "et",
     },
     {
-        name: t('language.dan'),
+        name: 'language.dan',
         BaiduAI: "dan",
         GoogleTranslate: "da",
     },
     {
-        name: t('language.fin'),
+        name: 'language.fin',
         BaiduAI: "fin",
         GoogleTranslate: "fi",
     },
     {
-        name: t('language.cs'),
+        name: 'language.cs',
         BaiduAI: "cs",
         GoogleTranslate: "cs",
     },
     {
-        name: t('language.rom'),
+        name: 'language.rom',
         BaiduAI: "rom",
         GoogleTranslate: "ro",
     },
     {
-        name: t('language.slo'),
+        name: 'language.slo',
         BaiduAI: "slo",
         GoogleTranslate: "sl",
     },
     {
-        name: t('language.swe'),
+        name: 'language.swe',
         BaiduAI: "swe",
         GoogleTranslate: "sv",
     },
     {
-        name: t('language.hu'),
+        name: 'language.hu',
         BaiduAI: "hu",
         GoogleTranslate: "hu",
     },
     {
-        name: t('language.tr'),
+        name: 'language.tr',
         TencentCloud: "tr",
         GoogleTranslate: "tr",
     },
     {
-        name: t('language.id'),
+        name: 'language.id',
         TencentCloud: "id",
         GoogleTranslate: "id",
     },
     {
-        name: t('language.ms'),
+        name: 'language.ms',
         TencentCloud: "ms",
         GoogleTranslate: "ms",
     },
     {
-        name: t('language.hi'),
+        name: 'language.hi',
         TencentCloud: "hi",
         GoogleTranslate: "hi",
     },
     {
-        name: t('language.yue'),
+        name: 'language.yue',
         BaiduAI: "yue",
     },
     {
-        name: t('language.wyw'),
+        name: 'language.wyw',
         BaiduAI: "wyw",
     },
     {
-        name: t('language.af'),
+        name: 'language.af',
         GoogleTranslate: "af",
     },
     {
-        name: t('language.sq'),
+        name: 'language.sq',
         GoogleTranslate: "sq",
     },
     {
-        name: t('language.am'),
+        name: 'language.am',
         GoogleTranslate: "am",
     },
     {
-        name: t('language.hy'),
+        name: 'language.hy',
         GoogleTranslate: "hy",
     },
     {
-        name: t('language.az'),
+        name: 'language.az',
         GoogleTranslate: "az",
     },
     {
-        name: t('language.eu'),
+        name: 'language.eu',
         GoogleTranslate: "eu",
     },
     {
-        name: t('language.be'),
+        name: 'language.be',
         GoogleTranslate: "be",
     },
     {
-        name: t('language.bn'),
+        name: 'language.bn',
         GoogleTranslate: "bn",
     },
     {
-        name: t('language.bs'),
+        name: 'language.bs',
         GoogleTranslate: "bs",
     },
     {
-        name: t('language.ca'),
+        name: 'language.ca',
         GoogleTranslate: "ca",
     },
     {
-        name: t('language.ceb'),
+        name: 'language.ceb',
         GoogleTranslate: "ceb",
     },
     {
-        name: t('language.ny'),
+        name: 'language.ny',
         GoogleTranslate: "ny",
     },
     {
-        name: t('language.co'),
+        name: 'language.co',
         GoogleTranslate: "co",
     },
     {
-        name: t('language.hr'),
+        name: 'language.hr',
         GoogleTranslate: "hr",
     },
     {
-        name: t('language.eo'),
+        name: 'language.eo',
         GoogleTranslate: "eo",
     },
     {
-        name: t('language.tl'),
+        name: 'language.tl',
         GoogleTranslate: "tl",
     },
     {
-        name: t('language.fy'),
+        name: 'language.fy',
         GoogleTranslate: "fy",
     },
     {
-        name: t('language.gl'),
+        name: 'language.gl',
         GoogleTranslate: "gl",
     },
     {
-        name: t('language.ka'),
+        name: 'language.ka',
         GoogleTranslate: "ka",
     },
     {
-        name: t('language.gu'),
+        name: 'language.gu',
         GoogleTranslate: "gu",
     },
     {
-        name: t('language.ht'),
+        name: 'language.ht',
         GoogleTranslate: "ht",
     },
     {
-        name: t('language.ha'),
+        name: 'language.ha',
         GoogleTranslate: "ha",
     },
     {
-        name: t('language.haw'),
+        name: 'language.haw',
         GoogleTranslate: "haw",
     },
     {
-        name: t('language.iw'),
+        name: 'language.iw',
         GoogleTranslate: "iw",
     },
     {
-        name: t('language.hmn'),
+        name: 'language.hmn',
         GoogleTranslate: "hmn",
     },
     {
-        name: t('language.is'),
+        name: 'language.is',
         GoogleTranslate: "is",
     },
     {
-        name: t('language.ig'),
+        name: 'language.ig',
         GoogleTranslate: "ig",
     },
     {
-        name: t('language.ga'),
+        name: 'language.ga',
         GoogleTranslate: "ga",
     },
     {
-        name: t('language.jw'),
+        name: 'language.jw',
         GoogleTranslate: "jw",
     },
     {
-        name: t('language.kn'),
+        name: 'language.kn',
         GoogleTranslate: "kn",
     },
     {
-        name: t('language.kk'),
+        name: 'language.kk',
         GoogleTranslate: "kk",
     },
     {
-        name: t('language.km'),
+        name: 'language.km',
         GoogleTranslate: "km",
     },
     {
-        name: t('language.ku'),
+        name: 'language.ku',
         GoogleTranslate: "ku",
     },
     {
-        name: t('language.ky'),
+        name: 'language.ky',
         GoogleTranslate: "ky",
     },
     {
-        name: t('language.lo'),
+        name: 'language.lo',
         GoogleTranslate: "lo",
     },
     {
-        name: t('language.la'),
+        name: 'language.la',
         GoogleTranslate: "la",
     },
     {
-        name: t('language.lv'),
+        name: 'language.lv',
         GoogleTranslate: "lv",
     },
     {
-        name: t('language.lt'),
+        name: 'language.lt',
         GoogleTranslate: "lt",
     },
     {
-        name: t('language.lb'),
+        name: 'language.lb',
         GoogleTranslate: "lb",
     },
     {
-        name: t('language.mk'),
+        name: 'language.mk',
         GoogleTranslate: "mk",
     },
     {
-        name: t('language.mg'),
+        name: 'language.mg',
         GoogleTranslate: "mg",
     },
     {
-        name: t('language.ml'),
+        name: 'language.ml',
         GoogleTranslate: "ml",
     },
     {
-        name: t('language.mt'),
+        name: 'language.mt',
         GoogleTranslate: "mt",
     },
     {
-        name: t('language.mi'),
+        name: 'language.mi',
         GoogleTranslate: "mi",
     },
     {
-        name: t('language.mr'),
+        name: 'language.mr',
         GoogleTranslate: "mr",
     },
     {
-        name: t('language.mn'),
+        name: 'language.mn',
         GoogleTranslate: "mn",
     },
     {
-        name: t('language.my'),
+        name: 'language.my',
         GoogleTranslate: "my",
     },
     {
-        name: t('language.ne'),
+        name: 'language.ne',
         GoogleTranslate: "ne",
     },
     {
-        name: t('language.no'),
+        name: 'language.no',
         GoogleTranslate: "no",
     },
     {
-        name: t('language.ps'),
+        name: 'language.ps',
         GoogleTranslate: "ps",
     },
     {
-        name: t('language.fa'),
+        name: 'language.fa',
         GoogleTranslate: "fa",
     },
     {
-        name: t('language.ma'),
+        name: 'language.ma',
         GoogleTranslate: "ma",
     },
     {
-        name: t('language.sm'),
+        name: 'language.sm',
         GoogleTranslate: "sm",
     },
     {
-        name: t('language.gd'),
+        name: 'language.gd',
         GoogleTranslate: "gd",
     },
     {
-        name: t('language.sr'),
+        name: 'language.sr',
         GoogleTranslate: "sr",
     },
     {
-        name: t('language.st'),
+        name: 'language.st',
         GoogleTranslate: "st",
     },
     {
-        name: t('language.sn'),
+        name: 'language.sn',
         GoogleTranslate: "sn",
     },
     {
-        name: t('language.sd'),
+        name: 'language.sd',
         GoogleTranslate: "sd",
     },
     {
-        name: t('language.si'),
+        name: 'language.si',
         GoogleTranslate: "si",
     },
     {
-        name: t('language.sk'),
+        name: 'language.sk',
         GoogleTranslate: "sk",
     },
     {
-        name: t('language.so'),
+        name: 'language.so',
         GoogleTranslate: "so",
     },
     {
-        name: t('language.su'),
+        name: 'language.su',
         GoogleTranslate: "su",
     },
     {
-        name: t('language.sw'),
+        name: 'language.sw',
         GoogleTranslate: "sw",
     },
     {
-        name: t('language.tg'),
+        name: 'language.tg',
         GoogleTranslate: "tg",
     },
     {
-        name: t('language.ta'),
+        name: 'language.ta',
         GoogleTranslate: "ta",
     },
     {
-        name: t('language.te'),
+        name: 'language.te',
         GoogleTranslate: "te",
     },
     {
-        name: t('language.uk'),
+        name: 'language.uk',
         GoogleTranslate: "uk",
     },
     {
-        name: t('language.ur'),
+        name: 'language.ur',
         GoogleTranslate: "ur",
     },
     {
-        name: t('language.uz'),
+        name: 'language.uz',
         GoogleTranslate: "uz",
     },
     {
-        name: t('language.cy'),
+        name: 'language.cy',
         GoogleTranslate: "cy",
     },
     {
-        name: t('language.xh'),
+        name: 'language.xh',
         GoogleTranslate: "xh",
     },
     {
-        name: t('language.yi'),
+        name: 'language.yi',
         GoogleTranslate: "yi",
     },
     {
-        name: t('language.yo'),
+        name: 'language.yo',
         GoogleTranslate: "yo",
     },
     {
-        name: t('language.zu'),
+        name: 'language.zu',
         GoogleTranslate: "zu",
     }
 ]

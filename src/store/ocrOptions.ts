@@ -23,7 +23,7 @@ export const ocrProvideOptions = computed(() => {
     let list: SelectOptions[] = []
     Object.entries(ocrProvide).forEach(([k, v]) => {
         list.push({
-            label: v,
+            label: t(v),
             value: k
         })
     });
@@ -34,7 +34,7 @@ export function getOcrModeOptions(ocrProvide: OcrLanguageKeys) {
     let list: SelectOptions[] = []
     Object.entries(ocrMode[ocrProvide]).forEach(([k, v]) => {
         list.push({
-            label: v,
+            label: t(v),
             value: k
         })
     });
@@ -46,7 +46,7 @@ export function getOcrLanguageOptions(ocrProvide: OcrLanguageKeys) {
     for (const item of ocrLanguage) {
         if (item[ocrProvide]) {
             list.push({
-                label: item.name,
+                label: t(item.name),
                 value: item[ocrProvide]!
             })
         }
@@ -57,158 +57,158 @@ export function getOcrLanguageOptions(ocrProvide: OcrLanguageKeys) {
 const { t } = i18n.global
 
 const ocrProvide = {
-    BaiduCloud: t('ocrOptions.BaiduCloud'),
-    TencentCloud: t('ocrOptions.TencentCloud'),
-    SpaceOCR: "SpaceOCR",
+    BaiduCloud: 'ocrOptions.BaiduCloud',
+    TencentCloud: 'ocrOptions.TencentCloud',
+    SpaceOCR: 'ocrOptions.SpaceOCR',
 }
 
 const ocrMode: OcrModeType = {
     "BaiduCloud": {
-        "general_basic": t('ocrOptions.GeneralBasicOCR'),
-        "accurate_basic": t('ocrOptions.GeneralAccurateOCR'),
-        "handwriting": t('ocrOptions.GeneralHandwritingOCR'),
+        "general_basic": 'ocrOptions.GeneralBasicOCR',
+        "accurate_basic": 'ocrOptions.GeneralAccurateOCR',
+        "handwriting": 'ocrOptions.GeneralHandwritingOCR',
     },
     "TencentCloud": {
-        "GeneralBasicOCR": t('ocrOptions.GeneralBasicOCR'),
-        "GeneralAccurateOCR": t('ocrOptions.GeneralAccurateOCR'),
-        "GeneralHandwritingOCR": t('ocrOptions.GeneralHandwritingOCR'),
+        "GeneralBasicOCR": 'ocrOptions.GeneralBasicOCR',
+        "GeneralAccurateOCR": 'ocrOptions.GeneralAccurateOCR',
+        "GeneralHandwritingOCR": 'ocrOptions.GeneralHandwritingOCR',
     },
     "SpaceOCR": {
-        "1": t('ocrOptions.engine1'),
-        "2": t('ocrOptions.engine2'),
-        "3": t('ocrOptions.engine3'),
-        "5": t('ocrOptions.engine5'),
+        "1": 'ocrOptions.engine1',
+        "2": 'ocrOptions.engine2',
+        "3": 'ocrOptions.engine3',
+        "5": 'ocrOptions.engine5',
     },
 }
 
 const ocrLanguage: OcrLanguageType[] = [
     {
-        name: t('language.auto'),
+        name: 'language.auto',
         BaiduCloud: "auto",
         TencentCloud: "auto",
     },
     {
-        name: t('language.en'),
+        name: 'language.en',
         SpaceOCR: "eng",
     },
     {
-        name: t('language.zh'),
+        name: 'language.zh',
         SpaceOCR: "chs",
     },
     {
-        name: t('language.cht'),
+        name: 'language.cht',
         SpaceOCR: "cht",
     },
     {
-        name: t('language.jp'),
+        name: 'language.jp',
         SpaceOCR: "jpn",
     },
     {
-        name: t('language.kor'),
+        name: 'language.kor',
         SpaceOCR: "kor",
     },
     {
-        name: t('language.fra'),
+        name: 'language.fra',
         SpaceOCR: "fre",
     },
     {
-        name: t('language.spa'),
+        name: 'language.spa',
         SpaceOCR: "spa",
     },
     {
-        name: t('language.th'),
+        name: 'language.th',
         SpaceOCR: "tai",
     },
     {
-        name: t('language.ara'),
+        name: 'language.ara',
         SpaceOCR: "ara",
     },
     {
-        name: t('language.ru'),
+        name: 'language.ru',
         SpaceOCR: "rus",
     },
     {
-        name: t('language.bul'),
+        name: 'language.bul',
         SpaceOCR: "bul",
     },
     {
-        name: t('language.hr'),
+        name: 'language.hr',
         SpaceOCR: "hrv",
     },
     {
-        name: t('language.cs'),
+        name: 'language.cs',
         SpaceOCR: "cze",
     },
     {
-        name: t('language.dan'),
+        name: 'language.dan',
         SpaceOCR: "dan",
     },
     {
-        name: t('language.nl'),
+        name: 'language.nl',
         SpaceOCR: "dut",
     },
     {
-        name: t('language.it'),
+        name: 'language.it',
         SpaceOCR: "ita",
     },
     {
-        name: t('language.fin'),
+        name: 'language.fin',
         SpaceOCR: "fin",
     },
     {
-        name: t('language.de'),
+        name: 'language.de',
         SpaceOCR: "ger",
     },
     {
-        name: t('language.el'),
+        name: 'language.el',
         SpaceOCR: "gre",
     },
     {
-        name: t('language.hu'),
+        name: 'language.hu',
         SpaceOCR: "hun",
     },
     {
-        name: t('language.pl'),
+        name: 'language.pl',
         SpaceOCR: "pol",
     },
     {
-        name: t('language.pt'),
+        name: 'language.pt',
         SpaceOCR: "por",
     },
     {
-        name: t('language.slo'),
+        name: 'language.slo',
         SpaceOCR: "slv",
     },
     {
-        name: t('language.swe'),
+        name: 'language.swe',
         SpaceOCR: "swe",
     },
     {
-        name: t('language.tr'),
+        name: 'language.tr',
         SpaceOCR: "tur",
     },
     {
-        name: t('language.hi'),
+        name: 'language.hi',
         SpaceOCR: "hin",
     },
     {
-        name: t('language.kn'),
+        name: 'language.kn',
         SpaceOCR: "kan",
     },
     {
-        name: t('language.fa'),
+        name: 'language.fa',
         SpaceOCR: "per",
     },
     {
-        name: t('language.te'),
+        name: 'language.te',
         SpaceOCR: "tel",
     },
     {
-        name: t('language.ta'),
+        name: 'language.ta',
         SpaceOCR: "tam",
     },
     {
-        name: t('language.vie'),
+        name: 'language.vie',
         SpaceOCR: "vie",
     },
 ]
