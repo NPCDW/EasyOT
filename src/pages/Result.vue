@@ -106,17 +106,25 @@ const translate_text = ref<string | null>(null);
 
 const imageData = ref("data:image/png;base64,");
 
-async function ocr_click() {
+function ocr_click() {
   if (imageData.value) {
     ocr_text.value = t('result.ocring')
-    ocr_text.value = await ocr(defaultOcrProvide.value, defaultOcrMode.value!, defaultOcrLanguage.value!, imageData.value);
+    ocr(defaultOcrProvide.value, defaultOcrMode.value!, defaultOcrLanguage.value!, imageData.value).then(text => {
+      ocr_text.value = text
+    }).catch(error => {
+      ocr_text.value = error
+    })
   }
 }
 
-async function translate_click() {
+function translate_click() {
   if (ocr_text.value) {
     translate_text.value = t('result.translating')
-    translate_text.value = await translate(defaultTranslateProvide.value, defaultSourceLanguage.value!, defaultTargetLanguage.value!, ocr_text.value);
+    translate(defaultTranslateProvide.value, defaultSourceLanguage.value!, defaultTargetLanguage.value!, ocr_text.value).then(text => {
+      translate_text.value = text
+    }).catch(error => {
+      translate_text.value = error
+    })
   }
 }
 
@@ -152,12 +160,12 @@ watch(() => route.query.rand, async () => {
   if (route.query.target === 'word_selection') {
     setTimeout(async () => {
       ocr_text.value = await readText();
-      await translate_click()
+      translate_click()
     }, config?.common.word_selection_interval)
   } else if (route.query.target === 'ocr') {
-    await once('wait-ocr-image-data-event', async (event) => {
+    await once('wait-ocr-image-data-event', (event) => {
       imageData.value = (event.payload as {imageData: string}).imageData
-      await ocr_click()
+      ocr_click()
     })
     await emit('result-page-mounted-event')
   }

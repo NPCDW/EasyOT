@@ -44,28 +44,26 @@ async function getAccessToken(): Promise<string> {
 async function ocr(type: string, image: string) {
     const { t } = i18n.global
     
-    return getAccessToken().then(async access_token => {
-        const client = await getClient();
-        const response = await client.post(OCR_BASE_PATH + 'rest/2.0/ocr/v1/' + type, Body.form({
-            image: image,
-            access_token,
-        }));
-        console.log("baidu ocr", response)
-        if (!response.ok) {
-            return t('result.ErrorRequest') + JSON.stringify(response);
-        }
-        const data = response.data as { error_code: string, error_msg: string, words_result: { words: string }[] }
-        if (data.error_code) {
-            return data.error_msg
-        }
-        let text = ''
-        for (let i = 0; i < data.words_result.length; i++) {
-            text += data.words_result[i].words + '\n'
-        }
-        return text
-    }).catch(errorMessage => {
-        return errorMessage
-    })
+    const access_token = await getAccessToken()
+    
+    const client = await getClient();
+    const response = await client.post(OCR_BASE_PATH + 'rest/2.0/ocr/v1/' + type, Body.form({
+        image: image,
+        access_token,
+    }));
+    console.log("baidu ocr", response)
+    if (!response.ok) {
+        return t('result.ErrorRequest') + JSON.stringify(response);
+    }
+    const data = response.data as { error_code: string, error_msg: string, words_result: { words: string }[] }
+    if (data.error_code) {
+        return data.error_msg
+    }
+    let text = ''
+    for (let i = 0; i < data.words_result.length; i++) {
+        text += data.words_result[i].words + '\n'
+    }
+    return text
 }
 
 export default {

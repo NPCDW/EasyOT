@@ -15,7 +15,7 @@ import {useI18n} from 'vue-i18n'
 let config = useConfig().get_config()
 let runtimeConfig = useRuntimeConfig().getRuntimeConfig()
 
-const { locale } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 
 const language = ref(config?.common.language)
 const languageOptions = ref([
@@ -101,8 +101,8 @@ async function save() {
 
     await useConfig().save_config(config!);
     ElNotification({
-      title: '成功',
-      message: '所有配置保存成功',
+      title: t('setting.success'),
+      message: t('setting.saveSuccess'),
       type: 'success',
       duration: 2000,
       offset: 40,
@@ -162,11 +162,11 @@ function hotkey_keydown(event: KeyboardEvent) {
 
 const validateOcrHotKey = async (rule: any, value: any, callback: any) => {
   if (!hotkey_isok.value) {
-    callback(new Error('全局快捷键不合法'))
+    callback(new Error(t('setting.ShortcutKeysInvalid')))
   } else {
     let res = await invoke("reregister_for_ocr", { key: ocrHotKey.value })
     if (!res) {
-      callback(new Error('全局快捷键已被占用'))
+      callback(new Error(t('setting.ShortcutKeysInUsed')))
     } else {
       config!.hot_keys.ocr = ocrHotKey.value!
       callback()
@@ -176,11 +176,11 @@ const validateOcrHotKey = async (rule: any, value: any, callback: any) => {
 
 const validateWordSelectionTranslateHotKey = async (rule: any, value: any, callback: any) => {
   if (!hotkey_isok.value) {
-    callback(new Error('全局快捷键不合法'))
+    callback(new Error(t('setting.ShortcutKeysInvalid')))
   } else {
     let res = await invoke("reregister_for_word_selection_translate", { key: wordSelectionTranslateHotKey.value })
     if (!res) {
-      callback(new Error('全局快捷键已被占用'))
+      callback(new Error(t('setting.ShortcutKeysInUsed')))
     } else {
       config!.hot_keys.word_selection_translate = wordSelectionTranslateHotKey.value!
       callback()
@@ -224,16 +224,16 @@ async function autoStartBeforeChange() {
   }
   if (res) {
     ElNotification({
-      title: '成功',
-      message: '设置成功',
+      title: t('setting.success'),
+      message: t('setting.setSuccess'),
       type: 'success',
       duration: 2000,
       offset: 40,
     })
   } else {
     ElNotification({
-      title: '失败',
-      message: '设置失败',
+      title: t('setting.fail'),
+      message: t('setting.setFail'),
       type: 'error',
       duration: 2000,
       offset: 40,
@@ -246,47 +246,47 @@ async function autoStartBeforeChange() {
 <template>
   <el-scrollbar class="page">
     <el-tabs tab-position="left" style="height: 100%">
-      <el-tab-pane :label="$t('about.title')">
+      <el-tab-pane :label="t('setting.comman')">
         <el-form label-width="120px" style="padding-right: 40px;">
-          <el-form-item label="开机启动">
+          <el-form-item :label="t('setting.autoStart')">
             <el-switch v-model="autoStart" :before-change="autoStartBeforeChange" />
           </el-form-item>
-          <el-form-item label="语言">
+          <el-form-item :label="t('setting.language')">
             <el-select v-model="language" placeholder="Select" @change="languageChange">
               <el-option v-for="item in languageOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
-          <el-form-item label="取词间隔">
+          <el-form-item :label="t('setting.WordSelectionInterval')">
             <el-input-number v-model="wordSelectionInterval" :min="200" :max="1000" :step="100" />
           </el-form-item>
-          <el-form-item label="配置目录">
-            <el-button type="primary" @click="openConfigDir">打开</el-button>
+          <el-form-item :label="t('setting.ConfigurationFileStorageLocation')">
+            <el-button type="primary" @click="openConfigDir">{{ t('setting.open') }}</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="文本识别">
+      <el-tab-pane :label="t('setting.TextRecognition')">
         <el-scrollbar>
           <el-form label-width="120px" style="padding-right: 40px;">
-            <el-divider content-position="left">默认文本识别</el-divider>
-            <el-form-item label="云服务商">
+            <el-divider content-position="left">{{ t('setting.DefaultTextRecognition') }}</el-divider>
+            <el-form-item :label="t('setting.CloudServiceProvider')">
               <el-select v-model="defaultOcrProvide" placeholder="Select">
                 <el-option v-for="item in ocrProvideOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="模式">
+            <el-form-item :label="t('setting.ocrMode')">
               <el-select v-model="defaultOcrMode" placeholder="Select">
                 <el-option v-for="item in ocrModeOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="语言">
+            <el-form-item :label="t('setting.ocrLanguage')">
               <el-select v-model="defaultOcrLanguage" placeholder="Select">
                 <el-option v-for="item in ocrLanguageOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-divider content-position="left">腾讯云</el-divider>
+            <el-divider content-position="left">{{ t('setting.TencentCloud') }}</el-divider>
             <el-form-item label="SecretID">
               <el-input v-model="tencentCloud_ocr_secretId" placeholder="Please input" />
             </el-form-item>
@@ -295,9 +295,9 @@ async function autoStartBeforeChange() {
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://cloud.tencent.com/document/product/866/35945" target="_blank">领取每月3000次的免费OCR额度</el-link></span>
+              <span><el-link href="https://cloud.tencent.com/document/product/866/35945" target="_blank">{{ t('setting.TencentCloudFreeQuota') }}</el-link></span>
             </el-form-item>
-            <el-divider content-position="left">百度云</el-divider>
+            <el-divider content-position="left">{{ t('setting.BaiduCloud') }}</el-divider>
             <el-form-item label="AppKey">
               <el-input v-model="baiduCloud_ocr_appKey" placeholder="Please input" />
             </el-form-item>
@@ -306,41 +306,41 @@ async function autoStartBeforeChange() {
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h" target="_blank">领取每月3000次的免费OCR额度</el-link></span>
+              <span><el-link href="https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h" target="_blank">{{ t('setting.BaiduCloud') }}</el-link></span>
             </el-form-item>
             <el-divider content-position="left">SpaceOCR</el-divider>
             <el-form-item label="ApiKey">
               <el-input v-model="spaceOcr_ocr_apiKey" type="password" placeholder="Please input password" show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://ocr.space/OCRAPI" target="_blank">领取每天500次的免费OCR额度</el-link></span>
+              <span><el-link href="https://ocr.space/OCRAPI" target="_blank">{{ t('setting.SpaceOCRFreeQuota') }}</el-link></span>
             </el-form-item>
           </el-form>
         </el-scrollbar>
       </el-tab-pane>
-      <el-tab-pane label="机器翻译">
+      <el-tab-pane :label="t('setting.MachineTranslation')">
         <el-scrollbar>
           <el-form label-width="120px" style="padding-right: 40px;">
-            <el-divider content-position="left">默认机器翻译</el-divider>
-            <el-form-item label="云服务商">
+            <el-divider content-position="left">{{ t('setting.DefaultMachineTranslation') }}</el-divider>
+            <el-form-item :label="t('setting.CloudServiceProvider')">
               <el-select v-model="defaultTranslateProvide" placeholder="Select">
                 <el-option v-for="item in translateProvideOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="源语言">
+            <el-form-item :label="t('setting.SourceLanguage')">
               <el-select v-model="defaultSourceLanguage" placeholder="Select">
                 <el-option v-for="item in sourceLanguageOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="目标语言">
+            <el-form-item :label="t('setting.TargetLanguage')">
               <el-select v-model="defaultTargetLanguage" placeholder="Select">
                 <el-option v-for="item in targetLanguageOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-divider content-position="left">腾讯云</el-divider>
+            <el-divider content-position="left">{{ t('setting.TencentCloud') }}</el-divider>
             <el-form-item label="SecretID">
               <el-input v-model="tencentCloud_translate_secretId" placeholder="Please input" />
             </el-form-item>
@@ -349,9 +349,9 @@ async function autoStartBeforeChange() {
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://cloud.tencent.com/document/product/551/35017" target="_blank">领取每月500万字符免费翻译额度</el-link></span>
+              <span><el-link href="https://cloud.tencent.com/document/product/551/35017" target="_blank">{{ t('setting.TencentCloudTranslateFreeQuota') }}</el-link></span>
             </el-form-item>
-            <el-divider content-position="left">百度翻译开放平台</el-divider>
+            <el-divider content-position="left">{{ t('setting.BaiduTranslate') }}</el-divider>
             <el-form-item label="AppID">
               <el-input v-model="baiduAI_translate_app_id" placeholder="Please input" />
             </el-form-item>
@@ -360,25 +360,25 @@ async function autoStartBeforeChange() {
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://fanyi-api.baidu.com/product/111" target="_blank">领取每月100万字符免费翻译额度</el-link></span>
+              <span><el-link href="https://fanyi-api.baidu.com/product/111" target="_blank">{{ t('setting.BaiduTranslateFreeQuota') }}</el-link></span>
             </el-form-item>
-            <el-divider content-position="left">谷歌翻译</el-divider>
+            <el-divider content-position="left">{{ t('setting.GoogleTranslate') }}</el-divider>
             <el-form-item label="→">
-              <span>无需领取，免费且不限量</span>
+              <span>{{ t('setting.GoogleTranslateFreeQuota') }}</span>
             </el-form-item>
           </el-form>
         </el-scrollbar>
       </el-tab-pane>
-      <el-tab-pane label="全局热键">
+      <el-tab-pane :label="t('setting.GlobalHotkey')">
         <el-form label-width="120px" style="padding-right: 40px;" status-icon :rules="hotkeyRules">
-          <el-form-item label="文本识别" prop="ocrHotKey" :validate-status="runtimeConfig?.hotkey_conflict.ocr ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.ocr ? '全局快捷键已被占用' : ''">
-            <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
+          <el-form-item :label="t('setting.ocrHotKey')" prop="ocrHotKey" :validate-status="runtimeConfig?.hotkey_conflict.ocr ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.ocr ? t('setting.ShortcutKeysInUsed') : ''">
+            <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" :placeholder="t('setting.NoShortcutKeySet')" />
           </el-form-item>
-          <el-form-item label="划词翻译" prop="wordSelectionTranslateHotKey" :validate-status="runtimeConfig?.hotkey_conflict.word_selection_translate ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.word_selection_translate ? '全局快捷键已被占用' : ''">
-            <el-input v-model="wordSelectionTranslateHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
+          <el-form-item :label="t('setting.wordSelectionTranslateHotKey')" prop="wordSelectionTranslateHotKey" :validate-status="runtimeConfig?.hotkey_conflict.word_selection_translate ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.word_selection_translate ? t('setting.ShortcutKeysInUsed') : ''">
+            <el-input v-model="wordSelectionTranslateHotKey" @keydown="hotkey_keydown($event)" :placeholder="t('setting.NoShortcutKeySet')" />
           </el-form-item>
-          <el-form-item label="截图翻译" prop="screenshotTranslateHotKey" :validate-status="runtimeConfig?.hotkey_conflict.screenshot_translate ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.screenshot_translate ? '全局快捷键已被占用' : ''">
-            <el-input v-model="screenshotTranslateHotKey" @keydown="hotkey_keydown($event)" placeholder="未设置快捷键" />
+          <el-form-item :label="t('setting.screenshotTranslateHotKey')" prop="screenshotTranslateHotKey" :validate-status="runtimeConfig?.hotkey_conflict.screenshot_translate ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.screenshot_translate ? t('setting.ShortcutKeysInUsed') : ''">
+            <el-input v-model="screenshotTranslateHotKey" @keydown="hotkey_keydown($event)" :placeholder="t('setting.NoShortcutKeySet')" />
           </el-form-item>
         </el-form>
       </el-tab-pane>
