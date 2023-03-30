@@ -9,6 +9,10 @@ import router from './router/router'
 import { createPinia } from 'pinia'
 import i18n from './i18n'
 import { type LocaleLangType } from './i18n/locale'
+import { appWindow } from '@tauri-apps/api/window'
+
+await appWindow.show()
+await appWindow.setFocus()
 
 const app = createApp(App)
 const pinia = createPinia()

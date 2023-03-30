@@ -14,7 +14,7 @@ pub fn show_main_window(app_handle: AppHandle, url: &str) {
         window.set_focus().unwrap();
     } else {
         let main = config.window.get("main").unwrap();
-        let window =
+        let _ =
             tauri::WindowBuilder::new(&app_handle, "main", tauri::WindowUrl::App(url.into()))
                 .decorations(false)
                 .resizable(true)
@@ -25,7 +25,5 @@ pub fn show_main_window(app_handle: AppHandle, url: &str) {
                 .transparent(true)
                 .build()
                 .unwrap();
-        window.show().unwrap();
-        window.set_focus().unwrap();
     }
 }

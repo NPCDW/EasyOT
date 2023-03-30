@@ -33,8 +33,6 @@ export default ({mode}) => {
                 autoInstall: true,
             }),
         ],
-        // development    production
-        base: mode === 'development' ? '/' : './',
         // prevent vite from obscuring rust errors
         clearScreen: false,
         // Tauri expects a fixed port, fail if that port is not available
