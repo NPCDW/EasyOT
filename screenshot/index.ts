@@ -1,22 +1,26 @@
-interface Window {
-  __TAURI__: {
-    tauri: {
-      invoke(cmd: string, arg?: {}): Promise<unknown>
-    }
-    event: {
-      emit(event: string, payload?: unknown): Promise<void>
-      once(event: string, handler: (event) => {}): Promise<void>
-    }
-    window: {
-      PhysicalPosition: new (x: number, y: number) => any
-      PhysicalSize: new (width: number, height: number) => any
-      appWindow: {
-        setPosition(pos: Window['__TAURI__']['window']['PhysicalPosition']): Promise<void>
-        setSize(size: Window['__TAURI__']['window']['PhysicalSize']): Promise<void>
-        show(): Promise<void>
-        setFocus(): Promise<void>
-        close(): Promise<void>
-        hide(): Promise<void>
+export {}
+
+declare global {
+  interface Window {
+    __TAURI__: {
+      tauri: {
+        invoke(cmd: string, arg?: {}): Promise<unknown>
+      }
+      event: {
+        emit(event: string, payload?: unknown): Promise<void>
+        once(event: string, handler: () => {}): Promise<void>
+      }
+      window: {
+        PhysicalPosition: new (x: number, y: number) => any
+        PhysicalSize: new (width: number, height: number) => any
+        appWindow: {
+          setPosition(pos: Window['__TAURI__']['window']['PhysicalPosition']): Promise<void>
+          setSize(size: Window['__TAURI__']['window']['PhysicalSize']): Promise<void>
+          show(): Promise<void>
+          setFocus(): Promise<void>
+          close(): Promise<void>
+          hide(): Promise<void>
+        }
       }
     }
   }
@@ -138,7 +142,7 @@ async function mouseup(event: MouseEvent) {
     context!.drawImage(img, x, y, width, height, 0, 0, width, height);
     let imageData = canvas!.toDataURL('image/png');
     await window.__TAURI__.tauri.invoke('show_main_window', { url: '/window/result?target=ocr&rand=' + random(1, 10000000) });
-    await window.__TAURI__.event.once('result-page-mounted-event', async (event) => {
+    await window.__TAURI__.event.once('result-page-mounted-event', async () => {
       await window.__TAURI__.event.emit('wait-ocr-image-data-event', { imageData })
       await window.__TAURI__.window.appWindow.close()
     })

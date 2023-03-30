@@ -10,7 +10,7 @@
 
 使用全局快捷键方便的进行文本识别和机器翻译（需借助云服务商）
 
-重构自 https://github.com/NPCDW/WpfTool ，此项目只是示例项目，日常使用体验较差，特别是截图的速度方面
+重构自 https://github.com/NPCDW/WpfTool
 
 ## Recommended IDE Setup
 
