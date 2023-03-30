@@ -12,8 +12,8 @@
 import TitleBar from '../components/TitleBar.vue'
 import NavMenu from '../components/NavMenu.vue'
 import { onMounted } from "vue";
-import {listen} from "@tauri-apps/api/event";
-import {useRouter} from "vue-router";
+import { listen } from "@tauri-apps/api/event";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 
@@ -25,6 +25,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

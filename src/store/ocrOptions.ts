@@ -1,6 +1,8 @@
 import { computed } from "vue"
 import i18n from '../i18n'
 
+const { t } = i18n.global
+
 type OcrLanguageTmp = {
     name: string;
 }
@@ -53,8 +55,6 @@ export function getOcrLanguageOptions(ocrProvide: OcrLanguageKeys) {
     }
     return list
 }
-
-const { t } = i18n.global
 
 const ocrProvide = {
     BaiduCloud: 'ocrOptions.BaiduCloud',

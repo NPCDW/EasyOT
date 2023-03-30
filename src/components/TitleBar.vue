@@ -45,6 +45,7 @@ async function close() {
   right: 0;
   cursor: move;
 }
+
 .titlebar-info {
   display: inline-flex;
   justify-content: center;
@@ -52,6 +53,7 @@ async function close() {
   width: var(--title-bar-height);
   height: var(--title-bar-height);
 }
+
 .titlebar-button {
   display: inline-flex;
   justify-content: center;
@@ -60,10 +62,11 @@ async function close() {
   height: var(--title-bar-height);
   cursor: default;
 }
+
 .titlebar-button:hover {
   background: #5bbec3;
 }
+
 .titlebar-close-button:hover {
   background: red;
-}
-</style>
+}</style>

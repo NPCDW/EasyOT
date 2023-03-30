@@ -4,9 +4,9 @@ const TRANSLATE_BASE_PATH = "https://translate.googleapis.com/translate_a/single
 
 async function translate(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
     let param = "?client=gtx&dt=t"
-            + "&sl=" + sourceLanguage
-            + "&tl=" + targetLanguage
-            + "&q=" + encodeURIComponent(text);
+        + "&sl=" + sourceLanguage
+        + "&tl=" + targetLanguage
+        + "&q=" + encodeURIComponent(text);
     const client = await getClient();
     const response = await client.get(TRANSLATE_BASE_PATH + param);
     console.log("google translate", response)

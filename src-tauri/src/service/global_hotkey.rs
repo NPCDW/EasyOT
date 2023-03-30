@@ -1,17 +1,24 @@
-use tauri::{AppHandle};
-use tauri::{GlobalShortcutManager, Manager};
-use crate::get_words::get_words::get_words;
-use crate::window::window::show_main_window;
-use crate::config::runtime_config;
 use crate::config::config;
+use crate::config::runtime_config;
+use crate::service::get_words::get_words;
+use crate::window::main_window::show_main_window;
+use crate::window::screenshot_window::build_screenshot_window;
 use rand::Rng;
-use enigo::{Enigo, MouseControllable};
+use tauri::{App, AppHandle};
+use tauri::{GlobalShortcutManager, Manager};
 
 pub fn register_for_word_selection_translate(app_handle: AppHandle, key: &str) -> bool {
     let mut runtime_config = runtime_config::get_runtime_config();
     let result = app_handle.global_shortcut_manager().register(key, move || {
         get_words();
-        show_main_window(app_handle.app_handle(), format!("/window/result?target=word_selection&rand={:?}", rand::thread_rng().gen::<f64>()).as_str());
+        show_main_window(
+            app_handle.app_handle(),
+            format!(
+                "/window/result?target=word_selection&rand={:?}",
+                rand::thread_rng().gen::<f64>()
+            )
+            .as_str(),
+        );
     });
     runtime_config.hotkey_conflict.word_selection_translate = !result.is_ok();
     runtime_config::save_runtime_config(runtime_config);
@@ -26,7 +33,9 @@ pub fn reregister_for_word_selection_translate(app_handle: AppHandle, key: &str)
         return true;
     }
     if old_hotkey != "" {
-        let _ = app_handle.global_shortcut_manager().unregister(old_hotkey.as_str());
+        let _ = app_handle
+            .global_shortcut_manager()
+            .unregister(old_hotkey.as_str());
     }
     if key == "" {
         return true;
@@ -46,24 +55,7 @@ pub fn register_for_ocr(app_handle: AppHandle, key: &str) -> bool {
             window.show().unwrap();
             window.set_focus().unwrap();
         } else {
-            let enigo = Enigo::new();
-            let mouse = enigo.mouse_location();
-
-            let window = tauri::WindowBuilder::new(&app_handle, "screenshot", tauri::WindowUrl::App("/screenshot/?target=ocr".into()))
-                .always_on_top(true)
-                .decorations(false)
-                .position(mouse.0.into(), mouse.1.into())
-                .inner_size(1f64, 1f64)
-                .resizable(false)
-                .visible(false)
-                .skip_taskbar(true)
-                .transparent(true)
-                .build().unwrap();
-            
-            println!("{:?}, {:?}, {:?}", window.inner_size(), window.outer_position(), mouse);
-
-            // window.show().unwrap();
-            // window.set_focus().unwrap();
+            build_screenshot_window(&app_handle);
         }
     });
     runtime_config.hotkey_conflict.ocr = !result.is_ok();
@@ -79,7 +71,9 @@ pub fn reregister_for_ocr(app_handle: AppHandle, key: &str) -> bool {
         return true;
     }
     if old_hotkey != "" {
-        let _ = app_handle.global_shortcut_manager().unregister(old_hotkey.as_str());
+        let _ = app_handle
+            .global_shortcut_manager()
+            .unregister(old_hotkey.as_str());
     }
     if key == "" {
         return true;
@@ -94,4 +88,19 @@ pub fn reregister_for_ocr(app_handle: AppHandle, key: &str) -> bool {
 
 pub fn unregister_all(app_handle: &AppHandle) {
     let _ = app_handle.global_shortcut_manager().unregister_all();
+}
+
+pub fn init_register(app: &App) {
+    let config = config::get_config();
+    if config.hot_keys.word_selection_translate != "" {
+        let app_handle = app.app_handle();
+        register_for_word_selection_translate(
+            app_handle,
+            config.hot_keys.word_selection_translate.as_str(),
+        );
+    }
+    if config.hot_keys.ocr != "" {
+        let app_handle = app.app_handle();
+        register_for_ocr(app_handle, config.hot_keys.ocr.as_str());
+    }
 }

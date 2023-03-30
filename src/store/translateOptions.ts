@@ -1,6 +1,8 @@
 import { computed } from "vue"
 import i18n from '../i18n'
 
+const { t } = i18n.global
+
 type TranslateLanguageTmp = {
     name: string;
 }
@@ -13,8 +15,6 @@ type TranslateLanguageType = TranslateLanguageTmp & TranslateProvideType
 
 export type TranslateLanguageKeys = keyof TranslateProvideType
 
-const { t } = i18n.global
-
 export const translateProvideOptions = computed(() => {
     let list: SelectOptions[] = []
     Object.entries(translateProvide).forEach(([k, v]) => {
@@ -23,7 +23,6 @@ export const translateProvideOptions = computed(() => {
             value: k
         })
     });
-    console.log(list)
     return list
 })
 

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, watch, watchEffect, reactive } from 'vue';
-import { ElNotification } from 'element-plus';
-import type { FormRules } from 'element-plus'
-import {useConfig} from '../store/config'
-import {useRuntimeConfig} from '../store/runtimeConfig'
-import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
-import {ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys} from '../store/ocrOptions'
-import _ from 'lodash';
 import { invoke } from '@tauri-apps/api/tauri'
 import { platform } from '@tauri-apps/api/os';
 import { Command } from '@tauri-apps/api/shell'
-import {useI18n} from 'vue-i18n'
-import {langOptions} from '../i18n/locale'
+import { ref, watch, watchEffect, reactive } from 'vue';
+import { useI18n } from 'vue-i18n'
+import { ElNotification } from 'element-plus';
+import type { FormRules } from 'element-plus'
+import _ from 'lodash';
+import { useConfig } from '../store/config'
+import { useRuntimeConfig } from '../store/runtimeConfig'
+import { translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys } from '../store/translateOptions'
+import { ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys } from '../store/ocrOptions'
+import { langOptions } from '../i18n/locale'
 
 let config = useConfig().get_config()
 let runtimeConfig = useRuntimeConfig().getRuntimeConfig()
@@ -44,7 +44,7 @@ watch(defaultOcrProvide, (newValue, oldValue) => {
     defaultOcrMode.value = ocrModeOptions.value[0].value
     defaultOcrLanguage.value = ocrLanguageOptions.value[0].value
   }
-}, {immediate: true})
+}, { immediate: true })
 
 const tencentCloud_ocr_secretId = ref(config?.ocr.tencent_cloud.secret_id)
 const tencentCloud_ocr_secretKey = ref(config?.ocr.tencent_cloud.secret_key)
@@ -65,7 +65,7 @@ watch(defaultTranslateProvide, (newValue, oldValue) => {
     defaultSourceLanguage.value = sourceLanguageOptions.value[0].value
     defaultTargetLanguage.value = targetLanguageOptions.value[0].value
   }
-}, {immediate: true})
+}, { immediate: true })
 
 const tencentCloud_translate_secretId = ref(config?.translate.tencent_cloud.secret_id)
 const tencentCloud_translate_secretKey = ref(config?.translate.tencent_cloud.secret_key)
@@ -73,37 +73,37 @@ const baiduAI_translate_app_id = ref(config?.translate.baidu_ai.app_id)
 const baiduAI_translate_app_secret = ref(config?.translate.baidu_ai.app_secret)
 const ocrHotKey = ref(config?.hot_keys.ocr)
 const wordSelectionTranslateHotKey = ref(config?.hot_keys.word_selection_translate)
-const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate)
+// const screenshotTranslateHotKey = ref(config?.hot_keys.screenshot_translate)
 
 async function save() {
-    config!.common.language = language.value!
-    config!.common.word_selection_interval = wordSelectionInterval.value!
+  config!.common.language = language.value!
+  config!.common.word_selection_interval = wordSelectionInterval.value!
 
-    config!.ocr.default_ocr_provide = defaultOcrProvide.value!
-    config!.ocr.default_ocr_mode = defaultOcrMode.value!
-    config!.ocr.default_ocr_language = defaultOcrLanguage.value!
-    config!.ocr.baidu_cloud.client_id = baiduCloud_ocr_appKey.value!
-    config!.ocr.baidu_cloud.client_secret = baiduCloud_ocr_secretKey.value!
-    config!.ocr.tencent_cloud.secret_id = tencentCloud_ocr_secretId.value!
-    config!.ocr.tencent_cloud.secret_key = tencentCloud_ocr_secretKey.value!
-    config!.ocr.space_ocr.api_key = spaceOcr_ocr_apiKey.value!
+  config!.ocr.default_ocr_provide = defaultOcrProvide.value!
+  config!.ocr.default_ocr_mode = defaultOcrMode.value!
+  config!.ocr.default_ocr_language = defaultOcrLanguage.value!
+  config!.ocr.baidu_cloud.client_id = baiduCloud_ocr_appKey.value!
+  config!.ocr.baidu_cloud.client_secret = baiduCloud_ocr_secretKey.value!
+  config!.ocr.tencent_cloud.secret_id = tencentCloud_ocr_secretId.value!
+  config!.ocr.tencent_cloud.secret_key = tencentCloud_ocr_secretKey.value!
+  config!.ocr.space_ocr.api_key = spaceOcr_ocr_apiKey.value!
 
-    config!.translate.default_translate_provide = defaultTranslateProvide.value!
-    config!.translate.default_translate_source_language = defaultSourceLanguage.value!
-    config!.translate.default_translate_target_language = defaultTargetLanguage.value!
-    config!.translate.baidu_ai.app_id = baiduAI_translate_app_id.value!
-    config!.translate.baidu_ai.app_secret = baiduAI_translate_app_secret.value!
-    config!.translate.tencent_cloud.secret_id = tencentCloud_translate_secretId.value!
-    config!.translate.tencent_cloud.secret_key = tencentCloud_translate_secretKey.value!
+  config!.translate.default_translate_provide = defaultTranslateProvide.value!
+  config!.translate.default_translate_source_language = defaultSourceLanguage.value!
+  config!.translate.default_translate_target_language = defaultTargetLanguage.value!
+  config!.translate.baidu_ai.app_id = baiduAI_translate_app_id.value!
+  config!.translate.baidu_ai.app_secret = baiduAI_translate_app_secret.value!
+  config!.translate.tencent_cloud.secret_id = tencentCloud_translate_secretId.value!
+  config!.translate.tencent_cloud.secret_key = tencentCloud_translate_secretKey.value!
 
-    await useConfig().save_config(config!);
-    ElNotification({
-      title: t('setting.success'),
-      message: t('setting.saveSuccess'),
-      type: 'success',
-      duration: 2000,
-      offset: 40,
-    })
+  await useConfig().save_config(config!);
+  ElNotification({
+    title: t('setting.success'),
+    message: t('setting.saveSuccess'),
+    type: 'success',
+    duration: 2000,
+    offset: 40,
+  })
 }
 
 function cancel() {
@@ -143,8 +143,8 @@ function hotkey_keydown(event: KeyboardEvent) {
     return
   }
   if (event.keyCode >= 65 && event.keyCode <= 90    // a-z
-      || event.keyCode >= 48 && event.keyCode <= 57    // 0-9
-      || event.keyCode >= 96 && event.keyCode <= 105    // 数字键盘 0-9
+    || event.keyCode >= 48 && event.keyCode <= 57    // 0-9
+    || event.keyCode >= 96 && event.keyCode <= 105    // 数字键盘 0-9
   ) {
     input.value += event.key.toUpperCase()
     if (event.ctrlKey || event.shiftKey || event.metaKey || event.altKey) {
@@ -209,15 +209,15 @@ async function openConfigDir() {
 }
 
 const autoStart = ref(false)
-invoke('get_status').then(res => {
+invoke('get_auto_start_status').then(res => {
   autoStart.value = res as boolean
 })
 async function autoStartBeforeChange() {
   let res;
   if (autoStart.value) {
-    res = await invoke('disable')
+    res = await invoke('disable_auto_start')
   } else {
-    res = await invoke('enable')
+    res = await invoke('enable_auto_start')
   }
   if (res) {
     ElNotification({
@@ -267,20 +267,17 @@ async function autoStartBeforeChange() {
             <el-divider content-position="left">{{ t('setting.DefaultTextRecognition') }}</el-divider>
             <el-form-item :label="t('setting.CloudServiceProvider')">
               <el-select v-model="defaultOcrProvide" placeholder="Select">
-                <el-option v-for="item in ocrProvideOptions" :key="item.value" :label="item.label"
-                  :value="item.value" />
+                <el-option v-for="item in ocrProvideOptions" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
             <el-form-item :label="t('setting.ocrMode')">
               <el-select v-model="defaultOcrMode" placeholder="Select">
-                <el-option v-for="item in ocrModeOptions" :key="item.value" :label="item.label"
-                  :value="item.value" />
+                <el-option v-for="item in ocrModeOptions" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
             <el-form-item :label="t('setting.ocrLanguage')">
               <el-select v-model="defaultOcrLanguage" placeholder="Select">
-                <el-option v-for="item in ocrLanguageOptions" :key="item.value" :label="item.label"
-                  :value="item.value" />
+                <el-option v-for="item in ocrLanguageOptions" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
             <el-divider content-position="left">{{ t('ocrOptions.TencentCloud') }}</el-divider>
@@ -292,7 +289,9 @@ async function autoStartBeforeChange() {
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://cloud.tencent.com/document/product/866/35945" target="_blank">{{ t('setting.TencentCloudFreeQuota') }}</el-link></span>
+              <span><el-link href="https://cloud.tencent.com/document/product/866/35945" target="_blank">
+                {{ t('setting.TencentCloudFreeQuota') }}
+              </el-link></span>
             </el-form-item>
             <el-divider content-position="left">{{ t('ocrOptions.BaiduCloud') }}</el-divider>
             <el-form-item label="AppKey">
@@ -303,14 +302,18 @@ async function autoStartBeforeChange() {
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h" target="_blank">{{ t('setting.BaiduCloudFreeQuota') }}</el-link></span>
+              <span><el-link href="https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h" target="_blank">
+                {{ t('setting.BaiduCloudFreeQuota') }}
+              </el-link></span>
             </el-form-item>
             <el-divider content-position="left">SpaceOCR</el-divider>
             <el-form-item label="ApiKey">
               <el-input v-model="spaceOcr_ocr_apiKey" type="password" placeholder="Please input password" show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://ocr.space/OCRAPI" target="_blank">{{ t('setting.SpaceOCRFreeQuota') }}</el-link></span>
+              <span><el-link href="https://ocr.space/OCRAPI" target="_blank">
+                {{ t('setting.SpaceOCRFreeQuota') }}
+              </el-link></span>
             </el-form-item>
           </el-form>
         </el-scrollbar>
@@ -346,7 +349,9 @@ async function autoStartBeforeChange() {
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://cloud.tencent.com/document/product/551/35017" target="_blank">{{ t('setting.TencentCloudTranslateFreeQuota') }}</el-link></span>
+              <span><el-link href="https://cloud.tencent.com/document/product/551/35017" target="_blank">
+                {{ t('setting.TencentCloudTranslateFreeQuota') }}
+              </el-link></span>
             </el-form-item>
             <el-divider content-position="left">{{ t('translateOptions.BaiduTranslate') }}</el-divider>
             <el-form-item label="AppID">
@@ -357,7 +362,9 @@ async function autoStartBeforeChange() {
                 show-password />
             </el-form-item>
             <el-form-item label="→">
-              <span><el-link href="https://fanyi-api.baidu.com/product/111" target="_blank">{{ t('setting.BaiduTranslateFreeQuota') }}</el-link></span>
+              <span><el-link href="https://fanyi-api.baidu.com/product/111" target="_blank">
+                {{ t('setting.BaiduTranslateFreeQuota') }}
+              </el-link></span>
             </el-form-item>
             <el-divider content-position="left">{{ t('translateOptions.GoogleTranslate') }}</el-divider>
             <el-form-item label="→">
@@ -368,15 +375,24 @@ async function autoStartBeforeChange() {
       </el-tab-pane>
       <el-tab-pane :label="t('setting.GlobalHotkey')">
         <el-form :label-width="formItemLabelWidth" style="padding-right: 40px;" status-icon :rules="hotkeyRules">
-          <el-form-item :label="t('setting.ocrHotKey')" prop="ocrHotKey" :validate-status="runtimeConfig?.hotkey_conflict.ocr ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.ocr ? t('setting.ShortcutKeysInUsed') : ''">
-            <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)" :placeholder="t('setting.NoShortcutKeySet')" />
+          <el-form-item :label="t('setting.ocrHotKey')" prop="ocrHotKey"
+            :validate-status="runtimeConfig?.hotkey_conflict.ocr ? 'error' : ''"
+            :error="runtimeConfig?.hotkey_conflict.ocr ? t('setting.ShortcutKeysInUsed') : ''">
+            <el-input v-model="ocrHotKey" @keydown="hotkey_keydown($event)"
+              :placeholder="t('setting.NoShortcutKeySet')" />
           </el-form-item>
-          <el-form-item :label="t('setting.wordSelectionTranslateHotKey')" prop="wordSelectionTranslateHotKey" :validate-status="runtimeConfig?.hotkey_conflict.word_selection_translate ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.word_selection_translate ? t('setting.ShortcutKeysInUsed') : ''">
-            <el-input v-model="wordSelectionTranslateHotKey" @keydown="hotkey_keydown($event)" :placeholder="t('setting.NoShortcutKeySet')" />
+          <el-form-item :label="t('setting.wordSelectionTranslateHotKey')" prop="wordSelectionTranslateHotKey"
+            :validate-status="runtimeConfig?.hotkey_conflict.word_selection_translate ? 'error' : ''"
+            :error="runtimeConfig?.hotkey_conflict.word_selection_translate ? t('setting.ShortcutKeysInUsed') : ''">
+            <el-input v-model="wordSelectionTranslateHotKey" @keydown="hotkey_keydown($event)"
+              :placeholder="t('setting.NoShortcutKeySet')" />
           </el-form-item>
-          <el-form-item :label="t('setting.screenshotTranslateHotKey')" prop="screenshotTranslateHotKey" :validate-status="runtimeConfig?.hotkey_conflict.screenshot_translate ? 'error' : ''" :error="runtimeConfig?.hotkey_conflict.screenshot_translate ? t('setting.ShortcutKeysInUsed') : ''">
-            <el-input v-model="screenshotTranslateHotKey" @keydown="hotkey_keydown($event)" :placeholder="t('setting.NoShortcutKeySet')" />
-          </el-form-item>
+          <!-- <el-form-item :label="t('setting.screenshotTranslateHotKey')" prop="screenshotTranslateHotKey"
+            :validate-status="runtimeConfig?.hotkey_conflict.screenshot_translate ? 'error' : ''"
+            :error="runtimeConfig?.hotkey_conflict.screenshot_translate ? t('setting.ShortcutKeysInUsed') : ''">
+            <el-input v-model="screenshotTranslateHotKey" @keydown="hotkey_keydown($event)"
+              :placeholder="t('setting.NoShortcutKeySet')" />
+          </el-form-item> -->
         </el-form>
       </el-tab-pane>
     </el-tabs>
@@ -399,6 +415,4 @@ async function autoStartBeforeChange() {
 .el-tab-pane {
   width: 100%;
   height: calc(100vh - var(--title-bar-height) - 30px);
-}
-
-</style>
+}</style>

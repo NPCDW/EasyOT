@@ -4,7 +4,7 @@ use enigo::{Enigo, Key, KeyboardControllable};
 #[tauri::command]
 pub fn get_words() {
     let mut enigo = Enigo::new();
-    
+
     enigo.key_up(Key::Control);
     enigo.key_up(Key::Alt);
     enigo.key_up(Key::Meta);

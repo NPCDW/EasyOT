@@ -17,7 +17,9 @@
           <el-select v-model="defaultOcrLanguage" placeholder="Select" @change="defaultOcrOptionChange">
             <el-option v-for="item in ocrLanguageOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-checkbox v-model="ocrDefaultSwitch" @change="ocrDefaultSwitch_checked" :disabled="ocrDefaultSwitch">{{ ocrDefaultSwitch ? t('result.AlreadyDefault') : t('result.SetAsDefault') }}</el-checkbox>
+          <el-checkbox v-model="ocrDefaultSwitch" @change="ocrDefaultSwitch_checked" :disabled="ocrDefaultSwitch">
+            {{ ocrDefaultSwitch ? t('result.AlreadyDefault') : t('result.SetAsDefault') }}
+          </el-checkbox>
           <el-button type="primary" @click="ocr_click">{{ t('result.ocr') }}</el-button>
         </el-space>
       </div>
@@ -38,7 +40,10 @@
           <el-select v-model="defaultTargetLanguage" placeholder="Select" @change="defaultTranslateOptionChange">
             <el-option v-for="item in targetLanguageOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-checkbox v-model="translateDefaultSwitch" @change="translateDefaultSwitch_checked" :disabled="translateDefaultSwitch">{{ translateDefaultSwitch ? t('result.AlreadyDefault') : t('result.SetAsDefault') }}</el-checkbox>
+          <el-checkbox v-model="translateDefaultSwitch" @change="translateDefaultSwitch_checked"
+            :disabled="translateDefaultSwitch">
+            {{ translateDefaultSwitch ? t('result.AlreadyDefault') : t('result.SetAsDefault') }}
+          </el-checkbox>
           <el-button type="primary" @click="translate_click">{{ t('result.translate') }}</el-button>
         </el-space>
       </div>
@@ -51,17 +56,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import { readText } from '@tauri-apps/api/clipboard';
 import { emit, once } from '@tauri-apps/api/event'
-import { useRoute } from "vue-router";
-import {useConfig} from '../store/config'
-import {translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys} from '../store/translateOptions'
-import {ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys} from '../store/ocrOptions'
-import {translate} from '../service/translate'
-import {ocr} from '../service/ocr'
 import _ from 'lodash';
-import {useI18n} from 'vue-i18n'
+import { ref, watch } from 'vue'
+import { useRoute } from "vue-router";
+import { useI18n } from 'vue-i18n'
+import { useConfig } from '../store/config'
+import { translateProvideOptions, getTranslateLanguageOptions, type TranslateLanguageKeys } from '../store/translateOptions'
+import { ocrProvideOptions, getOcrLanguageOptions, getOcrModeOptions, type OcrLanguageKeys } from '../store/ocrOptions'
+import { translate } from '../service/translate'
+import { ocr } from '../service/ocr'
 
 let config = useConfig().get_config()
 
@@ -80,7 +85,7 @@ watch(defaultOcrProvide, (newValue, oldValue) => {
     defaultOcrLanguage.value = ocrLanguageOptions.value[0].value
     defaultOcrOptionChange()
   }
-}, {immediate: true})
+}, { immediate: true })
 
 const defaultTranslateProvide = ref<TranslateLanguageKeys>(config?.translate.default_translate_provide as TranslateLanguageKeys)
 const defaultSourceLanguage = ref(config?.translate.default_translate_source_language)
@@ -96,13 +101,9 @@ watch(defaultTranslateProvide, (newValue, oldValue) => {
     defaultTargetLanguage.value = targetLanguageOptions.value[0].value
     defaultTranslateOptionChange()
   }
-}, {immediate: true})
-
-const ocrDefaultSwitch = ref(true)
-const translateDefaultSwitch = ref(true)
+}, { immediate: true })
 
 const ocr_text = ref<string | null>(null);
-const translate_text = ref<string | null>(null);
 
 const imageData = ref("data:image/png;base64,");
 
@@ -117,6 +118,8 @@ function ocr_click() {
   }
 }
 
+const translate_text = ref<string | null>(null);
+
 function translate_click() {
   if (ocr_text.value) {
     translate_text.value = t('result.translating')
@@ -128,16 +131,12 @@ function translate_click() {
   }
 }
 
+const ocrDefaultSwitch = ref(true)
+
 function defaultOcrOptionChange() {
   ocrDefaultSwitch.value = config!.ocr.default_ocr_provide === defaultOcrProvide.value &&
-      config!.ocr.default_ocr_mode === defaultOcrMode.value &&
-      config!.ocr.default_ocr_language === defaultOcrLanguage.value;
-}
-
-function defaultTranslateOptionChange() {
-  translateDefaultSwitch.value = config!.translate.default_translate_provide === defaultTranslateProvide.value &&
-      config!.translate.default_translate_source_language === defaultSourceLanguage.value &&
-      config!.translate.default_translate_target_language === defaultTargetLanguage.value;
+    config!.ocr.default_ocr_mode === defaultOcrMode.value &&
+    config!.ocr.default_ocr_language === defaultOcrLanguage.value;
 }
 
 function ocrDefaultSwitch_checked(value: string | number | boolean): void {
@@ -147,11 +146,19 @@ function ocrDefaultSwitch_checked(value: string | number | boolean): void {
   useConfig().save_config(config!);
 }
 
+const translateDefaultSwitch = ref(true)
+
+function defaultTranslateOptionChange() {
+  translateDefaultSwitch.value = config!.translate.default_translate_provide === defaultTranslateProvide.value &&
+    config!.translate.default_translate_source_language === defaultSourceLanguage.value &&
+    config!.translate.default_translate_target_language === defaultTargetLanguage.value;
+}
+
 function translateDefaultSwitch_checked(value: string | number | boolean): void {
-    config!.translate.default_translate_provide = defaultTranslateProvide.value
-    config!.translate.default_translate_source_language = defaultSourceLanguage.value!
-    config!.translate.default_translate_target_language = defaultTargetLanguage.value!
-    useConfig().save_config(config!);
+  config!.translate.default_translate_provide = defaultTranslateProvide.value
+  config!.translate.default_translate_source_language = defaultSourceLanguage.value!
+  config!.translate.default_translate_target_language = defaultTargetLanguage.value!
+  useConfig().save_config(config!);
 }
 
 const route = useRoute();
@@ -164,7 +171,7 @@ watch(() => route.query.rand, async () => {
     }, config?.common.word_selection_interval)
   } else if (route.query.target === 'ocr') {
     await once('wait-ocr-image-data-event', (event) => {
-      imageData.value = (event.payload as {imageData: string}).imageData
+      imageData.value = (event.payload as { imageData: string }).imageData
       ocr_click()
     })
     await emit('result-page-mounted-event')
@@ -178,6 +185,7 @@ watch(() => route.query.rand, async () => {
   background: var(--dark-background-color);
   height: calc(100vh - var(--title-bar-height));
 }
+
 .page_space {
   padding: 10px 40px 20px 0px;
   width: 100%;

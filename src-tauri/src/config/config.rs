@@ -1,7 +1,7 @@
-use std::{path::PathBuf, collections::HashMap};
 use std::sync::RwLock;
+use std::{collections::HashMap, path::PathBuf};
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::util::file_util;
 
@@ -106,7 +106,7 @@ impl Default for Config {
                     secret_key: "".to_string(),
                 },
                 space_ocr: SpaceOcrOcrConfig {
-                    api_key: "".to_string()
+                    api_key: "".to_string(),
                 },
             },
             translate: TranslateConfig {
@@ -115,7 +115,7 @@ impl Default for Config {
                 default_translate_target_language: "zh".to_string(),
                 baidu_ai: BaiduAITranslateConfig {
                     app_id: "".to_string(),
-                    app_secret: "".to_string()
+                    app_secret: "".to_string(),
                 },
                 tencent_cloud: TencentCloudTranslateConfig {
                     secret_id: "".to_string(),
@@ -127,15 +127,16 @@ impl Default for Config {
                 word_selection_translate: "F2".to_string(),
                 screenshot_translate: "Ctrl+F2".to_string(),
             },
-            window: HashMap::from([
-                (String::from("main"), WindowConfig {
+            window: HashMap::from([(
+                String::from("main"),
+                WindowConfig {
                     x: 300,
                     y: 300,
                     width: 800,
                     height: 600,
                     maximized: false,
-                }),
-            ])
+                },
+            )]),
         }
     }
 }
@@ -147,7 +148,7 @@ lazy_static! {
             panic!("获取程序目录失败：{:?}", e);
         })
     };
-    
+
     #[derive(Debug)]
     pub static ref CONFIG_DIR: PathBuf = {
         tauri::api::path::config_dir().unwrap_or_else(|| {
@@ -192,8 +193,7 @@ pub fn get_config() -> Config {
 #[tauri::command]
 pub fn save_config(config: Config) {
     *CONFIG.write().unwrap() = config.clone();
-    let yaml = serde_yaml::to_string(&config).unwrap_or_else(|e| {
-        panic!("Serialize config fail, {:?}", e)
-    });
+    let yaml =
+        serde_yaml::to_string(&config).unwrap_or_else(|e| panic!("Serialize config fail, {:?}", e));
     file_util::write_file(CONFIG_FILE_PATH.as_path(), &yaml)
 }

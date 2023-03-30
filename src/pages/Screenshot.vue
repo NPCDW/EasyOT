@@ -1,26 +1,17 @@
 <template>
-  <div class="screen" :style="{'background-image': `url(${background})`}">
-    <canvas
-        ref="canvas"
-        tabindex="0"
-        autofocus
-        style="width: 100%; height: 100vh"
-        :width="canvas_width"
-        :height="canvas_height"
-        @keyup.esc="exit"
-        @mouseup.right="exit"
-        @mousedown.left="mousedown($event)"
-        @mousemove="mousemove($event)"
-        @mouseup.left="mouseup($event)"
-    ></canvas>
+  <div class="screen" :style="{ 'background-image': `url(${background})` }">
+    <canvas ref="canvas" tabindex="0" autofocus style="width: 100%; height: 100vh" :width="canvas_width"
+      :height="canvas_height" @keyup.esc="exit" @mouseup.right="exit" @mousedown.left="mousedown($event)"
+      @mousemove="mousemove($event)" @mouseup.left="mouseup($event)"></canvas>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { emit, once } from '@tauri-apps/api/event'
 import { appWindow, PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
+import { random } from '../util/number_util'
 
 const background = ref("data:image/png;base64,")
 const canvas_width = ref(screen.width);
@@ -31,24 +22,22 @@ const ctx = ref<CanvasRenderingContext2D | null>(null);
 
 const scaleFactor = ref(1)
 
-const random = (min:any, max:any) => Math.floor(Math.random() * (max - min + 1) + min)
-
 invoke("screenshot").then(async res => {
-    const [buffer, x, y, width, height, scale] = res as [Uint8Array, number, number, number, number, number]
-    await appWindow.setPosition(new PhysicalPosition(x, y))
-    await appWindow.setSize(new PhysicalSize(width, height))
-    await appWindow.show()
-    await appWindow.setFocus()
-    
-    scaleFactor.value = scale
-    background.value = "data:image/png;base64," + arrayBufferToBase64(buffer);
+  const [buffer, x, y, width, height, scale] = res as [Uint8Array, number, number, number, number, number]
+  await appWindow.setPosition(new PhysicalPosition(x, y))
+  await appWindow.setSize(new PhysicalSize(width, height))
+  await appWindow.show()
+  await appWindow.setFocus()
+
+  scaleFactor.value = scale
+  background.value = "data:image/png;base64," + arrayBufferToBase64(buffer);
 })
 
 onMounted(() => {
   ctx.value = canvas.value?.getContext("2d")!
 
   ctx.value.beginPath();
-  ctx.value.rect(0,0, canvas.value!.width, canvas.value!.height);
+  ctx.value.rect(0, 0, canvas.value!.width, canvas.value!.height);
   ctx.value.fillStyle = 'rgba(0,0,0,0.4)';
   ctx.value.fill();
   ctx.value.closePath();
@@ -60,7 +49,7 @@ const startPoint = ref({ x: 0, y: 0 });
 function mousedown(event: MouseEvent) {
   start.value = true;
   startPoint.value = { x: event.pageX, y: event.pageY }
-  console.log("MouseEvent Down: ", event, canvas.value!.width, canvas.value!.height)
+  // console.log("MouseEvent Down: ", event, canvas.value!.width, canvas.value!.height)
 }
 
 function mousemove(event: MouseEvent) {
@@ -74,12 +63,12 @@ function mousemove(event: MouseEvent) {
   let height = Math.abs(event.pageY - startPoint.value.y)
 
   ctx.value!.beginPath();
-  ctx.value!.clearRect(0,0, canvas.value!.width, canvas.value!.height);
+  ctx.value!.clearRect(0, 0, canvas.value!.width, canvas.value!.height);
   ctx.value!.fill();
   ctx.value!.closePath();
 
   ctx.value!.beginPath();
-  ctx.value!.rect(0,0, canvas.value!.width, canvas.value!.height);
+  ctx.value!.rect(0, 0, canvas.value!.width, canvas.value!.height);
   ctx.value!.fillStyle = 'rgba(0,0,0,0.4)';
   ctx.value!.fill();
   ctx.value!.closePath();
@@ -92,7 +81,7 @@ function mousemove(event: MouseEvent) {
 
 async function mouseup(event: MouseEvent) {
   start.value = false;
-  console.log("MouseEvent Up: ", event, ctx)
+  // console.log("MouseEvent Up: ", event, ctx)
   await appWindow.hide()
 
   let x = Math.min(event.pageX, startPoint.value.x) * scaleFactor.value
@@ -133,7 +122,10 @@ async function exit() {
 </script>
 
 <style scoped>
-canvas:focus-visible { outline: unset; }
+canvas:focus-visible {
+  outline: unset;
+}
+
 .screen {
   background-size: cover;
   cursor: crosshair;

@@ -8,7 +8,7 @@ import { useRuntimeConfig } from './store/runtimeConfig'
 import router from './router/router'
 import { createPinia } from 'pinia'
 import i18n from './i18n'
-import {type LocaleLangType} from './i18n/locale'
+import { type LocaleLangType } from './i18n/locale'
 
 const app = createApp(App)
 const pinia = createPinia()

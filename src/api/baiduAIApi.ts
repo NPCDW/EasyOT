@@ -1,13 +1,12 @@
 import { getClient, Body } from '@tauri-apps/api/http';
-import {useConfig} from '../store/config'
+import { useConfig } from '../store/config'
+import { random } from '../util/number_util'
 import * as CryptoJS from 'crypto-js';
 import i18n from '../i18n'
 
 const TRANSLATE_URL = "https://fanyi-api.baidu.com/api/trans/vip/translate"
 
 const { t } = i18n.global
-
-const random = (min:any,max:any) => Math.floor(Math.random() * (max - min + 1) + min)
 
 async function translate(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
     let config = useConfig().get_config()
@@ -18,7 +17,7 @@ async function translate(text: string, sourceLanguage: string, targetLanguage: s
     const appid = config?.translate.baidu_ai.app_id
     const signStr = appid + text + salt + config?.translate.baidu_ai.app_secret
     const sign = CryptoJS.enc.Hex.stringify(CryptoJS.enc.Hex.parse(CryptoJS.MD5(signStr).toString()));
-    
+
     const client = await getClient();
     const response = await client.post(TRANSLATE_URL, Body.form({
         q: text,
@@ -32,7 +31,7 @@ async function translate(text: string, sourceLanguage: string, targetLanguage: s
     if (!response.ok) {
         return t('result.ErrorRequest') + JSON.stringify(response);
     }
-    const data = response.data as { error_code: string, error_msg: string, trans_result: { dst: string }[] }
+    const data = response.data as BaiduAiTranslateResponse
     if (data.error_code) {
         return data.error_code + "\n" + data.error_msg
     }
@@ -41,6 +40,14 @@ async function translate(text: string, sourceLanguage: string, targetLanguage: s
         target += data.trans_result[i].dst + '\n'
     }
     return target
+}
+
+interface BaiduAiTranslateResponse {
+    error_code: string,
+    error_msg: string,
+    trans_result: {
+        dst: string
+    }[]
 }
 
 export default {

@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import _ from 'lodash';
 import { defineStore } from 'pinia'
-import {ref} from "vue";
+import { ref } from "vue";
 
 export const useRuntimeConfig = defineStore('runtimeConfig', () => {
     const config = ref<RuntimeConfig>()

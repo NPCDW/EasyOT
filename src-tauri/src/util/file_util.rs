@@ -1,6 +1,6 @@
+use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
 use std::{fs, fs::File};
-use std::io::{Write, BufReader, BufRead};
 
 #[allow(dead_code)]
 pub fn read_file(path: &Path) -> Result<String, Box<dyn std::error::Error>> {
@@ -29,7 +29,11 @@ pub fn write_file(path: &Path, text: &str) {
 #[allow(dead_code)]
 pub fn create_dir(path: &Path) {
     fs::create_dir_all(path).unwrap_or_else(|e| {
-        panic!("Could not create file directory: {}, {:?}", &path.display(), e)
+        panic!(
+            "Could not create file directory: {}, {:?}",
+            &path.display(),
+            e
+        )
     });
 }
 

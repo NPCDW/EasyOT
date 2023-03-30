@@ -5,7 +5,7 @@ import i18n from '../i18n'
 const OCR_BASE_PATH = "https://aip.baidubce.com/"
 
 const { t } = i18n.global
-    
+
 async function getAccessToken(): Promise<string> {
     return new Promise(async (resolve, reject) => {
         let config = useConfig().get_config();
@@ -34,7 +34,7 @@ async function getAccessToken(): Promise<string> {
         if (!response.ok) {
             return reject(t('result.ErrorRequest') + JSON.stringify(response));
         }
-        const data = response.data as { access_token: string }
+        const data = response.data as BaiduCLoudGetAccessTokenResponse
         config!.ocr.baidu_cloud.access_token = data.access_token
         await useConfig().save_config(config!);
         return resolve(data.access_token)
@@ -43,7 +43,7 @@ async function getAccessToken(): Promise<string> {
 
 async function ocr(type: string, image: string) {
     const access_token = await getAccessToken()
-    
+
     const client = await getClient();
     const response = await client.post(OCR_BASE_PATH + 'rest/2.0/ocr/v1/' + type, Body.form({
         image: image,
@@ -53,7 +53,7 @@ async function ocr(type: string, image: string) {
     if (!response.ok) {
         return t('result.ErrorRequest') + JSON.stringify(response);
     }
-    const data = response.data as { error_code: string, error_msg: string, words_result: { words: string }[] }
+    const data = response.data as BaiduCLoudOcrResponse
     if (data.error_code) {
         return data.error_msg
     }
@@ -62,6 +62,18 @@ async function ocr(type: string, image: string) {
         text += data.words_result[i].words + '\n'
     }
     return text
+}
+
+interface BaiduCLoudGetAccessTokenResponse {
+    access_token: string
+}
+
+interface BaiduCLoudOcrResponse {
+    error_code: string,
+    error_msg: string,
+    words_result: {
+        words: string
+    }[]
 }
 
 export default {

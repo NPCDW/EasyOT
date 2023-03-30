@@ -1,19 +1,20 @@
 import * as CryptoJS from 'crypto-js';
 import { getClient, Body } from '@tauri-apps/api/http';
-import {useConfig} from '../store/config'
+import { useConfig } from '../store/config'
 import i18n from '../i18n'
 
 export default {
     ocr, translate
 }
 
+const { t } = i18n.global
+
 async function translate(sourceText: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
-    const { t } = i18n.global
     let config = useConfig().get_config()
     if (!config?.ocr.tencent_cloud.secret_id || !config?.ocr.tencent_cloud.secret_key) {
         return t('result.EmptyKeyMessage')
     }
-    
+
     let payloadStr = JSON.stringify({
         SourceText: sourceText,
         Source: sourceLanguage,
@@ -28,7 +29,7 @@ async function translate(sourceText: string, sourceLanguage: string, targetLangu
     if (!response.ok) {
         return t('result.ErrorRequest') + JSON.stringify(response);
     }
-    const data = response.data as { Response: {Error: {Code: string, Message: string}, TargetText: string} }
+    const data = response.data as TencentCloudTranslateResponse
     if (data.Response.Error) {
         return data.Response.Error.Code + '\n' + data.Response.Error.Message
     }
@@ -36,7 +37,6 @@ async function translate(sourceText: string, sourceLanguage: string, targetLangu
 }
 
 async function ocr(mode: string, imageBase64: string) {
-    const { t } = i18n.global
     let config = useConfig().get_config()
     if (!config?.ocr.tencent_cloud.secret_id || !config?.ocr.tencent_cloud.secret_key) {
         return t('result.EmptyKeyMessage')
@@ -53,7 +53,7 @@ async function ocr(mode: string, imageBase64: string) {
     if (!response.ok) {
         return t('result.ErrorRequest') + JSON.stringify(response);
     }
-    const data = response.data as { Response: {Error: {Code: string, Message: string}, TextDetections: {DetectedText: string}[]} }
+    const data = response.data as TencentCloudOcrResponse
     if (data.Response.Error) {
         return data.Response.Error.Code + '\n' + data.Response.Error.Message
     }
@@ -62,6 +62,28 @@ async function ocr(mode: string, imageBase64: string) {
         text += data.Response.TextDetections[i].DetectedText + '\n'
     }
     return text
+}
+
+interface TencentCloudTranslateResponse {
+    Response: {
+        Error: {
+            Code: string,
+            Message: string
+        },
+        TargetText: string
+    }
+}
+
+interface TencentCloudOcrResponse {
+    Response: {
+        Error: {
+            Code: string,
+            Message: string
+        },
+        TextDetections: {
+            DetectedText: string
+        }[]
+    }
 }
 
 function signForTranslate(payloadStr: string) {
@@ -93,7 +115,7 @@ interface SignParam {
 }
 
 function sign(param: SignParam) {
-    const {endpoint, service, action, version, payloadStr} = param
+    const { endpoint, service, action, version, payloadStr } = param
     let config = useConfig().get_config()
     // 密钥参数
     const SECRET_ID = config?.ocr.tencent_cloud.secret_id

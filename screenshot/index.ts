@@ -29,16 +29,16 @@ let ctx: CanvasRenderingContext2D | null = null;
 
 let scaleFactor = 1
 
-const random = (min:any, max:any) => Math.floor(Math.random() * (max - min + 1) + min)
+const random = (min: any, max: any) => Math.floor(Math.random() * (max - min + 1) + min)
 
 window.__TAURI__.tauri.invoke("screenshot").then(async res => {
   const [buffer, x, y, width, height, scale] = res as [Uint8Array, number, number, number, number, number]
-  console.log([buffer, x, y, width, height, scale], window.__TAURI__.window)
+  // console.log([buffer, x, y, width, height, scale], window.__TAURI__.window)
   await window.__TAURI__.window.appWindow.setPosition(new window.__TAURI__.window.PhysicalPosition(x, y))
   await window.__TAURI__.window.appWindow.setSize(new window.__TAURI__.window.PhysicalSize(width, height))
   await window.__TAURI__.window.appWindow.show()
   await window.__TAURI__.window.appWindow.setFocus()
-  
+
   scaleFactor = scale
   background = "data:image/png;base64," + arrayBufferToBase64(buffer);
 
@@ -53,7 +53,7 @@ window.onload = () => {
   ctx = canvas?.getContext("2d")!
 
   ctx.beginPath();
-  ctx.rect(0,0, canvas!.width, canvas!.height);
+  ctx.rect(0, 0, canvas!.width, canvas!.height);
   ctx.fillStyle = 'rgba(0,0,0,0.4)';
   ctx.fill();
   ctx.closePath();
@@ -88,7 +88,7 @@ let startPoint = { x: 0, y: 0 }
 function mousedown(event: MouseEvent) {
   start = true;
   startPoint = { x: event.pageX, y: event.pageY }
-  console.log("MouseEvent Down: ", event, canvas!.width, canvas!.height)
+  // console.log("MouseEvent Down: ", event, canvas!.width, canvas!.height)
 }
 
 function mousemove(event: MouseEvent) {
@@ -102,12 +102,12 @@ function mousemove(event: MouseEvent) {
   let height = Math.abs(event.pageY - startPoint.y)
 
   ctx!.beginPath();
-  ctx!.clearRect(0,0, canvas!.width, canvas!.height);
+  ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
   ctx!.fill();
   ctx!.closePath();
 
   ctx!.beginPath();
-  ctx!.rect(0,0, canvas!.width, canvas!.height);
+  ctx!.rect(0, 0, canvas!.width, canvas!.height);
   ctx!.fillStyle = 'rgba(0,0,0,0.4)';
   ctx!.fill();
   ctx!.closePath();
@@ -120,7 +120,7 @@ function mousemove(event: MouseEvent) {
 
 async function mouseup(event: MouseEvent) {
   start = false;
-  console.log("MouseEvent Up: ", event, ctx)
+  // console.log("MouseEvent Up: ", event, ctx)
   await window.__TAURI__.window.appWindow.hide()
 
   let x = Math.min(event.pageX, startPoint.x) * scaleFactor
