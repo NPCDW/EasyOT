@@ -10,7 +10,7 @@ use windows::Foundation::TypedEventHandler;
 use windows::Graphics::Capture::{Direct3D11CaptureFramePool, GraphicsCaptureItem};
 use windows::Graphics::DirectX::DirectXPixelFormat;
 use windows::Graphics::Imaging::{BitmapAlphaMode, BitmapEncoder, BitmapPixelFormat};
-use windows::Storage::{CreationCollisionOption, FileAccessMode, StorageFolder};
+// use windows::Storage::{CreationCollisionOption, FileAccessMode, StorageFolder};
 use windows::Win32::Foundation::HWND;
 use windows::Win32::Graphics::Direct3D11::{
     ID3D11Resource, ID3D11Texture2D, D3D11_BIND_FLAG, D3D11_CPU_ACCESS_READ, D3D11_MAP_READ,
@@ -153,31 +153,30 @@ fn take_screenshot(item: &GraphicsCaptureItem) -> Result<Vec<u8>> {
 
         bits
     };
+    
+    let stream = windows::Storage::Streams::InMemoryRandomAccessStream::new()?;
+    let encoder = BitmapEncoder::CreateAsync(BitmapEncoder::PngEncoderId()?, &stream)?.get()?;
+    encoder.SetPixelData(
+        BitmapPixelFormat::Bgra8,
+        BitmapAlphaMode::Premultiplied,
+        item_size.Width as u32,
+        item_size.Height as u32,
+        1.0,
+        1.0,
+        &bits,
+    )?;
+    encoder.FlushAsync()?.get()?;
+    
+    let buffer = windows::Storage::Streams::Buffer::Create(stream.Size().unwrap() as u32)?;
+    stream.Seek(0).unwrap();
+    stream.ReadAsync(&buffer, buffer.Capacity().unwrap(), windows::Storage::Streams::InputStreamOptions::None)?.get()?;
+    
+    let data_reader = windows::Storage::Streams::DataReader::FromBuffer(buffer)?;
+    let length = data_reader.UnconsumedBufferLength().unwrap();
+    let mut bytes = vec![0u8; length as usize];
+    data_reader.ReadBytes(&mut bytes).unwrap();
 
-    let folder_name = r"C:\Windows\Temp";
-    let file_name = "easyot-screenshot.png";
-    let folder = StorageFolder::GetFolderFromPathAsync(folder_name)?.get()?;
-    let file = folder
-        .CreateFileAsync(file_name, CreationCollisionOption::ReplaceExisting)?
-        .get()?;
-
-    {
-        let stream = file.OpenAsync(FileAccessMode::ReadWrite)?.get()?;
-        let encoder = BitmapEncoder::CreateAsync(BitmapEncoder::PngEncoderId()?, stream)?.get()?;
-        encoder.SetPixelData(
-            BitmapPixelFormat::Bgra8,
-            BitmapAlphaMode::Premultiplied,
-            item_size.Width as u32,
-            item_size.Height as u32,
-            1.0,
-            1.0,
-            &bits,
-        )?;
-
-        encoder.FlushAsync()?.get()?;
-    }
-
-    Ok(std::fs::read(format!("{}/{}", folder_name, file_name)).unwrap())
+    Ok(bytes)
 }
 
 fn get_window_from_query(query: &str) -> Result<WindowInfo> {
