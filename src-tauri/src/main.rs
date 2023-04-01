@@ -23,10 +23,15 @@ use tauri::{CustomMenuItem, SystemTrayEvent, SystemTrayMenu};
 use tauri::{Manager, SystemTray};
 use window::main_window::show_main_window;
 use window::main_window_event;
+use service::singleton;
 
 fn main() {
+    if singleton::is_app_running() {
+        std::process::exit(0);
+    }
+
     // println!("{:?}", *config::config::CONFIG);
-    let quit = CustomMenuItem::new("quit".to_string(), "退出");
+    let quit = CustomMenuItem::new("quit".to_string(), "Quit");
     let tray_menu = SystemTrayMenu::new().add_item(quit);
     let tray = SystemTray::new().with_menu(tray_menu);
 
