@@ -16,6 +16,29 @@
 | 内存占用（单窗口） | 95M             | 110-140M |
 | 截图速度           | 200ms           | 1s       |
 
+## 免费额度
+- 文字识别
+    - 腾讯云 [https://cloud.tencent.com/document/product/866/35945](https://cloud.tencent.com/document/product/866/35945)
+    - 百度云 [https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h](https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h)
+    - SpaceOCR [https://ocr.space/OCRAPI](https://ocr.space/OCRAPI)
+- 翻译
+    - 腾讯云 [https://cloud.tencent.com/document/product/551/35017](https://cloud.tencent.com/document/product/551/35017)
+    - 百度AI [https://fanyi-api.baidu.com/product/113](https://fanyi-api.baidu.com/product/113)
+    - 谷歌翻译（免费不限量，但不是官方接入点）
+
+# 功能
+
+* 支持多屏幕不同 `dpi` 下的文字识别，默认快捷键 `F4`
+* 支持划词翻译，默认快捷键 `F2` ，先用鼠标选中一段文字，然后按下快捷键，会弹窗进行翻译
+
+# 说明
+
+多屏幕文字识别：只会对鼠标所在的屏幕进行截图
+
+如何取消截图？按 `ESC` 或 单击鼠标右键即可
+
+划词（屏幕取词）是采用模拟发送 `Ctrl+C` ，然后再从剪切板取词
+
 ## 开发
 开发
 ```shell

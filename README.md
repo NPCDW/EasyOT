@@ -18,6 +18,29 @@ This project is rewritten from [NPCDW/WpfTool](https://github.com/NPCDW/WpfTool)
 | Memory usage (single window) | 95M             | 110-140M |
 | Screenshot speed           | 200ms           | 1s       |
 
+## Free Quota
+- OCR
+    - Tencent Cloud [https://cloud.tencent.com/document/product/866/35945](https://cloud.tencent.com/document/product/866/35945)
+    - Baidu Cloud [https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h](https://cloud.baidu.com/doc/OCR/s/fk3h7xu7h)
+    - SpaceOCR [https://ocr.space/OCRAPI](https://ocr.space/OCRAPI)
+- Translate
+    - Tencent Cloud [https://cloud.tencent.com/document/product/551/35017](https://cloud.tencent.com/document/product/551/35017)
+    - Baidu AI [https://fanyi-api.baidu.com/product/113](https://fanyi-api.baidu.com/product/113)
+    - Google Translate (free and unlimited, but unofficial endpoint)
+
+## Features
+
+* Support text recognition on multiple screens and different dpi, the default shortcut key is `F4`
+* Support word translation, the default shortcut key is `F2`, first select a piece of text with the mouse, and then press the shortcut key, a window will pop up for translation
+
+## IMPORTANT
+
+Multi-screen capture: only the screen where the mouse is placed will be captured
+
+How to cancel screenshot? Press `ESC` or right-click
+
+Marking words (taking words from the screen) is to send `Ctrl+Insert` by analog, and then get words from the clipboard
+
 ## Development
 Development
 ```shell
