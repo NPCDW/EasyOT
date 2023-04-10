@@ -77,12 +77,29 @@ pub struct WindowConfig {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct DbConfig {
+    pub filepath: String,
+    pub max_pool_size: u32,
+}
+
+impl Default for DbConfig {
+    fn default() -> Self {
+        Self {
+            filepath: tauri::api::path::data_dir().unwrap().join("EasyOT").join("easyot.sqlite").to_str().unwrap().to_string(),
+            max_pool_size: 4
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
     pub common: CommonConfig,
     pub ocr: OcrConfig,
     pub translate: TranslateConfig,
     pub hot_keys: HotKeysConfig,
     pub window: HashMap<String, WindowConfig>,
+    #[serde(default)]
+    pub db: DbConfig,
 }
 
 impl Default for Config {
@@ -137,6 +154,7 @@ impl Default for Config {
                     maximized: false,
                 },
             )]),
+            db: DbConfig::default(),
         }
     }
 }

@@ -7,7 +7,9 @@
 extern crate lazy_static;
 
 mod config;
+mod entity;
 mod service;
+mod db;
 mod util;
 mod window;
 
@@ -18,6 +20,7 @@ use service::auto_start::{disable_auto_start, enable_auto_start, get_auto_start_
 use service::get_words::get_words;
 use service::global_hotkey;
 use service::global_hotkey::{reregister_for_ocr, reregister_for_word_selection_translate};
+use service::history_service::{list_history, insert_history};
 use service::screenshot::screenshot;
 use tauri::{CustomMenuItem, SystemTrayEvent, SystemTrayMenu};
 use tauri::{Manager, SystemTray};
@@ -26,9 +29,14 @@ use window::main_window_event;
 use service::singleton;
 
 fn main() {
+    env_logger::builder().filter_level(log::LevelFilter::Info).init();
+    
     if singleton::is_app_running() {
+        log::warn!("程序已经在运行了");
         std::process::exit(0);
     }
+
+    db::db_init::init();
 
     // println!("{:?}", *config::config::CONFIG);
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
@@ -65,7 +73,9 @@ fn main() {
             reregister_for_word_selection_translate,
             get_auto_start_status,
             enable_auto_start,
-            disable_auto_start
+            disable_auto_start,
+            list_history,
+            insert_history
         ])
         .setup(|app| {
             global_hotkey::init_register(app);

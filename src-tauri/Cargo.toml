@@ -22,6 +22,24 @@ enigo = "0.0.15"
 lazy_static = "1.4.0"
 rand = "0.8.5"
 sysinfo = "0.28.4"
+chrono = { version = "0.4.24", features = ["serde"] }
+
+log = "0.4"
+env_logger = "0.10.0"
+
+r2d2 = "0.8"
+r2d2_sqlite = "0.21"
+sea-query = { version = "^0" }
+sea-query-rusqlite = { version = "^0", features = [
+    "with-chrono",
+    "with-json",
+    "with-uuid",
+    "with-time",
+] }
+
+[dependencies.rusqlite]
+version = "0.28.0"
+features = ["bundled"]
 
 [target.'cfg(windows)'.dependencies]
 screenshot_win_dxgi = {path = "libs/screenshot-win-dxgi"}

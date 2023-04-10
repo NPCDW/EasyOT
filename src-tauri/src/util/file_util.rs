@@ -38,6 +38,16 @@ pub fn create_dir(path: &Path) {
 }
 
 #[allow(dead_code)]
+pub fn create_file(path: &Path) {
+    if !path.parent().unwrap().exists() {
+        let _ = fs::create_dir_all(path.parent().unwrap());
+    }
+    if !path.exists() {
+        let _ = File::create(path);
+    }
+}
+
+#[allow(dead_code)]
 pub fn list_dir(path: &Path) -> Vec<PathBuf> {
     let mut list = Vec::default();
     for child in fs::read_dir(path).unwrap() {
