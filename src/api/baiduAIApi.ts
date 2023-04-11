@@ -11,7 +11,7 @@ const { t } = i18n.global
 async function translate(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
     let config = useConfig().get_config()
     if (!config?.translate.baidu_ai.app_id || !config?.translate.baidu_ai.app_secret) {
-        return t('result.EmptyKeyMessage')
+        throw t('result.EmptyKeyMessage')
     }
     const salt = random(1, 10000000) + ""
     const appid = config?.translate.baidu_ai.app_id
@@ -29,11 +29,11 @@ async function translate(text: string, sourceLanguage: string, targetLanguage: s
     }));
     console.log("baidu translate", response)
     if (!response.ok) {
-        return t('result.ErrorRequest') + JSON.stringify(response);
+        throw t('result.ErrorRequest') + JSON.stringify(response);
     }
     const data = response.data as BaiduAiTranslateResponse
     if (data.error_code) {
-        return data.error_code + "\n" + data.error_msg
+        throw data.error_code + "\n" + data.error_msg
     }
     let target = ''
     for (let i = 0; i < data.trans_result.length; i++) {

@@ -9,7 +9,7 @@ const { t } = i18n.global
 async function ocr(type: string, imageBase64: string, ocrLanguage: string) {
     let config = useConfig().get_config()
     if (!config?.ocr.space_ocr.api_key) {
-        return t('result.EmptyKeyMessage')
+        throw t('result.EmptyKeyMessage')
     }
 
     const client = await getClient();
@@ -21,11 +21,11 @@ async function ocr(type: string, imageBase64: string, ocrLanguage: string) {
     }));
     console.log("spaceocr ocr", response)
     if (!response.ok) {
-        return t('result.ErrorRequest') + JSON.stringify(response);
+        throw t('result.ErrorRequest') + JSON.stringify(response);
     }
     const data = response.data as SpaceOcrResponse
     if (data.ErrorMessage) {
-        return data.ErrorMessage
+        throw data.ErrorMessage
     }
     let target = ''
     for (let i = 0; i < data.ParsedResults.length; i++) {

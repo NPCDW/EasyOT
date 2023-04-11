@@ -12,7 +12,7 @@ const { t } = i18n.global
 async function translate(sourceText: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
     let config = useConfig().get_config()
     if (!config?.ocr.tencent_cloud.secret_id || !config?.ocr.tencent_cloud.secret_key) {
-        return t('result.EmptyKeyMessage')
+        throw t('result.EmptyKeyMessage')
     }
 
     let payloadStr = JSON.stringify({
@@ -27,11 +27,11 @@ async function translate(sourceText: string, sourceLanguage: string, targetLangu
     });
     console.log("tencent translate", response)
     if (!response.ok) {
-        return t('result.ErrorRequest') + JSON.stringify(response);
+        throw t('result.ErrorRequest') + JSON.stringify(response);
     }
     const data = response.data as TencentCloudTranslateResponse
     if (data.Response.Error) {
-        return data.Response.Error.Code + '\n' + data.Response.Error.Message
+        throw data.Response.Error.Code + '\n' + data.Response.Error.Message
     }
     return data.Response.TargetText
 }
@@ -39,7 +39,7 @@ async function translate(sourceText: string, sourceLanguage: string, targetLangu
 async function ocr(mode: string, imageBase64: string) {
     let config = useConfig().get_config()
     if (!config?.ocr.tencent_cloud.secret_id || !config?.ocr.tencent_cloud.secret_key) {
-        return t('result.EmptyKeyMessage')
+        throw t('result.EmptyKeyMessage')
     }
 
     let payloadStr = JSON.stringify({
@@ -51,11 +51,11 @@ async function ocr(mode: string, imageBase64: string) {
     });
     console.log("tencent ocr", response)
     if (!response.ok) {
-        return t('result.ErrorRequest') + JSON.stringify(response);
+        throw t('result.ErrorRequest') + JSON.stringify(response);
     }
     const data = response.data as TencentCloudOcrResponse
     if (data.Response.Error) {
-        return data.Response.Error.Code + '\n' + data.Response.Error.Message
+        throw data.Response.Error.Code + '\n' + data.Response.Error.Message
     }
     let text = ''
     for (let i = 0; i < data.Response.TextDetections.length; i++) {

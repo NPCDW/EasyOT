@@ -2,14 +2,25 @@ import type { TranslateLanguageKeys } from '../store/translateOptions'
 import googleTranslateApi from '../api/googleTranslateApi'
 import tencentCloudApi from '../api/tencentCloudApi'
 import baiduAIApi from '../api/baiduAIApi'
+import { invoke } from '@tauri-apps/api/tauri'
 
-export async function translate(translateProvide: TranslateLanguageKeys, sourceLanguage: string, targetLanguage: string, text: string): Promise<string> {
+export function translate(translateProvide: TranslateLanguageKeys, sourceLanguage: string, targetLanguage: string, text: string): Promise<string> {
+    let promises: Promise<string>;
     switch (translateProvide) {
         case "BaiduAI":
-            return await baiduAIApi.translate(text, sourceLanguage, targetLanguage);
+            promises = baiduAIApi.translate(text, sourceLanguage, targetLanguage);
         case "TencentCloud":
-            return await tencentCloudApi.translate(text, sourceLanguage, targetLanguage);
+            promises = tencentCloudApi.translate(text, sourceLanguage, targetLanguage);
         case "GoogleTranslate":
-            return await googleTranslateApi.translate(text, sourceLanguage, targetLanguage);
+            promises = googleTranslateApi.translate(text, sourceLanguage, targetLanguage);
     }
+    return new Promise((resolve, reject) => {
+        promises.then(res => {
+            invoke('insert_history', {info: {ocr_text: text, translate_text: res, cloud: translateProvide}})
+            resolve(res)
+        }).catch(e => {
+            invoke('insert_history', {info: {ocr_text: text, translate_text: e, cloud: translateProvide}})
+            reject(e)
+        })
+    })
 }

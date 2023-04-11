@@ -11,7 +11,7 @@ async function translate(text: string, sourceLanguage: string, targetLanguage: s
     const response = await client.get(TRANSLATE_BASE_PATH + param);
     console.log("google translate", response)
     if (!response.ok) {
-        return "请求失败：" + JSON.stringify(response);
+        throw "请求失败：" + JSON.stringify(response);
     }
     const jsonArray = response.data as string[][][];
     let result = "";
