@@ -10,6 +10,14 @@
         "copied": "Copied",
         "CopyEmailMessage": "Email address copied"
     },
+    "history": {
+        "title": "History",
+        "create_time": "Time",
+        "image_data": "Image",
+        "ocr_text": "OCR",
+        "translate_text": "Translate",
+        "cloud": "Cloud"
+    },
     "result": {
         "title": "Text Recognition / Machine Translation",
         "translate": "Translate",

@@ -1,6 +1,7 @@
 import * as VueRouter from 'vue-router'
 import About from '../pages/About.vue'
 import Setting from '../pages/Setting.vue'
+import History from '../pages/History.vue'
 import Result from '../pages/Result.vue'
 // import Screenshot from '../pages/Screenshot.vue'
 import Window from '../components/Window.vue'
@@ -18,6 +19,10 @@ const routes = [
             {
                 path: 'setting',
                 component: Setting,
+            },
+            {
+                path: 'history',
+                component: History,
             },
             {
                 path: 'info',

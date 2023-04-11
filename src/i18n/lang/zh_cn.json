@@ -10,6 +10,14 @@
         "copied": "已复制",
         "CopyEmailMessage": "邮件地址复制成功"
     },
+    "history": {
+        "title": "历史记录",
+        "create_time": "时间",
+        "image_data": "图片",
+        "ocr_text": "OCR",
+        "translate_text": "翻译",
+        "cloud": "服务商"
+    },
     "result": {
         "title": "文本识别/机器翻译",
         "translate": "翻译",

@@ -30,7 +30,7 @@ pub fn create_resized_debounce() -> Sender<(AppHandle, PhysicalSize<u32>)> {
             // println!("resized debounce: {:?}", size);
             let mut config = config::get_config();
             let mut main = config.window.get_mut("main").unwrap();
-            if (main.width != size.width || main.height != size.height) && size.height > 100 {
+            if size.height > 100 {
                 if app_handle
                     .get_window("main")
                     .unwrap()
@@ -56,7 +56,7 @@ pub fn create_moved_debounce() -> Sender<PhysicalPosition<i32>> {
             // println!("moved debounce: {:?}", pos);
             let mut config = config::get_config();
             let mut main = config.window.get_mut("main").unwrap();
-            if (main.x != pos.x || main.y != pos.y) && pos.x > -32000 {
+            if pos.x > -32000 {
                 main.x = pos.x;
                 main.y = pos.y;
                 config::save_config(config);

@@ -14,16 +14,23 @@ pub fn show_main_window(app_handle: AppHandle, url: &str) {
         window.set_focus().unwrap();
     } else {
         let main = config.window.get("main").unwrap();
-        let _ =
+        let window =
             tauri::WindowBuilder::new(&app_handle, "main", tauri::WindowUrl::App(url.into()))
                 .decorations(false)
                 .resizable(true)
                 .title("EasyOT")
-                .position(main.x.into(), main.y.into())
                 .inner_size(main.width.into(), main.height.into())
-                .maximized(main.maximized)
-                .transparent(true)
-                .build()
-                .unwrap();
+                .transparent(true);
+        if main.maximized {
+            window
+            .maximized(main.maximized)
+            .build()
+            .unwrap();
+        } else {
+            window
+            .position(main.x.into(), main.y.into())
+            .build()
+            .unwrap();
+        }
     }
 }

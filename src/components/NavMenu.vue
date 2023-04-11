@@ -6,6 +6,9 @@
     <el-menu-item index="/window/setting">
       <el-icon><i-ep-setting /></el-icon>
     </el-menu-item>
+    <el-menu-item index="/window/history">
+      <el-icon><i-ep-Histogram /></el-icon>
+    </el-menu-item>
     <el-menu-item index="/window/info">
       <el-icon><i-ep-InfoFilled /></el-icon>
     </el-menu-item>
