@@ -13,9 +13,8 @@
     "history": {
         "title": "History",
         "create_time": "Time",
-        "image_data": "Image",
-        "ocr_text": "OCR",
-        "translate_text": "Translate",
+        "source": "Source",
+        "target": "Target",
         "cloud": "Cloud"
     },
     "result": {

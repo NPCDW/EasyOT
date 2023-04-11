@@ -13,9 +13,8 @@
     "history": {
         "title": "历史记录",
         "create_time": "时间",
-        "image_data": "图片",
-        "ocr_text": "OCR",
-        "translate_text": "翻译",
+        "source": "源",
+        "target": "目标",
         "cloud": "服务商"
     },
     "result": {
