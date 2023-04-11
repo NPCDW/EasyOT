@@ -20,6 +20,8 @@
         "ocr": "OCR",
         "translating": "Translating......",
         "ocring": "Text recognition......",
+        "ocrImageNotfound": "Image not found",
+        "translatTextNotfound": "Translat Text Not found",
         "EmptyKeyMessage": "Please set the secret key information provided by the cloud service provider first, and you can click the link in the settings to get it for free",
         "ErrorRequest": "ERROR Request: \n"
     },

@@ -20,6 +20,8 @@
         "ocr": "识别",
         "translating": "翻译中，请稍候......",
         "ocring": "识别中，请稍候......",
+        "ocrImageNotfound": "未发现截图",
+        "translatTextNotfound": "未发现翻译文本",
         "EmptyKeyMessage": "请先设置云服务商提供的秘钥信息，可以到设置中点击链接免费领取",
         "ErrorRequest": "请求失败：\n"
     },

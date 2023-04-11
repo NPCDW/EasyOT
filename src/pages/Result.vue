@@ -108,13 +108,15 @@ const ocr_text = ref<string | null>(null);
 const imageData = ref("data:image/png;base64,");
 
 function ocr_click() {
-  if (imageData.value) {
+  if (imageData.value && imageData.value.length > 24) {
     ocr_text.value = t('result.ocring')
     ocr(defaultOcrProvide.value, defaultOcrMode.value!, defaultOcrLanguage.value!, imageData.value).then(text => {
       ocr_text.value = text
     }).catch(error => {
       ocr_text.value = error
     })
+  } else {
+    ocr_text.value = t('result.ocrImageNotfound')
   }
 }
 
@@ -128,6 +130,8 @@ function translate_click() {
     }).catch(error => {
       translate_text.value = error
     })
+  } else {
+    translate_text.value = t('result.translatTextNotfound')
   }
 }
 
