@@ -19,7 +19,7 @@ function copyText(text: string) {
   <el-scrollbar class="page">
     <el-descriptions title="EasyOT" :column="1" direction="horizontal" style="padding: 20px;">
       <el-descriptions-item :label="t('about.version')"><el-link href="https://github.com/NPCDW/EasyOT/releases"
-          target="_blank">0.2.0</el-link></el-descriptions-item>
+          target="_blank">0.3.0</el-link></el-descriptions-item>
       <el-descriptions-item :label="t('about.license')"><el-link href="https://en.wikipedia.org/wiki/MIT_License"
           target="_blank">MIT License</el-link></el-descriptions-item>
       <el-descriptions-item :label="t('about.allRightsReserved')"><el-link href="https://github.com/NPCDW"

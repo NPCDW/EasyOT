@@ -9,10 +9,13 @@ export function translate(translateProvide: TranslateLanguageKeys, sourceLanguag
     switch (translateProvide) {
         case "BaiduAI":
             promises = baiduAIApi.translate(text, sourceLanguage, targetLanguage);
+            break;
         case "TencentCloud":
             promises = tencentCloudApi.translate(text, sourceLanguage, targetLanguage);
+            break;
         case "GoogleTranslate":
             promises = googleTranslateApi.translate(text, sourceLanguage, targetLanguage);
+            break;
     }
     return new Promise((resolve, reject) => {
         promises.then(res => {
