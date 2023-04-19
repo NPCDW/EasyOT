@@ -149,8 +149,8 @@ impl Default for Config {
                 WindowConfig {
                     x: 300,
                     y: 300,
-                    width: 800,
-                    height: 600,
+                    width: 820,
+                    height: 730,
                     maximized: false,
                 },
             )]),
